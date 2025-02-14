@@ -4,107 +4,103 @@ import org.edgar.hodlverse.entities.Currency;
 import org.edgar.hodlverse.entities.Wallet;
 import org.edgar.hodlverse.services.NotFoundException;
 import org.edgar.hodlverse.services.WalletService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/wallets") // Ruta base para el controlador
+@RequestMapping("/wallets")
+@Validated
 public class WalletController {
 
     private final WalletService walletService;
 
+    @Autowired
     public WalletController(WalletService walletService) {
         this.walletService = walletService;
     }
 
     // Obtener todas las billeteras
     @GetMapping
-    public List<Wallet> all() {
-        return walletService.findAll();
+    public ResponseEntity<List<Wallet>> all() {
+        List<Wallet> wallets = walletService.findAll();
+        return ResponseEntity.ok(wallets);
     }
 
     // Crear una nueva billetera
     @PostMapping
-    public Wallet newWallet(@RequestBody Wallet newWallet) {
-        return walletService.save(newWallet);
+    public ResponseEntity<Wallet> newWallet(@Valid @RequestBody Wallet newWallet) {
+        Wallet savedWallet = walletService.save(newWallet);
+        return ResponseEntity.ok(savedWallet);
     }
 
     // Obtener una billetera específica por su ID
     @GetMapping("/{id}")
-    public Wallet one(@PathVariable Long id) {
+    public ResponseEntity<Wallet> one(@PathVariable @NotNull Long id) {
         return walletService.findById(id)
+                .map(ResponseEntity::ok)
                 .orElseThrow(() -> new NotFoundException("Billetera con ID " + id + " no encontrada."));
     }
 
     // Actualizar una billetera existente
     @PutMapping("/{id}")
-    public Wallet replaceWallet(@RequestBody Wallet newWallet, @PathVariable Long id) {
+    public ResponseEntity<Wallet> replaceWallet(@PathVariable @NotNull Long id, @Valid @RequestBody Wallet newWallet) {
         return walletService.findById(id)
                 .map(wallet -> {
                     wallet.setWalletName(newWallet.getWalletName());
                     wallet.setCreationDate(newWallet.getCreationDate());
                     wallet.setUser(newWallet.getUser());
-                    return walletService.save(wallet);
+                    return ResponseEntity.ok(walletService.save(wallet));
                 })
                 .orElseGet(() -> {
                     newWallet.setWalletId(id);
-                    return walletService.save(newWallet);
+                    return ResponseEntity.ok(walletService.save(newWallet));
                 });
     }
 
     // Eliminar una billetera por su ID
     @DeleteMapping("/{id}")
-    public void deleteWallet(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteWallet(@PathVariable @NotNull Long id) {
         if (walletService.findById(id).isEmpty()) {
-            throw new NotFoundException("Wallet con ID " + id + " no encontrada.");
+            throw new NotFoundException("Billetera con ID " + id + " no encontrada.");
         }
         walletService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
+    // Obtener el valor total de una billetera en USD
     @GetMapping("/totalBalance/{userId}")
-    public ResponseEntity<BigDecimal> getWalletValue(@PathVariable Long userId) {
+    public ResponseEntity<BigDecimal> getWalletValue(@PathVariable @NotNull Long userId) {
         BigDecimal totalValue = walletService.calculateTotalWalletValueInUSD(userId);
         return ResponseEntity.ok(totalValue);
     }
 
+    // Obtener las divisas asociadas a un usuario
     @GetMapping("/{userId}/currencies")
-    public List<Currency> getCurrenciesByUserId(@PathVariable Long userId) {
-        return walletService.getCurrenciesByUserId(userId);
+    public ResponseEntity<List<Currency>> getCurrenciesByUserId(@PathVariable @NotNull Long userId) {
+        List<Currency> currencies = walletService.getCurrenciesByUserId(userId);
+        return ResponseEntity.ok(currencies);
     }
 
+    // Obtener el balance total de un usuario en una fecha específica
     @GetMapping("/totalBalance/{userId}/on/{date}")
     public ResponseEntity<BigDecimal> getUserBalanceOnDate(
-            @PathVariable Long userId,
-            @PathVariable String date) {
+            @PathVariable @NotNull Long userId,
+            @PathVariable @NotNull String date) {
 
         try {
-            // Parsear la fecha desde la URL
-            LocalDateTime targetDate = LocalDateTime.parse(date);
-
-            // Calcular el balance total del usuario en la fecha especificada
-            BigDecimal totalBalance = walletService.calculateUserBalanceOnDate(userId, LocalDate.from(targetDate));
-
-            if (totalBalance.compareTo(BigDecimal.ZERO) == 0) {
-                // Si el balance es 0, lanzar una excepción o devolver un mensaje informativo
-                throw new NotFoundException("No se encontraron datos para el usuario con ID " + userId + " en la fecha " + date);
-            }
-
-            // Devolver el balance total como respuesta
+            LocalDate targetDate = LocalDate.parse(date);
+            BigDecimal totalBalance = walletService.calculateUserBalanceOnDate(userId, targetDate);
             return ResponseEntity.ok(totalBalance);
-
-        } catch (DateTimeParseException e) {
-            // Manejar errores de formato de fecha
-            return ResponseEntity.badRequest().body(BigDecimal.ZERO); // O puedes personalizar el mensaje de error
-        } catch (NotFoundException e) {
-            // Manejar casos donde no se encuentren datos
-            return ResponseEntity.status(404).body(BigDecimal.ZERO); // O puedes personalizar el mensaje de error
+        } catch (Exception e) {
+            throw new NotFoundException("Fecha inválida o datos no encontrados para el usuario con ID " + userId);
         }
     }
-
 }

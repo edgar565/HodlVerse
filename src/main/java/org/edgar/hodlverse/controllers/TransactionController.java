@@ -3,44 +3,52 @@ package org.edgar.hodlverse.controllers;
 import org.edgar.hodlverse.entities.Transaction;
 import org.edgar.hodlverse.services.NotFoundException;
 import org.edgar.hodlverse.services.TransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/transactions") // Ruta base para el controlador
+@RequestMapping("/transactions")
+@Validated
 public class TransactionController {
 
     private final TransactionService transactionService;
 
+    @Autowired
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
 
     // Obtener todas las transacciones
-    @GetMapping("/all")
-    public List<Transaction> all() {
-        return transactionService.findAll();
+    @GetMapping
+    public ResponseEntity<List<Transaction>> all() {
+        List<Transaction> transactions = transactionService.findAll();
+        return ResponseEntity.ok(transactions);
     }
 
     // Crear una nueva transacción
     @PostMapping
-    public Transaction newTransaction(@RequestBody Transaction newTransaction) {
-        return transactionService.save(newTransaction);
+    public ResponseEntity<Transaction> newTransaction(@Valid @RequestBody Transaction newTransaction) {
+        Transaction savedTransaction = transactionService.save(newTransaction);
+        return ResponseEntity.ok(savedTransaction);
     }
 
     // Obtener una transacción específica por su ID
     @GetMapping("/{id}")
-    public Transaction one(@PathVariable Long id) {
+    public ResponseEntity<Transaction> one(@PathVariable @NotNull Long id) {
         return transactionService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transacción con ID " + id + " no encontrada."));
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new NotFoundException("Transacción con ID " + id + " no encontrada."));
     }
 
     // Actualizar una transacción existente
     @PutMapping("/{id}")
-    public Transaction replaceTransaction(@RequestBody Transaction newTransaction, @PathVariable Long id) {
+    public ResponseEntity<Transaction> replaceTransaction(@PathVariable @NotNull Long id, @Valid @RequestBody Transaction newTransaction) {
         return transactionService.findById(id)
                 .map(transaction -> {
                     transaction.setTransactionType(newTransaction.getTransactionType());
@@ -52,49 +60,41 @@ public class TransactionController {
                     transaction.setUser(newTransaction.getUser());
                     transaction.setOriginCurrency(newTransaction.getOriginCurrency());
                     transaction.setDestinationCurrency(newTransaction.getDestinationCurrency());
-                    return transactionService.save(transaction);
+                    return ResponseEntity.ok(transactionService.save(transaction));
                 })
                 .orElseGet(() -> {
                     newTransaction.setTransactionId(id);
-                    return transactionService.save(newTransaction);
+                    return ResponseEntity.ok(transactionService.save(newTransaction));
                 });
     }
 
     // Eliminar una transacción por su ID
     @DeleteMapping("/{id}")
-    public void deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTransaction(@PathVariable @NotNull Long id) {
         if (transactionService.findById(id).isEmpty()) {
-            throw new NotFoundException("Transacción con id " + id + " no encontrada.");
+            throw new NotFoundException("Transacción con ID " + id + " no encontrada.");
         }
         transactionService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
+
     // Obtener todas las transacciones de un usuario por su ID
     @GetMapping("/all/{id}")
-    public List<Transaction> getTransactionsByUserId(@PathVariable Long id) {
+    public ResponseEntity<List<Transaction>> getTransactionsByUserId(@PathVariable @NotNull Long id) {
         List<Transaction> transactions = transactionService.findTransactionsByUserId(id);
-
         if (transactions.isEmpty()) {
             throw new NotFoundException("No se encontraron transacciones para el usuario con ID " + id);
         }
-
-        return transactions;
+        return ResponseEntity.ok(transactions);
     }
 
     // Obtener las últimas 5 transacciones de un usuario por su ID
     @GetMapping("/latest/{id}")
-    public List<Transaction> getLatestTransactionsByUserId(@PathVariable Long id) {
+    public ResponseEntity<List<Transaction>> getLatestTransactionsByUserId(@PathVariable @NotNull Long id) {
         List<Transaction> transactions = transactionService.findTransactionsByUserId(id);
-
         if (transactions.isEmpty()) {
             throw new NotFoundException("No se encontraron transacciones para el usuario con ID " + id);
         }
-
-        // Devolver solo las últimas 5 transacciones
-        return transactions.stream()
-                .sorted(Comparator.comparing(Transaction::getTransactionDate).reversed()) // Ordenar por fecha descendente
-                .limit(5) // Tomar las primeras 5
-                .collect(Collectors.toList());
+        return ResponseEntity.ok(transactions.subList(0, Math.min(transactions.size(), 5)));
     }
-
-
 }

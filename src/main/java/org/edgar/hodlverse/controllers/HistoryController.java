@@ -3,50 +3,58 @@ package org.edgar.hodlverse.controllers;
 import org.edgar.hodlverse.entities.History;
 import org.edgar.hodlverse.services.HistoryService;
 import org.edgar.hodlverse.services.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/history") // Ruta base para el controlador
+@RequestMapping("/history")
+@Validated
 public class HistoryController {
 
     private final HistoryService historyService;
 
+    @Autowired
     public HistoryController(HistoryService historyService) {
         this.historyService = historyService;
     }
 
     // Obtener todas las entradas de historial
     @GetMapping
-    public List<History> all() {
-        return historyService.findAll();
+    public ResponseEntity<List<History>> all() {
+        List<History> histories = historyService.findAll();
+        return ResponseEntity.ok(histories);
     }
 
     // Crear una nueva entrada de historial
     @PostMapping
-    public History newHistory(@RequestBody History newHistory) {
-        return historyService.save(newHistory);
+    public ResponseEntity<History> newHistory(@Valid @RequestBody History newHistory) {
+        History savedHistory = historyService.save(newHistory);
+        return ResponseEntity.ok(savedHistory);
     }
 
     // Obtener una entrada de historial específica por su ID
     @GetMapping("/{id}")
-    public History one(@PathVariable Long id) {
+    public ResponseEntity<History> one(@PathVariable @NotNull Long id) {
         return historyService.findById(id)
+                .map(ResponseEntity::ok)
                 .orElseThrow(() -> new NotFoundException("Historial con ID " + id + " no encontrado."));
     }
 
     // Actualizar una entrada de historial existente
     @PutMapping("/{id}")
-    public History replaceHistory(@RequestBody History newHistory, @PathVariable Long id) {
+    public ResponseEntity<History> replaceHistory(@PathVariable @NotNull Long id, @Valid @RequestBody History newHistory) {
         return historyService.findById(id)
                 .map(history -> {
-                    // Actualizar todos los campos
                     history.setCurrentPrice(newHistory.getCurrentPrice());
                     history.setMarketCap(newHistory.getMarketCap());
                     history.setMarketCapRank(newHistory.getMarketCapRank());
@@ -60,21 +68,22 @@ public class HistoryController {
                     history.setTotalSupply(newHistory.getTotalSupply());
                     history.setLastUpdated(newHistory.getLastUpdated());
                     history.setCurrency(newHistory.getCurrency());
-                    return historyService.save(history);
+                    return ResponseEntity.ok(historyService.save(history));
                 })
                 .orElseGet(() -> {
                     newHistory.setHistoryId(id);
-                    return historyService.save(newHistory);
+                    return ResponseEntity.ok(historyService.save(newHistory));
                 });
     }
 
     // Eliminar una entrada de historial por su ID
     @DeleteMapping("/{id}")
-    public void deleteHistory(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteHistory(@PathVariable @NotNull Long id) {
         if (historyService.findById(id).isEmpty()) {
             throw new NotFoundException("Historial con ID " + id + " no encontrado.");
         }
         historyService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     // Endpoint para obtener todas las monedas ordenadas por priceChangePercentage24h descendente
@@ -91,10 +100,11 @@ public class HistoryController {
         return ResponseEntity.ok(histories);
     }
 
-    //Endpoint para obterner las monedas ordenadas por marketCapRank ascendente
+    // Endpoint para obtener todas las monedas ordenadas por marketCapRank ascendente
     @GetMapping("/trending-coins")
-    public List<History> getCoinsOrderedByMarketCapRank() {
-        return historyService.getCoinsOrderedByMarketCapRankAsc();
+    public ResponseEntity<List<History>> getCoinsOrderedByMarketCapRank() {
+        List<History> histories = historyService.getCoinsOrderedByMarketCapRankAsc();
+        return ResponseEntity.ok(histories);
     }
 
     // Endpoint para obtener todas las monedas ordenadas por totalVolume descendente
@@ -106,7 +116,7 @@ public class HistoryController {
 
     @GetMapping("/{currencyId}/daily-prices")
     public ResponseEntity<Map<String, Object>> getDailyPrices(
-            @PathVariable Long currencyId,
+            @PathVariable @NotNull Long currencyId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
         if (date == null) {
@@ -128,13 +138,14 @@ public class HistoryController {
     }
 
     @GetMapping("/total-market-cap")
-    public BigDecimal getTotalMarketCap() {
-        return historyService.getTotalMarketCap();
+    public ResponseEntity<BigDecimal> getTotalMarketCap() {
+        BigDecimal totalMarketCap = historyService.getTotalMarketCap();
+        return ResponseEntity.ok(totalMarketCap);
     }
 
     @GetMapping("/total-volume")
-    public BigDecimal getTotalVolume() {
-        return historyService.getTotalVolume();
+    public ResponseEntity<BigDecimal> getTotalVolume() {
+        BigDecimal totalVolume = historyService.getTotalVolume();
+        return ResponseEntity.ok(totalVolume);
     }
-
 }
