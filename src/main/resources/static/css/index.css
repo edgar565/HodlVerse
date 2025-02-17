@@ -1,3 +1,12 @@
+body{
+    background-color: var(--azuloscuro);
+    color: white;
+}
+hr{
+    border: 1px solid var(--azulclaro);
+    margin-right: 3%;
+    margin-left: 3%;
+}
 /*CSS PÁGINA INDEX */
 .btn-sign{
     background-color: var(--azuloscuro);
@@ -66,4 +75,10 @@ canvas {
 #dropdownButton:hover + #dashboard-collapse,
 #dashboard-collapse:hover {
     display: block !important;
+}
+
+.logo-container {
+    padding: 10px;
+    border-radius: 8px;
+    display: inline-block;
 }
