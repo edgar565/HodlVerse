@@ -45,7 +45,6 @@
      let userId = await getUser();
      // Ejemplo de cómo construir los datos de una transacción:
      const transactionData = {
-         transactionId: 85,
          transactionType: 'buy', // Puede ser "buy", "sell" o "exchange"
          originTransactionAmount: crypto.currentPrice,        // Usar string para evitar problemas de precisión en BigDecimal
          destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
@@ -62,11 +61,17 @@
              currencyId: cryptoFinal.currencyId // ID de la moneda de destino
          }
      };
+    // Asegurar que transactionDate sea una instancia de Date
+     transactionData.transactionDate = new Date(transactionData.transactionDate);
 
-// Luego, puedes enviar estos datos utilizando la función createTransaction
-     Transaction.createTransaction(transactionData, (data) => {
-         console.log("Transacción creada:", data);
-     });
+     // Asegurar que user sea una instancia de User
+     transactionData.user = new User(transactionData.user);
+
+// Llamar a createTransaction sin pasar un callback
+     await Transaction.createTransaction(transactionData);
+
+// Puedes manejar el resultado (si es necesario)
+     console.log("Transacción creada correctamente.");
 
     Transaction = new Transaction();
  }

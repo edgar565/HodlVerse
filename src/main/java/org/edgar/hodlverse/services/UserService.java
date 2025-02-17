@@ -51,7 +51,7 @@ public class UserService {
             // Si no existe, crea un nuevo usuario
             user = new User();
             user.setEmail(email);
-            user.setUsername(name);
+            user.setName(name);
             user.setPicture(picture);
             user.setRegistrationDate(LocalDate.now());
             user.setPassword(""); // O usa un valor por defecto

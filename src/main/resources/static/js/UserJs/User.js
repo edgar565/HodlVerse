@@ -1,9 +1,9 @@
 class User {
-    constructor(userId, username, email, password, registrationDate, picture, wallet, transactions, game) {
+    constructor(userId, name, email, password, registrationDate, picture, wallet, transactions, game) {
         // Validar cada propiedad antes de inicializar el objeto
-        this.validateUserData({
+        User.validateUserData({
             userId,
-            username,
+            name,
             email,
             password,
             registrationDate,
@@ -13,152 +13,113 @@ class User {
             game
         });
 
-        this.userId = userId;
-        this.username = username;
+        this.userId = Number(userId);
+        this.name = name;
         this.email = email;
         this.password = password;
-        this.registrationDate = registrationDate;
+        this.registrationDate = new Date(registrationDate);
         this.picture = picture;
-        this.wallet = wallet;
-        this.transactions = transactions;
-        this.game = game;
+        this.wallet = wallet instanceof Wallet ? wallet : null;
+        this.transactions = Array.isArray(transactions) ? transactions.map(t => new Transaction(t)) : [];
+        this.game = game instanceof Game ? game : null;
     }
 
     // Validar los datos del usuario
     static validateUserData(userData) {
-        // Validar userId
-        if (typeof userData.userId !== 'number' || isNaN(userData.userId)) {
-            throw new Error('userId debe ser un número válido.');
+        if (!userData || typeof userData !== 'object') {
+            throw new Error('Datos del usuario inválidos.');
         }
 
-        // Validar username
-        if (typeof userData.username !== 'string' || userData.username.trim() === '') {
-            throw new Error('username debe ser una cadena no vacía.');
+        if (typeof userData.name !== 'string' || userData.name.trim() === '') {
+            console.log(userData.email);
+            throw new Error('name debe ser una cadena no vacía.');
         }
 
-        // Validar email
-        if (typeof userData.email !== 'string' || !this.isValidEmail(userData.email)) {
+        if (typeof userData.email !== 'string' || !User.isValidEmail(userData.email)) {
             throw new Error('email debe ser una dirección de correo electrónico válida.');
         }
 
-        // Validar password
         if (typeof userData.password !== 'string' || userData.password.trim() === '') {
             throw new Error('password debe ser una cadena no vacía.');
         }
 
-        // Validar registrationDate
-        if (!(userData.registrationDate instanceof Date)) {
-            throw new Error('registrationDate debe ser una instancia de Date.');
+        if (!(userData.registrationDate instanceof Date) || isNaN(userData.registrationDate.getTime())) {
+            throw new Error('registrationDate debe ser una instancia válida de Date.');
         }
 
-        // Validar picture
-        if (typeof userData.picture !== 'string' || !this.isValidUrl(userData.picture)) {
+        if (typeof userData.picture !== 'string' || !User.isValidUrl(userData.picture)) {
             throw new Error('picture debe ser una URL válida.');
         }
-
-        // Validar wallet
-        if (!(userData.wallet instanceof Wallet)) {
-            throw new Error('wallet debe ser una instancia de la clase Wallet.');
-        }
-
-        // Validar transactions
-        if (!Array.isArray(userData.transactions) || !userData.transactions.every(t => t instanceof Transaction)) {
-            throw new Error('transactions debe ser un array de instancias de la clase Transaction.');
-        }
-
-        // Validar game
-        if (userData.game && !(userData.game instanceof Game)) {
-            throw new Error('game debe ser una instancia de la clase Game o null.');
-        }
     }
 
-    // Validar formato de correo electrónico
     static isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    // Validar formato de URL
     static isValidUrl(url) {
         try {
-            new URL(url); // Intenta crear un objeto URL
+            new URL(url);
             return true;
-        } catch (e) {
-            return false; // No es una URL válida
+        } catch {
+            return false;
         }
     }
 
-    // Lista donde se almacenan todos los usuarios
-    static users = [];
-
-    // 🔄 Cargar todos los usuarios desde la API (limpia la lista antes)
-    static loadUsers(callback) {
-        $.ajax({
-            url: '/users/all',
-            type: 'GET',
-            success: (data) => {
-                User.users.length = 0; // Vacía la lista antes de llenarla
-                data.forEach(u => {
-                    try {
-                        User.validateUserData(u);
-                        User.users.push(new User(
-                            u.userId, u.username, u.email, u.password, new Date(u.registrationDate), u.picture,
-                            new Wallet(u.wallet), u.transactions.map(t => new Transaction(t)), u.game ? new Game(u.game) : null
-                        ));
-                    } catch (error) {
-                        console.warn(`Usuario omitido debido a datos inválidos:`, u, error.message);
-                    }
-                });
-                console.log('Lista de usuarios recargada:', User.users);
-                if (callback) callback(User.users);
-            },
-            error: (error) => {
-                console.error('Error al obtener los usuarios:', error);
-            }
-        });
-    }
-
-    // 🔍 Obtener un usuario por su ID desde la API
-    static async getUserById(userId) {
-        if (typeof userId !== 'number' || isNaN(userId)) {
-            console.error('El ID del usuario debe ser un número válido.');
-            return;
-        }
-        try {
-            const response = await $.ajax({
-                url: `/users/${userId}`,
-                type: 'GET'
-            });
-            return response; // Retorna el ID del usuario autenticado
-        } catch (error) {
-            console.error('Error al obtener el usuario:', error);
-            return null; // Retorna null en caso de error
-        }
-    }
-
-    // 🔍 Obtener el ID del usuario autenticado desde la API
     static async getUserId() {
         try {
-            const response = await $.ajax({
-                url: '/users',
-                type: 'GET'
-            });
-            if (typeof response.id !== 'number' || isNaN(response.id)) {
-                throw new Error('El ID del usuario autenticado no es válido.');
-            }
-            return response.id; // Retorna el ID del usuario autenticado
+            const response = await $.ajax({ url: '/users', type: 'GET' });
+            const userId = Number(response.id);
+            return isNaN(userId) ? null : userId;
         } catch (error) {
             console.error('Error al obtener el ID del usuario:', error);
-            return null; // Retorna null en caso de error
+            return null;
         }
     }
 
+    static async getUserById(userId) {
+        if (isNaN(Number(userId))) {
+            console.error('El ID del usuario debe ser un número válido.');
+            return null;
+        }
+        try {
+            return await $.ajax({ url: `/users/${userId}`, type: 'GET' });
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null;
+        }
+    }
+
+    static async loadUsers(callback) {
+        try {
+            const data = await $.ajax({ url: '/users/all', type: 'GET' });
+            User.users = data.map(u => {
+                try {
+                    User.validateUserData(u);
+                    return new User(
+                        u.userId, u.name, u.email, u.password,
+                        new Date(u.registrationDate), u.picture,
+                        new Wallet(u.wallet),
+                        u.transactions.map(t => new Transaction(t)),
+                        u.game ? new Game(u.game) : null
+                    );
+                } catch (error) {
+                    console.warn('Usuario omitido por datos inválidos:', u, error.message);
+                    return null;
+                }
+            }).filter(u => u !== null);
+            if (callback) callback(User.users);
+        } catch (error) {
+            console.error('Error al obtener los usuarios:', error);
+        }
+    }
+
+
     // ➕ Crear un nuevo usuario en la API
-    static createUser(username, email, password, registrationDate, picture, callback) {
+    static createUser(name, email, password, registrationDate, picture, callback) {
         try {
             this.validateUserData({
                 userId: null,
-                username,
+                name,
                 email,
                 password,
                 registrationDate: new Date(registrationDate),
@@ -168,7 +129,7 @@ class User {
                 game: null
             });
 
-            let newUser = { username, email, password, registrationDate: registrationDate.toISOString(), picture };
+            let newUser = { name, email, password, registrationDate: registrationDate.toISOString(), picture };
             $.ajax({
                 url: '/users',
                 type: 'POST',
@@ -176,7 +137,7 @@ class User {
                 data: JSON.stringify(newUser),
                 success: (data) => {
                     let user = new User(
-                        data.userId, data.username, data.email, data.password, new Date(data.registrationDate), data.picture,
+                        data.userId, data.name, data.email, data.password, new Date(data.registrationDate), data.picture,
                         data.wallet ? new Wallet(data.wallet) : null, data.transactions.map(t => new Transaction(t)), data.game ? new Game(data.game) : null
                     );
                     User.users.push(user);
@@ -193,7 +154,7 @@ class User {
     }
 
     // 🔄 Actualizar un usuario en la API
-    static updateUser(userId, username, email, password, registrationDate, picture, callback) {
+    static updateUser(userId, name, email, password, registrationDate, picture, callback) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
             return;
@@ -202,7 +163,7 @@ class User {
         try {
             this.validateUserData({
                 userId,
-                username,
+                name,
                 email,
                 password,
                 registrationDate: new Date(registrationDate),
@@ -212,7 +173,7 @@ class User {
                 game: null
             });
 
-            let updatedUser = { username, email, password, registrationDate: registrationDate.toISOString(), picture };
+            let updatedUser = { name, email, password, registrationDate: registrationDate.toISOString(), picture };
             $.ajax({
                 url: `/users/${userId}`,
                 type: 'PUT',
@@ -222,7 +183,7 @@ class User {
                     let index = User.users.findIndex(u => u.userId === userId);
                     if (index !== -1) {
                         User.users[index] = new User(
-                            data.userId, data.username, data.email, data.password, new Date(data.registrationDate), data.picture,
+                            data.userId, data.name, data.email, data.password, new Date(data.registrationDate), data.picture,
                             data.wallet ? new Wallet(data.wallet) : null, data.transactions.map(t => new Transaction(t)), data.game ? new Game(data.game) : null
                         );
                         console.log('Usuario actualizado:', User.users[index]);

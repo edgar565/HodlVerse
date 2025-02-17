@@ -1,7 +1,6 @@
 class Transaction {
     constructor(id, transactionType, originTransactionAmount, destinationTransactionAmount, originUnitPrice, destinationUnitPrice, transactionDate, user, originCurrency, destinationCurrency) {
-        // Validar cada propiedad antes de inicializar el objeto
-        this.id = id;
+        this.id = id || null;
         this.transactionType = transactionType;
         this.originTransactionAmount = originTransactionAmount;
         this.destinationTransactionAmount = destinationTransactionAmount;
@@ -13,56 +12,69 @@ class Transaction {
         this.destinationCurrency = destinationCurrency;
     }
 
-    // Validar los datos de la transacción
     static validateData(transactionData) {
-        // Validar id
-        if (typeof transactionData.id !== 'number' || isNaN(transactionData.id)) {
-            throw new Error('El ID de la transacción debe ser un número válido.');
+        if (!transactionData.user || !(transactionData.user instanceof User)) {
+            throw new Error('El campo user debe ser una instancia válida de la clase User.');
+        }
+    }
+
+    static async createTransaction(transactionData) {
+        try {
+            if (!transactionData.user || !transactionData.user.id) {
+                throw new Error('Usuario no especificado para la transacción.');
+            }
+            this.validateData(transactionData);
+
+            const balances = await Balance.getBalancesByWallet(transactionData.user.wallet.id);
+            const originBalance = balances.find(b => b.currency.id === transactionData.originCurrency.id);
+
+            if (!originBalance || originBalance.walletAmount < transactionData.originTransactionAmount) {
+                throw new Error('Fondos insuficientes para la transacción.');
+            }
+
+            transactionData.user = { id: transactionData.user.id }; // Asegurar que solo se envíe el ID
+
+            const data = await $.ajax({
+                url: '/transactions',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(transactionData)
+            });
+
+            console.log('Transacción creada:', data);
+            Transaction.loadTransactions();
+            return data;
+        } catch (error) {
+            console.error('Error al crear la transacción:', error);
+        }
+    }
+
+    static updateTransaction(id, updatedData, callback) {
+        if (!updatedData.user || !updatedData.user.id) {
+            console.error('Usuario no especificado para la actualización de la transacción.');
+            return;
         }
 
-        // Validar transactionType
-        if (typeof transactionData.transactionType !== 'string' || !['buy', 'sell', 'exchange'].includes(transactionData.transactionType)) {
-            throw new Error('Tipo de transacción no válido. Debe ser "buy", "sell" o "exchange".');
-        }
+        updatedData.user = { id: updatedData.user.id }; // Asegurar que solo se envíe el ID
 
-        // Validar originTransactionAmount
-        if (typeof transactionData.originTransactionAmount !== 'number' || isNaN(transactionData.originTransactionAmount) || transactionData.originTransactionAmount < 0) {
-            throw new Error('El monto de origen debe ser un número positivo.');
-        }
-
-        // Validar destinationTransactionAmount
-        if (typeof transactionData.destinationTransactionAmount !== 'number' || isNaN(transactionData.destinationTransactionAmount) || transactionData.destinationTransactionAmount < 0) {
-            throw new Error('El monto de destino debe ser un número positivo.');
-        }
-
-        // Validar originUnitPrice
-        if (typeof transactionData.originUnitPrice !== 'number' || isNaN(transactionData.originUnitPrice) || transactionData.originUnitPrice <= 0) {
-            throw new Error('El precio unitario de origen debe ser un número positivo.');
-        }
-
-        // Validar destinationUnitPrice
-        if (typeof transactionData.destinationUnitPrice !== 'number' || isNaN(transactionData.destinationUnitPrice) || transactionData.destinationUnitPrice <= 0) {
-            throw new Error('El precio unitario de destino debe ser un número positivo.');
-        }
-
-        // Validar transactionDate
-        if (!(transactionData.transactionDate instanceof Date)) {
-            throw new Error('La fecha de la transacción debe ser una instancia de Date.');
-        }
-
-        // Validar user
-        if (!(transactionData.user instanceof User)) {
-            throw new Error('El campo user debe ser una instancia de la clase User.');
-        }
-
-        // Validar originCurrency
-        if (!(transactionData.originCurrency instanceof Currency)) {
-            throw new Error('El campo originCurrency debe ser una instancia de la clase Currency.');
-        }
-
-        // Validar destinationCurrency
-        if (!(transactionData.destinationCurrency instanceof Currency)) {
-            throw new Error('El campo destinationCurrency debe ser una instancia de la clase Currency.');
+        try {
+            this.validateData(updatedData);
+            $.ajax({
+                url: `/transactions/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedData),
+                success: (data) => {
+                    console.log('Transacción actualizada:', data);
+                    if (callback) callback(data);
+                    Transaction.loadTransactions();
+                },
+                error: (error) => {
+                    console.error(`Error al actualizar la transacción con ID ${id}:`, error);
+                }
+            });
+        } catch (error) {
+            console.error('Datos inválidos para actualizar la transacción:', error.message);
         }
     }
 
@@ -124,72 +136,36 @@ class Transaction {
         });
     }
 
-    // Crear una nueva transacción
-    static async createTransaction(transactionData) {
-        // Primero validamos los datos; si son inválidos se lanza un error y se interrumpe la ejecución.
-        try {
-            const data = await $.ajax({
-                url: '/transactions',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(transactionData)
-            });
-            console.log('Transacción creada:', data);
-            Transaction.loadTransactions(); // Recargar la lista de transacciones
-            return data;
-        } catch (ajaxError) {
-            console.error('Error al crear la transacción:', ajaxError);
-        }
-    }
-
-
-    // Actualizar una transacción existente
-    static updateTransaction(id, updatedData, callback) {
-        if (typeof id !== 'number' || isNaN(id)) {
-            console.error('El ID de la transacción debe ser un número válido.');
-            return;
-        }
-
-        try {
-            this.validateData(updatedData); // Validar los datos actualizados
-            $.ajax({
-                url: `/transactions/${id}`,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(updatedData),
-                success: (data) => {
-                    console.log('Transacción actualizada:', data);
-                    if (callback) callback(data);
-                    Transaction.loadTransactions(); // Recargar la lista
-                },
-                error: (error) => {
-                    console.error(`Error al actualizar la transacción con ID ${id}:`, error);
-                }
-            });
-        } catch (error) {
-            console.error('Datos inválidos para actualizar la transacción:', error.message);
-        }
-    }
-
     // Eliminar una transacción
-    static deleteTransaction(id, callback) {
-        if (typeof id !== 'number' || isNaN(id)) {
-            console.error('El ID de la transacción debe ser un número válido.');
-            return;
-        }
-
-        $.ajax({
-            url: `/transactions/${id}`,
-            type: 'DELETE',
-            success: () => {
-                console.log(`Transacción con ID ${id} eliminada.`);
-                if (callback) callback();
-                Transaction.loadTransactions(); // Recargar la lista
-            },
-            error: (error) => {
-                console.error(`Error al eliminar la transacción con ID ${id}:`, error);
+    static async deleteTransaction(id) {
+        try {
+            const transaction = await this.getTransactionById(id);
+            if (!transaction) {
+                throw new Error('Transacción no encontrada.');
             }
-        });
+
+            const balances = await Balance.getBalancesByWallet(transaction.user.wallet.id);
+
+            const originBalance = balances.find(b => b.currency.id === transaction.originCurrency.id);
+            if (originBalance) {
+                originBalance.walletAmount += transaction.originTransactionAmount;
+            }
+
+            const destinationBalance = balances.find(b => b.currency.id === transaction.destinationCurrency.id);
+            if (destinationBalance) {
+                destinationBalance.walletAmount -= transaction.destinationTransactionAmount;
+            }
+
+            await $.ajax({
+                url: `/transactions/${id}`,
+                type: 'DELETE'
+            });
+
+            console.log(`Transacción con ID ${id} eliminada.`);
+            Transaction.loadTransactions();
+        } catch (error) {
+            console.error(`Error al eliminar la transacción con ID ${id}:`, error);
+        }
     }
 
     // Obtener las transacciones de un usuario por su ID
