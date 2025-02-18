@@ -1,47 +1,56 @@
-body{
+body {
     background-color: var(--azuloscuro);
     color: white;
 }
-hr{
+
+hr {
     border: 1px solid var(--azulclaro);
     margin-right: 3%;
     margin-left: 3%;
 }
+
 /*CSS PÁGINA INDEX */
-.btn-sign{
+.btn-sign {
     background-color: var(--azuloscuro);
     color: white;
     transition: all 0.3s ease;
 }
-.btn-sign:hover{
+
+.btn-sign:hover {
     background-color: var(--oro);
     color: var(--azuloscuro);
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--azuloscuro);
 }
-.btn-outline-dark{
+
+.btn-outline-dark {
     color: var(--azuloscuro);
     border-color: var(--azuloscuro);
     transition: all 0.3s ease;
 }
-.btn-outline-dark:hover{
+
+.btn-outline-dark:hover {
     background-color: var(--oro);
     color: var(--azuloscuro);
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
-.btn-changeLogin{
+
+.btn-changeLogin {
     color: var(--azuloscuro);
     cursor: pointer;
 }
-.btn-changeLogin:hover{
+
+.btn-changeLogin:hover {
     color: var(--oro);
 }
-.pepe{
+
+.pepe {
     background-color: #061428;
     width: 100%;
     height: 50%;
 }
-.card:hover{
+
+.card:hover {
     transform: scale(1.05);
     transition: transform 0.3s;
 }
@@ -65,20 +74,59 @@ th {
 canvas {
     max-width: 50px;
 }
-.card:hover{
+
+.card:hover {
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--azuloscuro);
 }
-.card-item:hover{
+
+.card-item:hover {
     background-color: #e8e8e8;
 }
+
 #dropdownButton:hover + #dashboard-collapse,
 #dashboard-collapse:hover {
     display: block !important;
 }
 
-.logo-container {
-    padding: 10px;
-    border-radius: 8px;
-    display: inline-block;
+/* ESTILOS TITULO Y SUBTITULOS */
+.title-arc {
+    font-size: 125px;
+    font-weight: bold;
+    color: white;
+    text-shadow:
+            10px 8px 1px #9a5b10,  /* Sombra principal para el relieve */
+            4px 4px 5px rgba(0, 0, 0, 0.3); /* Sombra difuminada para 3D */
 }
+
+.title-arc span {
+    display: inline-block;
+    transform-origin: bottom center;
+    animation: wave-animation 1.5s ease-in-out infinite;
+
+}
+
+
+
+/* Ajustar cada letra con un efecto más natural */
+.title-arc span:nth-child(1) { transform: rotate(5deg) translateY(2px) scale(1.1); }
+.title-arc span:nth-child(2) { transform: rotate(-7deg) translateY(-3px) scale(0.95); }
+.title-arc span:nth-child(3) { transform: rotate(-2deg) translateY(4px) scale(1.05); }
+.title-arc span:nth-child(4) { transform: rotate(6deg) translateY(-2px) scale(1.02); }
+.title-arc span:nth-child(5) { transform: rotate(-4deg) translateY(3px) scale(0.98); }
+.title-arc span:nth-child(6) { transform: rotate(-9deg) translateY(-4px) scale(1.1); }
+.title-arc span:nth-child(7) { transform: rotate(3deg) translateY(2px) scale(1.03); }
+.title-arc span:nth-child(8) { transform: rotate(-5deg) translateY(-1px) scale(0.97); }
+.title-arc span:nth-child(9) { transform: rotate(7deg) translateY(3px) scale(1.08); }
+
+
+.welcome-text {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: white; /* O un color que haga contraste */
+    opacity: 0.8;
+}
+
