@@ -70,67 +70,6 @@
 
     Transaction = new Transaction();
  }
-
-document.addEventListener('DOMContentLoaded', async function () {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const ticker = urlParams.get('ticker');
-
-    async function fetchCryptoData() {
-        let cryptoFinal;
-        try {
-            const cryptos = await Currency.loadCurrencies();
-            console.log(cryptos);
-            cryptos.forEach(crypto => {
-                if (crypto.ticker === ticker) {
-                    cryptoFinal = crypto;
-                }
-            });
-            return cryptoFinal;
-        } catch (error) {
-            console.error("Error fetching data from API:", error);
-            return null;
-        }
-    }
-    let cryptoFinal = await fetchCryptoData();
-
-    async function loadCryptoInfo() {
-        try {
-            const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
-            return crypto;
-        } catch (error) {
-            console.error("Error fetching data from API:", error);
-            return null;
-        }
-    }
-    const crypto = await loadCryptoInfo();
-    console.log(crypto);
-    document.getElementById('icon').src = crypto.currency.image;
-    document.getElementById('icon').alt = "Icono de " + crypto.currency.name;
-    let currencyName = document.querySelectorAll('.cryptoName');
-    currencyName.forEach(el => {
-        el.innerHTML = crypto.currency.name;
-    });
-    let currencyPrice = document.querySelectorAll('.crypto-price');
-    currencyPrice.forEach(el => {
-        el.innerHTML = "$" + crypto.currentPrice;
-    });
-    document.getElementById("market-cap-rank").innerText = crypto.marketCapRank;
-    document.getElementById("market-cap").innerText = "$" + crypto.marketCap;
-    document.getElementById("volume").innerText = "$" + crypto.totalVolume;
-    document.getElementById("total-supply").innerText = "$" + crypto.totalSupply;
-    document.getElementById("change-24h").innerText = "$" + crypto.priceChange24h;
-    document.getElementById("change-24h-percentage").innerText = crypto.priceChangePercentage24h + "%";
-    document.getElementById("high-24").innerText = "$" + crypto.high24h;
-    document.getElementById("low-24").innerText = "$" + crypto.low24h;
-
-
-
-
-
-
-
-});
     /*  BUY/SELL CRYPTO EVENT */
 document.addEventListener('DOMContentLoaded', function () {
     let actionType = '';
@@ -255,7 +194,59 @@ let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 // // Llamamos a la función loadCryptoNews cuando el contenido de la página se haya cargado completamente
 // document.addEventListener("DOMContentLoaded", loadCryptoNews);
 
- window.onload = function () {
+ document.addEventListener("DOMContentLoaded", async function () {
+     const queryString = window.location.search;
+     const urlParams = new URLSearchParams(queryString);
+     const ticker = urlParams.get('ticker');
+
+     async function fetchCryptoData() {
+         let cryptoFinal;
+         try {
+             const cryptos = await Currency.loadCurrencies();
+             console.log(cryptos);
+             cryptos.forEach(crypto => {
+                 if (crypto.ticker === ticker) {
+                     cryptoFinal = crypto;
+                 }
+             });
+             return cryptoFinal;
+         } catch (error) {
+             console.error("Error fetching data from API:", error);
+             return null;
+         }
+     }
+     let cryptoFinal = await fetchCryptoData();
+
+     async function loadCryptoInfo() {
+         try {
+             const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
+             return crypto;
+         } catch (error) {
+             console.error("Error fetching data from API:", error);
+             return null;
+         }
+     }
+     const crypto = await loadCryptoInfo();
+     console.log(crypto);
+     document.getElementById('icon').src = crypto.currency.image;
+     document.getElementById('icon').alt = "Icono de " + crypto.currency.name;
+     let currencyName = document.querySelectorAll('.cryptoName');
+     currencyName.forEach(el => {
+         el.innerHTML = crypto.currency.name;
+     });
+     let currencyPrice = document.querySelectorAll('.crypto-price');
+     currencyPrice.forEach(el => {
+         el.innerHTML = "$" + crypto.currentPrice;
+     });
+     document.getElementById("market-cap-rank").innerText = crypto.marketCapRank;
+     document.getElementById("market-cap").innerText = "$" + crypto.marketCap;
+     document.getElementById("volume").innerText = "$" + crypto.totalVolume;
+     document.getElementById("total-supply").innerText = "$" + crypto.totalSupply;
+     document.getElementById("change-24h").innerText = "$" + crypto.priceChange24h;
+     document.getElementById("change-24h-percentage").innerText = crypto.priceChangePercentage24h + "%";
+     document.getElementById("high-24").innerText = "$" + crypto.high24h;
+     document.getElementById("low-24").innerText = "$" + crypto.low24h;
+
      // ================================
      // GRÁFICO DE EVOLUCIÓN DE PRECIOS
      // ================================
@@ -282,7 +273,7 @@ let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
              labels: priceLabels,
              // Configuración de los datasets (en este caso, un solo dataset).
              datasets: [{
-                 label: 'Bitcoin Price ($)',         // Etiqueta que se mostrará en la leyenda y tooltips.
+                 label: crypto.currency.name + ' Price ($)',         // Etiqueta que se mostrará en la leyenda y tooltips.
                  data: prices,                         // Datos del gráfico.
                  fill: true,                           // Rellenar el área debajo de la línea.
                  backgroundColor: gradientPrice,       // Fondo con el gradiente creado.
@@ -297,15 +288,6 @@ let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
              responsive: true,                       // Se adapta al tamaño del contenedor.
              maintainAspectRatio: false,             // Permite que la altura sea flexible.
              scales: {
-                 x: {
-                     title: {display: true, text: 'Months'},  // Título del eje X.
-                     ticks: {                                 // Opciones de las etiquetas en el eje X.
-                         maxRotation: 45,                       // Rotación máxima.
-                         minRotation: 30,                       // Rotación mínima.
-                         autoSkip: true,                        // Se omiten etiquetas si es necesario para no sobrecargar.
-                         maxTicksLimit: 8                       // Máximo número de etiquetas a mostrar.
-                     }
-                 },
                  y: {
                      title: {display: true, text: 'Price ($)'}, // Título del eje Y.
                      beginAtZero: false,                           // El eje Y no empieza en 0.
@@ -410,4 +392,4 @@ let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
              }
          }
      });
- }
+ });

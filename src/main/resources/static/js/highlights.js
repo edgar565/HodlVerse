@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="col-6" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'">
                     <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">${coin.currency.name}
                 </div>
-                <div class="col-4 text-end">$${coin.currentPrice}</div>
-                <div class="col-2 text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">${coin.priceChangePercentage24h.toFixed(1)}%</div>
+                <div class="col-3 text-end">$${coin.currentPrice.toFixed(2)}</div>
+                <div class="col-3 text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">${coin.priceChangePercentage24h.toFixed(1)}%</div>
                 `;
             lista.appendChild(li);
         });
@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const top5Coins = coins.slice(0, 5);
             console.log(top5Coins);
             let lista = document.getElementById("top-trending-list");
-            dominance(top5Coins);
             listas(lista, top5Coins);
         } catch (error) {
             console.error(error);
@@ -84,19 +83,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     topWinners();
 
-    async function highestVolume() {
-        try {
-            const coins = await History.getHighestVolume();
-            const top5Coins = coins.slice(0, 5);
-            console.log(top5Coins);
-            let lista = document.getElementById("highest-volume-list");
-            listas(lista, top5Coins);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    highestVolume();
+    // async function highestVolume() {
+    //     try {
+    //         const coins = await History.getHighestVolume();
+    //         const top5Coins = coins.slice(0, 5);
+    //         console.log(top5Coins);
+    //         let lista = document.getElementById("highest-volume-list");
+    //         listas(lista, top5Coins);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
+    //
+    // highestVolume();
 
 });
 

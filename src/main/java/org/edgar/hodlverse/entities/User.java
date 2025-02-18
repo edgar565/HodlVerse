@@ -18,7 +18,7 @@ public class User {
     private Long userId;
 
     @Column(nullable = false, length = 50)
-    private String username;
+    private String name;
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
@@ -55,11 +55,11 @@ public class User {
     }
 
     public String getUsername() {
-        return username;
+        return name;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.name = username;
     }
 
     public String getEmail() {
