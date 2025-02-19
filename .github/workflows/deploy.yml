@@ -76,8 +76,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            sudo rm -r /var/lib/tomcat10/webapps/ROOT
-            sudo rm -r /var/lib/tomcat10/webapps/ROOT.war
             # 3⃣ Mover el archivo .war a la carpeta de despliegue de Tomcat.
             sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
 
