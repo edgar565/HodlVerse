@@ -18,7 +18,7 @@
 </head>
 <body>
 <main>
-    <div class="position-relative overflow-hidden text-center d-flex align-items-center" style="min-height: 96vh;">
+    <div class="position-relative overflow-hidden d-flex align-items-center" style="min-height: 96vh;">
         <!-- DYNAMIC BACKGROUND -->
         <div class="background">
             <span></span>
@@ -73,27 +73,42 @@
         </div>
         <!-- CHOOSE DIFFICULTY -->
         <div class="container py-4 p-5" style="max-width: 700px;">
-            <h1 class="h4">CHOOSE YOUR <span style="color: var(--oro)">CHALLENGE</span>
-            </h1>
-            <hr>
-            <p class="text-sb">Choose Your Challenge Level, Set Your Goals, and Start Your Journey to Success</p>
+            <div class="text-center">
+                <h1 class="h3 mt-2">CHOOSE YOUR <span style="color: var(--oro)">CHALLENGE</span>
+                </h1>
+                <p class="text-sb">Choose Your Challenge Level, Set Your Goals, and Start Your Journey to Success</p>
+            </div>
+            <!-- Botones de dificultad -->
             <div class="d-flex justify-content-between mt-5 mb-5">
                 <button class="btn btn-play-now" data-difficulty="beginner">Beginner</button>
                 <button class="btn btn-play-now" data-difficulty="experienced">Experienced</button>
                 <button class="btn btn-play-now" data-difficulty="custom">Custom</button>
             </div>
-            <!-- Difficulty Info Card -->
-            <div id="difficulty-info" class="card mt-3 p-3 d-none d-flex flex-column align-items-center text-center difficulty-info">
-                <p>Duration: <span>30 Days</span></p>
-                <p>Initial Balance: <span>100.000€</span></p>
-                <p>Objective: <span id="difficulty-objective"></span></p>
-            </div>
-
             <!-- Custom Options -->
-            <div id="custom-options" class="mt-3 d-none d-flex flex-column align-items-between" style="max-width: 300px; width: 100%; margin: 0 auto;">
+            <div id="custom-options" class="mt-3 d-none d-flex flex-column align-items-between" style="max-width: 270px; width: 100%; margin: 0 auto;">
                 <label for="custom-objective" class="form-label mt-2 text-sm">Custom profit goal:</label>
                 <input type="number" id="custom-objective" class="form-control text-center" placeholder="Enter objective percentage">
             </div>
+
+            <!-- Tarjeta de información -->
+            <div id="difficulty-info" class="card mt-3 p-3 difficulty-info shadow-lg d-none">
+                <div class="card-body"> <!-- Centra el contenido -->
+                    <p class="card-text"><i class="fas fa-clock"></i> Duration: <span>30 Days</span></p>
+                    <hr>
+                    <p class="card-text"><i class="fas fa-euro-sign"></i> Initial Balance: <span>100.000€</span></p>
+                    <hr>
+                    <p class="card-text"><i class="fas fa-bullseye"></i> Profit Goal: <span id="difficulty-objective"></span>%</p>
+                    <hr>
+                </div>
+                <!-- Contenedor del botón para centrarlo -->
+                <div class="d-flex justify-content-center">
+                    <button id="start-game" class="btn btn-start-game mt-3 d-none">
+                        <i class="fas fa-play" style="color: white"></i> Start Game
+                    </button>
+                </div>
+
+            </div>
+
         </div>
     </div>
 </main>

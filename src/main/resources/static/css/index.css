@@ -4,7 +4,7 @@ body {
 }
 
 hr {
-    border: 1px solid var(--azulclaro);
+    border: 1px solid var(--azuloscuro);
     margin-right: 3%;
     margin-left: 3%;
 }
@@ -174,11 +174,10 @@ canvas {
     z-index: -1; /* Manda el fondo detrás del contenido */
 }
 
-
 .background span {
     width: 2vmin;
     height: 2vmin;
-    border-radius: 1vmin;
+    border-radius: 10vmin;
     backface-visibility: hidden;
     position: absolute;
     animation: move;
@@ -186,7 +185,6 @@ canvas {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
-
 
 .background span:nth-child(0) {
     color: #7eaced;
