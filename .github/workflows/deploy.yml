@@ -52,16 +52,16 @@ jobs:
             echo "export DB_ENDPOINT=${{ secrets.DB_ENDPOINT }}" | sudo tee -a /etc/environment
             echo "export DB_USERNAME=${{ secrets.DB_USERNAME }}" | sudo tee -a /etc/environment
             echo "export DB_PASSWORD=${{ secrets.DB_PASSWORD }}" | sudo tee -a /etc/environment
-            
+
             # 2️⃣ Recargar las variables de entorno en la sesión actual.
             source /etc/environment
 
             # 3️⃣ Mover el archivo .war a la carpeta de despliegue de Tomcat.
-            sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war  
+            sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
 
             # 4️⃣ Cambiar el propietario y permisos del archivo para que Tomcat pueda acceder.
-            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war  
-            sudo chmod 755 /var/lib/tomcat10/webapps/ROOT.war 
+            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
+            sudo chmod 755 /var/lib/tomcat10/webapps/ROOT.war
 
             # 5️⃣ Reiniciar el servicio Tomcat para cargar el nuevo archivo .war.
             sudo systemctl restart tomcat10
