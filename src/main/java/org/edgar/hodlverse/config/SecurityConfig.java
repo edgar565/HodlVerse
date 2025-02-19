@@ -15,6 +15,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/highlights.html", "/history/total-market-cap", "/history/total-volume", "/currencies", "/login", "/oauth2/**").permitAll()
+                        .requestMatchers("/transactions").authenticated()  // Permitir el acceso solo a usuarios autenticados para `/transactions`
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

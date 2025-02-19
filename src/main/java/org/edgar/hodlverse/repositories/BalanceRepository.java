@@ -16,6 +16,8 @@ public interface BalanceRepository extends JpaRepository<Balance, Long> {
     @Query("SELECT SUM(b.walletAmount) FROM Balance b WHERE b.wallet.walletId = :walletId AND b.currency.currencyId = :currencyId")
     BigDecimal getTotalWalletAmount(@Param("walletId") Long walletId, @Param("currencyId") Long currencyId);
 
+    List<Balance> findByWalletWalletId(Long walletId);
+
 
 
 }

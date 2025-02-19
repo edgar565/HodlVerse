@@ -1,46 +1,27 @@
 class User {
     constructor(userId, name, email, password, registrationDate, picture, wallet, transactions, game) {
-        // Validar cada propiedad antes de inicializar el objeto
-        User.validateUserData({
-            userId,
-            name,
-            email,
-            password,
-            registrationDate,
-            picture,
-            wallet,
-            transactions,
-            game
-        });
-
         this.userId = Number(userId);
         this.name = name;
         this.email = email;
         this.password = password;
         this.registrationDate = new Date(registrationDate);
         this.picture = picture;
-        this.wallet = wallet instanceof Wallet ? wallet : null;
+        this.wallet = wallet instanceof Wallet ? wallet : new Wallet();
         this.transactions = Array.isArray(transactions) ? transactions.map(t => new Transaction(t)) : [];
         this.game = game instanceof Game ? game : null;
     }
 
-    // Validar los datos del usuario
-    static validateUserData(userData) {
+    static validateData(userData) {
         if (!userData || typeof userData !== 'object') {
             throw new Error('Datos del usuario inválidos.');
         }
 
         if (typeof userData.name !== 'string' || userData.name.trim() === '') {
-            console.log(userData.email);
             throw new Error('name debe ser una cadena no vacía.');
         }
 
         if (typeof userData.email !== 'string' || !User.isValidEmail(userData.email)) {
             throw new Error('email debe ser una dirección de correo electrónico válida.');
-        }
-
-        if (typeof userData.password !== 'string' || userData.password.trim() === '') {
-            throw new Error('password debe ser una cadena no vacía.');
         }
 
         if (!(userData.registrationDate instanceof Date) || isNaN(userData.registrationDate.getTime())) {
@@ -49,6 +30,10 @@ class User {
 
         if (typeof userData.picture !== 'string' || !User.isValidUrl(userData.picture)) {
             throw new Error('picture debe ser una URL válida.');
+        }
+
+        if (!userData.wallet) {
+            throw new Error('wallet debe ser una instancia válida de Wallet o null.');
         }
     }
 
@@ -94,12 +79,21 @@ class User {
             const data = await $.ajax({ url: '/users/all', type: 'GET' });
             User.users = data.map(u => {
                 try {
-                    User.validateUserData(u);
+                    u.registrationDate = new Date(u.registrationDate);
+
+                    // Check if wallet exists and is valid
+                    const walletInstance = u.wallet && u.wallet.walletId ? new Wallet(u.wallet) : null;
+
+                    User.validateData(u);
                     return new User(
-                        u.userId, u.name, u.email, u.password,
-                        new Date(u.registrationDate), u.picture,
-                        new Wallet(u.wallet),
-                        u.transactions.map(t => new Transaction(t)),
+                        u.userId,
+                        u.name,
+                        u.email,
+                        u.password,
+                        u.registrationDate,
+                        u.picture,
+                        walletInstance,
+                        (u.transactions || []).map(t => new Transaction(t)),
                         u.game ? new Game(u.game) : null
                     );
                 } catch (error) {
@@ -107,29 +101,40 @@ class User {
                     return null;
                 }
             }).filter(u => u !== null);
+
+            // Log the array of users
+            console.log('Usuarios cargados:', User.users);
+
             if (callback) callback(User.users);
+            return User.users;
         } catch (error) {
             console.error('Error al obtener los usuarios:', error);
+            throw error;
         }
     }
 
-
-    // ➕ Crear un nuevo usuario en la API
     static createUser(name, email, password, registrationDate, picture, callback) {
         try {
-            this.validateUserData({
+            this.validateData({
                 userId: null,
                 name,
                 email,
                 password,
                 registrationDate: new Date(registrationDate),
                 picture,
-                wallet: null,
+                wallet: new Wallet(),
                 transactions: [],
                 game: null
             });
 
-            let newUser = { name, email, password, registrationDate: registrationDate.toISOString(), picture };
+            let newUser = {
+                name,
+                email,
+                password,
+                registrationDate: registrationDate.toISOString(),
+                picture
+            };
+
             $.ajax({
                 url: '/users',
                 type: 'POST',
@@ -137,8 +142,15 @@ class User {
                 data: JSON.stringify(newUser),
                 success: (data) => {
                     let user = new User(
-                        data.userId, data.name, data.email, data.password, new Date(data.registrationDate), data.picture,
-                        data.wallet ? new Wallet(data.wallet) : null, data.transactions.map(t => new Transaction(t)), data.game ? new Game(data.game) : null
+                        data.userId,
+                        data.name,
+                        data.email,
+                        data.password,
+                        new Date(data.registrationDate),
+                        data.picture,
+                        new Wallet(data.wallet),
+                        data.transactions.map(t => new Transaction(t)),
+                        data.game ? new Game(data.game) : null
                     );
                     User.users.push(user);
                     console.log('Usuario creado y almacenado:', user);
@@ -153,7 +165,6 @@ class User {
         }
     }
 
-    // 🔄 Actualizar un usuario en la API
     static updateUser(userId, name, email, password, registrationDate, picture, callback) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -161,7 +172,7 @@ class User {
         }
 
         try {
-            this.validateUserData({
+            this.validateData({
                 userId,
                 name,
                 email,
@@ -199,7 +210,6 @@ class User {
         }
     }
 
-    // ❌ Eliminar un usuario de la API
     static deleteUser(userId, callback) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -220,13 +230,16 @@ class User {
         });
     }
 }
+
 window.User = User;
 
-// =============================
-// 🔥 Cargar automáticamente todos los usuarios al iniciar
-// =============================
 $(document).ready(function () {
-    User.loadUsers((users) => {
-        console.log('Usuarios cargados en la aplicación:', users);
-    });
+    console.log("Document is ready, attempting to load users...");
+    User.loadUsers()
+        .then(users => {
+            console.log('Usuarios cargados en la aplicación:', users);
+        })
+        .catch(error => {
+            console.error('Error al cargar los usuarios:', error);
+        });
 });

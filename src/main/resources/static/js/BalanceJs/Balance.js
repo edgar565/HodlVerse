@@ -1,7 +1,5 @@
 class Balance {
     constructor(balanceId, walletAmount, wallet, currency) {
-        // Validar los datos antes de inicializar el objeto
-        Balance.validateBalanceData({ balanceId, walletAmount, wallet, currency });
         this.balanceId = balanceId;
         this.walletAmount = walletAmount;
         this.wallet = wallet;
@@ -133,37 +131,51 @@ class Balance {
         });
     }
 
-    static getBalancesByWallet(walletId, callback) {
-        $.ajax({
-            url: `/balances/wallet/${walletId}`,
-            type: 'GET',
-            success: (data) => {
-                const balances = data.map(b => new Balance(
-                    b.balanceId, b.walletAmount, new Wallet(b.wallet), new Currency(b.currency)
-                ));
-                console.log(`Balances para la billetera con ID ${walletId}:`, balances);
-                if (callback) callback(balances);
-            },
-            error: (error) => {
-                console.error(`Error al obtener balances para la billetera con ID ${walletId}:`, error);
-            }
-        });
+    static async getBalancesByWallet(walletId) {
+        try {
+            const data = await $.ajax({
+                url: `/balances/wallet/${walletId}`,
+                type: 'GET'
+            });
+
+            // Usamos Promise.all para obtener los objetos completos de wallet y currency
+            const balances = await Promise.all(data.map(async (b) => {
+                const wallet = typeof b.wallet === "object" && b.wallet.walletId ? b.wallet : await Wallet.getWalletById(b.walletId);
+                const currency = typeof b.currency === "object" && b.currency.currencyId ? b.currency : await Currency.getCurrencyById(b.currencyId);
+
+                return new Balance(
+                    b.balanceId,
+                    b.walletAmount,
+                    wallet,
+                    currency
+                );
+            }));
+
+            console.log(`Balances para la billetera con ID ${walletId}:`, balances);
+            return balances;
+        } catch (error) {
+            console.error(`Error al obtener balances para la billetera con ID ${walletId}:`, error);
+            throw error;
+        }
     }
 
-    static getBalancesByCurrency(currencyId, callback) {
-        $.ajax({
-            url: `/balances/currency/${currencyId}`,
-            type: 'GET',
-            success: (data) => {
-                const balances = data.map(b => new Balance(
-                    b.balanceId, b.walletAmount, new Wallet(b.wallet), new Currency(b.currency)
-                ));
-                console.log(`Balances para la divisa con ID ${currencyId}:`, balances);
-                if (callback) callback(balances);
-            },
-            error: (error) => {
-                console.error(`Error al obtener balances para la divisa con ID ${currencyId}:`, error);
-            }
+    static getBalancesByCurrency(currencyId) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `/balances/currency/${currencyId}`,
+                type: 'GET',
+                success: (data) => {
+                    const balances = data.map(b => new Balance(
+                        b.balanceId, b.walletAmount, new Wallet(b.wallet), new Currency(b.currency)
+                    ));
+                    console.log(`✅ Balances para la divisa con ID ${currencyId}:`, balances);
+                    resolve(balances);
+                },
+                error: (error) => {
+                    console.error(`❌ Error al obtener balances para la divisa con ID ${currencyId}:`, error);
+                    reject(error);
+                }
+            });
         });
     }
 }

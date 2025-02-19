@@ -1,7 +1,5 @@
 class Currency {
     constructor(currencyId, name, ticker, image) {
-        // Validar los datos antes de inicializar el objeto
-        Currency.validateCurrencyData({ currencyId, name, ticker, image });
         this.currencyId = currencyId;
         this.name = name;
         this.ticker = ticker;

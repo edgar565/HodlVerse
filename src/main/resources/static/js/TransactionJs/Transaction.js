@@ -13,39 +13,61 @@ class Transaction {
     }
 
     static validateData(transactionData) {
-        if (!transactionData.user || !(transactionData.user instanceof User)) {
+        if (!transactionData.user) {
             throw new Error('El campo user debe ser una instancia válida de la clase User.');
         }
     }
 
     static async createTransaction(transactionData) {
         try {
-            if (!transactionData.user || !transactionData.user.id) {
-                throw new Error('Usuario no especificado para la transacción.');
-            }
+            // Validar los datos de la transacción
             this.validateData(transactionData);
 
-            const balances = await Balance.getBalancesByWallet(transactionData.user.wallet.id);
-            const originBalance = balances.find(b => b.currency.id === transactionData.originCurrency.id);
+            // Obtener el balance real de la currency en la wallet
+            let userOriginBalanceCurrency =   await Balance.getBalancesByCurrency(transactionData.originCurrency.currencyId);
+            let userOriginBalanceAmount = userOriginBalanceCurrency[0].walletAmount;
+            let userOriginBalancePrice =   await History.getLatestHistoryByCurrencyId(transactionData.originCurrency.currencyId);
+            userOriginBalancePrice = userOriginBalancePrice.currentPrice;
+            let userOriginBalance = userOriginBalanceAmount * userOriginBalancePrice;
+            console.log(`💰 Saldo en la moneda origen : ${userOriginBalance}`);
 
-            if (!originBalance || originBalance.walletAmount < transactionData.originTransactionAmount) {
-                throw new Error('Fondos insuficientes para la transacción.');
+            // Calcular el precio de la transacción en USD
+            const originPrice = transactionData.originTransactionAmount * transactionData.originUnitPrice;
+            const destinationPrice = transactionData.destinationTransactionAmount * transactionData.destinationUnitPrice;
+
+            console.log(`🔹 Origin Price: ${originPrice} USD`);
+            console.log(`🔹 Destination Price: ${destinationPrice} USD`);
+
+            // Validar si se puede realizar la transacción
+            if (transactionData.transactionType === "buy") {
+                if (userOriginBalance < originPrice || originPrice < destinationPrice) {
+                    throw new Error('❌ Fondos insuficientes o el precio de origen es menor al precio de destino.');
+                }
             }
 
-            transactionData.user = { id: transactionData.user.id }; // Asegurar que solo se envíe el ID
+            console.log("✅ Transacción validada correctamente, procediendo...");
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-            const data = await $.ajax({
+            const response = await $.ajax({
                 url: '/transactions',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(transactionData)
+                headers: {
+                    [csrfHeader]: csrfToken,  // Envía el token CSRF en la cabecera
+                    "Authorization": "Bearer " + localStorage.getItem("google_token"),
+                },
+                data: JSON.stringify(transactionData),
+                success: function(response) {
+                    console.log("✅ Transacción creada con éxito:", response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("❌ Error al crear la transacción:", xhr);
+                }
             });
 
-            console.log('Transacción creada:', data);
-            Transaction.loadTransactions();
-            return data;
         } catch (error) {
-            console.error('Error al crear la transacción:', error);
+            console.error('❌ Error al crear la transacción:', error);
         }
     }
 

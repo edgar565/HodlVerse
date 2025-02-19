@@ -1,23 +1,5 @@
 class History {
     constructor(historyId, currentPrice, marketCap, marketCapRank, totalVolume, high24h, low24h, priceChange24h, priceChangePercentage24h, marketCapChange24h, marketCapChangePercentage24h, totalSupply, lastUpdated, currency) {
-        // Validar los datos antes de inicializar el objeto
-        History.validateHistoryData({
-            historyId,
-            currentPrice,
-            marketCap,
-            marketCapRank,
-            totalVolume,
-            high24h,
-            low24h,
-            priceChange24h,
-            priceChangePercentage24h,
-            marketCapChange24h,
-            marketCapChangePercentage24h,
-            totalSupply,
-            lastUpdated,
-            currency
-        });
-
         this.historyId = historyId;
         this.currentPrice = currentPrice;
         this.marketCap = marketCap;

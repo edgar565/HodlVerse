@@ -1,80 +1,76 @@
- async function confirmBuy(){
-     const queryString = window.location.search;
-     const urlParams = new URLSearchParams(queryString);
-     const ticker = urlParams.get('ticker');
+async function confirmBuy() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const ticker = urlParams.get('ticker');
 
-     async function fetchCryptoData() {
-         let cryptoFinal;
-         try {
-             const cryptos = await Currency.loadCurrencies();
-             console.log(cryptos);
-             cryptos.forEach(crypto => {
-                 if (crypto.ticker === ticker) {
-                     cryptoFinal = crypto;
-                 }
-             });
-             return cryptoFinal;
-         } catch (error) {
-             console.error("Error fetching data from API:", error);
-             return null;
-         }
-     }
-     let cryptoFinal = await fetchCryptoData();
+    async function fetchCryptoData() {
+        let cryptoFinal;
+        try {
+            const cryptos = await Currency.loadCurrencies();
+            console.log(cryptos);
+            cryptos.forEach(crypto => {
+                if (crypto.ticker === ticker) {
+                    cryptoFinal = crypto;
+                }
+            });
+            return cryptoFinal;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return null;
+        }
+    }
+    let cryptoFinal = await fetchCryptoData();
 
-     async function loadCryptoInfo() {
-         try {
-             const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
-             return crypto;
-         } catch (error) {
-             console.error("Error fetching data from API:", error);
-             return null;
-         }
-     }
-     const crypto = await loadCryptoInfo();
+    async function loadCryptoInfo() {
+        try {
+            const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
+            return crypto;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return null;
+        }
+    }
+    const crypto = await loadCryptoInfo();
 
-     async function getUser() {
-         try {
-             const userId = await User.getUserId();
-             console.log(userId);
-             return userId
-         } catch (error) {
-             console.error('❌ Error al obtener el usuario:', error);
-             return null; // Devuelve un array vacío en caso de error
-         }
-     }
-     let userId = await getUser();
-     // Ejemplo de cómo construir los datos de una transacción:
-     const transactionData = {
-         transactionType: 'buy', // Puede ser "buy", "sell" o "exchange"
-         originTransactionAmount: crypto.currentPrice,        // Usar string para evitar problemas de precisión en BigDecimal
-         destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
-         originUnitPrice: 1,
-         destinationUnitPrice: crypto.currentPrice,
-         transactionDate: new Date().toISOString().split('T')[0], // Formato "YYYY-MM-DD"
-         user: {
-             userId: userId // ID del usuario (asegúrate de tener este valor)
-         },
-         originCurrency: {
-             currencyId: 3 // ID de la moneda de origen
-         },
-         destinationCurrency: {
-             currencyId: cryptoFinal.currencyId // ID de la moneda de destino
-         }
-     };
-    // Asegurar que transactionDate sea una instancia de Date
-     transactionData.transactionDate = new Date(transactionData.transactionDate);
+    async function getUser() {
+        try {
+            const userId = await User.getUserId();
+            const user = await User.getUserById(userId);
+            console.log(userId);
+            return user;
+        } catch (error) {
+            console.error('❌ Error al obtener el usuario:', error);
+            return null;
+        }
+    }
+    let user = await getUser();
+    // Example of how to construct the transaction data:
+    const transactionData = {
+        transactionType: 'buy', // Can be "buy", "sell" or "exchange"
+        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
+        destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
+        originUnitPrice: 1,
+        destinationUnitPrice: crypto.currentPrice,
+        transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
+        user: user, // Use the already validated user object
+        originCurrency: {
+            currencyId: 3 // ID of the origin currency
+        },
+        destinationCurrency: {
+            currencyId: cryptoFinal.currencyId // ID of the destination currency
+        }
+    };
 
-     // Asegurar que user sea una instancia de User
-     transactionData.user = new User(transactionData.user);
+    // Ensure transactionDate is a Date instance
+    transactionData.transactionDate = new Date(transactionData.transactionDate);
 
-// Llamar a createTransaction sin pasar un callback
-     await Transaction.createTransaction(transactionData);
+    // Call createTransaction without re-validating the user
+    await Transaction.createTransaction(transactionData);
 
-// Puedes manejar el resultado (si es necesario)
-     console.log("Transacción creada correctamente.");
+    // Handle the result if necessary
+    console.log("Transacción creada correctamente.");
+}
 
-    Transaction = new Transaction();
- }
 
 document.addEventListener('DOMContentLoaded', async function () {
     const queryString = window.location.search;
