@@ -104,3 +104,15 @@ function registerUser(event) {
         })
         .catch(error => console.error("Error en la petición:", error));
 }
+
+/* ---- SCROLL INTERACTIVO ---- */
+
+document.addEventListener("DOMContentLoaded", function () {
+    AOS.init({
+        duration: 1000,  // Define la duración global de las animaciones
+        once: true        // Esto asegura que la animación ocurra solo una vez
+    });
+});
+
+
+

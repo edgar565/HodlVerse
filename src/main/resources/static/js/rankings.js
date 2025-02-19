@@ -1,27 +1,24 @@
 async function fetchCryptoData() {
     const response = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true");
     const data = await response.json();
-    async function fetchCryptoData() {
-        try {
-            const response = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true");
-            const data = await response.json();
-            console.log(data); // Verifica que la respuesta es correcta
-            const rankingData = data.map(coin => ({
-                rank: coin.market_cap_rank,
-                coin: coin.name,
-                id: coin.id,
-                logo: coin.image,
-                price: `$${coin.current_price.toLocaleString()}`,
-                marketCap: `$${coin.market_cap.toLocaleString()}`,
-                change: `${coin.price_change_percentage_7d_in_currency.toFixed(2)}%`,
-                trend: `https://www.coingecko.com/coins/${coin.id}/sparkline.svg`
-            }));
-            renderTable(rankingData);
-        } catch (error) {
-            console.error("Error fetching data from API:", error); // En caso de error
-        }
+    try {
+        const response = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true");
+        const data = await response.json();
+        console.log(data); // Verifica que la respuesta es correcta
+        const rankingData = data.map(coin => ({
+            rank: coin.market_cap_rank,
+            coin: coin.name,
+            id: coin.id,
+            logo: coin.image,
+            price: `$${coin.current_price.toLocaleString()}`,
+            marketCap: `$${coin.market_cap.toLocaleString()}`,
+            change: `${coin.price_change_percentage_7d_in_currency.toFixed(2)}%`,
+            trend: `https://www.coingecko.com/coins/${coin.id}/sparkline.svg`
+        }));
+        renderTable(rankingData);
+    } catch (error) {
+        console.error("Error fetching data from API:", error); // En caso de error
     }
-
 
     const rankingData = data.map(coin => ({
         rank: coin.market_cap_rank,

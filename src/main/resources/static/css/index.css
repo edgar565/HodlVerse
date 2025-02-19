@@ -107,7 +107,7 @@ canvas {
     position: absolute;
     bottom: 137px; /* Ajusta según el tamaño de la fuente */
     left: 50%;
-    transform: translateX(475%); /* Mueve la imagen a la derecha encima de la última 'E' */
+    transform: translateX(450%); /* Mueve la imagen a la derecha encima de la última 'E' */
     width: 60px; /* AjuSta el tamaño según necesites */
     height: auto;
 }
@@ -165,7 +165,7 @@ canvas {
 }
 
 .background {
-    position: fixed;
+    position: absolute;
     width: 100vw;
     height: 100vh;
     top: 0;
@@ -628,4 +628,20 @@ canvas {
     animation-delay: -58s;
     transform-origin: 25vw -20vh;
     box-shadow: -2vmin 0 0.47497747257706235vmin currentColor;
+}
+
+/* --- BTN PLAY NOW -- */
+.btn-play-now{
+    border: 2px solid var(--oro);
+    background-color: rgba(197, 129, 32, 0.3); /* Ajusta el último valor (0 a 1) para más o menos transparencia */
+    color: white;
+    border-radius: 30px;
+}
+.btn-play-now:hover{
+    background-color: var(--oro);
+}
+.btn-play-now:active {
+    background-color: rgba(197, 129, 32, 0.5); /* Más transparente al hacer click */
+    transform: scale(0.95); /* Hace que parezca presionado */
+    box-shadow: 0 0 10px rgba(197, 129, 32, 0.5); /* Le da un efecto de brillo */
 }

@@ -1,0 +1,37 @@
+body{
+    background-color: var(--azuloscuro);
+}
+main{
+    color: white;
+    z-index: 2;
+}
+.container{
+    background-color: rgba(6, 20, 40, 1);
+    border: 1px rgba(224, 235, 251, 0.3) solid;
+    border-radius: 20px;
+}
+/* --- BTN PLAY NOW -- */
+.btn-play-now{
+    border: 2px solid var(--oro);
+    background-color: rgba(197, 129, 32, 0.3); /* Ajusta el último valor (0 a 1) para más o menos transparencia */
+    color: white;
+    border-radius: 30px;
+    width: 150px;
+}
+.btn-play-now:hover{
+    background-color: var(--oro);
+}
+.difficulty-info{
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+}
+.text-sb {
+    font-size: 0.9rem; /* Tamaño de fuente */
+    font-weight: 400; /* Peso de la fuente */
+    color: #ffffff; /* Color más suave */
+    margin-top: 1rem; /* Espaciado superior */
+    margin-bottom: 1rem; /* Espaciado inferior */
+}
+
+
