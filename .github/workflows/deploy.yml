@@ -40,6 +40,7 @@ jobs:
           target: /home/ubuntu/
           strip_components: 1
 
+
       # 5️⃣ Configurar variables de entorno y desplegar la aplicación en Tomcat.
       - name: Configure environment variables and deploy
         uses: appleboy/ssh-action@master
