@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const toggleSwitch = document.getElementById("toggleRankingSwitch");
 
     if (!toggleSwitch) {
@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="col-6" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'">
                     <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">${coin.currency.name}
                 </div>
-                <div class="col-3 text-end">$${coin.currentPrice.toFixed(2)}</div>
-                <div class="col-3 text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">${coin.priceChangePercentage24h.toFixed(1)}%</div>
+                <div class="col-3 text-end">${coin.currentPrice.toLocaleString()}$</div>
+                <div class="col-3 text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">${coin.priceChangePercentage24h.toLocaleString()}%</div>
                 `;
             lista.appendChild(li);
         });
@@ -97,112 +97,70 @@ document.addEventListener("DOMContentLoaded", function () {
     //
     // highestVolume();
 
-});
 
-// Event handling
-function addListeners() {
-    if (!('ontouchstart' in window)) {
-        window.addEventListener('mousemove', mouseMove);
+    // ================================
+    // TABLA DE CRIPTOMONEDAS
+    // ================================
+
+    async function fetchCryptoData() {
+        try {
+            const cryptos = await Currency.loadCurrencies();
+            console.log(cryptos);
+            return cryptos;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return null;
+        }
     }
-    window.addEventListener('scroll', scrollCheck);
-    window.addEventListener('resize', resize);
-}
 
-function mouseMove(e) {
-    target.x = e.clientX || (e.touches && e.touches[0].clientX);
-    target.y = e.clientY || (e.touches && e.touches[0].clientY);
-}
+    const cryptos = await fetchCryptoData();
 
-
-function scrollCheck() {
-    if (document.body.scrollTop > height) animateHeader = false;
-    else animateHeader = true;
-}
-
-function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    largeHeader.style.height = height + 'px';
-    canvas.width = width;
-    canvas.height = height;
-}
-
-// animation
-function initAnimation() {
-    animate();
-    for (let i in points) {
-        shiftPoint(points[i]);
+    async function fechtCryptoHistory() {
+        try {
+            let history = [];
+            for (const crypto of cryptos) {
+                history.push(await History.getLatestHistoryByCurrencyId(crypto.currencyId));
+            }
+            console.log(history);
+            return history;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return null;
+        }
     }
-}
 
-function animate() {
-    if (animateHeader) {
-        ctx.clearRect(0, 0, width, height);
-        for (let i in points) {
-            // detect points in range
-            if (Math.abs(getDistance(target, points[i])) < 4000) {
-                points[i].active = 0.3;
-                points[i].circle.active = 0.6;
-            } else if (Math.abs(getDistance(target, points[i])) < 20000) {
-                points[i].active = 0.1;
-                points[i].circle.active = 0.3;
-            } else if (Math.abs(getDistance(target, points[i])) < 40000) {
-                points[i].active = 0.02;
-                points[i].circle.active = 0.1;
-            } else {
-                points[i].active = 0;
-                points[i].circle.active = 0;
+    const history = await fechtCryptoHistory();
+
+    async function updateCryptoTable() {
+        try {
+            let tableBody = document.getElementById("cryptoTableBody");
+            tableBody.innerHTML = ""; // Limpiar la tabla antes de actualizarla
+
+            let contador = 1;
+            // Iterar sobre cada criptomoneda
+            for (const coin of history) {
+
+                // Construir la fila de la tabla con los datos calculados
+                let row = `
+                <tr>
+                    <td class="text-end">${contador}</td>
+                    <td class="sticky-col start-0 text-start"><div onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'"><img src="${coin.currency.image}" height="24" alt="Icono de " ${coin.currency.name}> ${coin.currency.name} (${coin.currency.ticker.toUpperCase()})</div></td>
+                    <td class="text-end">${coin.currentPrice.toLocaleString()}$</td>
+                    <td class="text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'}">${coin.priceChangePercentage24h.toLocaleString()}%</td>
+                    <td class="text-end">${coin.totalVolume.toLocaleString()}$</td>
+                    <td class="text-end">${coin.marketCap.toLocaleString()}$</td>
+                </tr>
+            `;
+                tableBody.innerHTML += row;
+                contador++;
             }
 
-            drawLines(points[i]);
-            points[i].circle.draw();
+        } catch (error) {
+            console.error("Error al obtener datos:", error);
         }
     }
-    requestAnimationFrame(animate);
-}
 
-function shiftPoint(p) {
-    TweenLite.to(p, 1 + 1 * Math.random(), {
-        x: p.originX - 50 + Math.random() * 100,
-        y: p.originY - 50 + Math.random() * 100, ease: Circ.easeInOut,
-        onComplete: function () {
-            shiftPoint(p);
-        }
-    });
-}
+    updateCryptoTable();
+    setInterval(updateCryptoTable, 300000); // Actualiza cada 5 min
 
-// Canvas manipulation
-function drawLines(p) {
-    if (!p.active) return;
-    for (let i in p.closest) {
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.closest[i].x, p.closest[i].y);
-        ctx.strokeStyle = 'rgba(156,217,249,' + p.active + ')';
-        ctx.stroke();
-    }
-}
-
-function Circle(pos, rad, color) {
-    let _this = this;
-
-    // constructor
-    (function () {
-        _this.pos = pos || null;
-        _this.radius = rad || null;
-        _this.color = color || null;
-    })();
-
-    this.draw = function () {
-        if (!_this.active) return;
-        ctx.beginPath();
-        ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'rgba(156,217,249,' + _this.active + ')';
-        ctx.fill();
-    };
-}
-
-// Util
-function getDistance(p1, p2) {
-    return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
-}
+});

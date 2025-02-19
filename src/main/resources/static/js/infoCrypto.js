@@ -1,13 +1,18 @@
- async function confirmBuy(){
+ function confirmBuy() {
      const queryString = window.location.search;
      const urlParams = new URLSearchParams(queryString);
-     const ticker = urlParams.get('ticker');
+     return  ticker = urlParams.get('ticker');
+ }
 
      async function fetchCryptoData() {
          let cryptoFinal;
          try {
              const cryptos = await Currency.loadCurrencies();
+             if (cryptos){
+
+             }
              console.log(cryptos);
+             const ticker = confirmBuy();
              cryptos.forEach(crypto => {
                  if (crypto.ticker === ticker) {
                      cryptoFinal = crypto;
@@ -69,7 +74,6 @@
      });
 
     Transaction = new Transaction();
- }
     /*  BUY/SELL CRYPTO EVENT */
 document.addEventListener('DOMContentLoaded', function () {
     let actionType = '';

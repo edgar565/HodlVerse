@@ -171,13 +171,29 @@ document.addEventListener("DOMContentLoaded", async function () {
     const calendarContainer = document.getElementById("calendar");
     const daysRemainingText = document.getElementById("daysRemaining");
     const timeRemainingText = document.getElementById("timeRemaining");
+    const prevMonthButton = document.getElementById("prevMonth");
+    const nextMonthButton = document.getElementById("nextMonth");
+
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
 
     async function fetchEndDate() {
         try {
-            const userId = await User.getUserId(); // Obtener ID del usuario
-            console.log(userId);
-            const game = await Game.getActiveGameByUserId(userId); // Obtener el usuario por su ID
-            return date = game.endDate;
+            const userId = await User.getUserId();
+            const game = await Game.getActiveGameByUserId(userId);
+            return new Date(game.endDate);
+        } catch (error) {
+            console.error('❌ Error al obtener el usuario:', error);
+            return null;
+        }
+    }
+
+    async function fetchStartDate() {
+        try {
+            const userId = await User.getUserId();
+            const game = await Game.getActiveGameByUserId(userId);
+            return new Date(game.startDate);
         } catch (error) {
             console.error('❌ Error al obtener el usuario:', error);
             return null;
@@ -185,47 +201,81 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     const endDate = await fetchEndDate();
+    const startDate = await fetchStartDate();
     console.log("📈 Fecha objetivo:", endDate);
 
-    const today = new Date();
-    const currentDay = today.getDate();
-    const markedDay = 28; // Cambia este número según el día que desees marcar
-    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-
-    // Crear fecha objetivo (inicio del día marcado, es decir, a las 00:00:00)
-    const targetDate = new Date(today.getFullYear(), today.getMonth(), markedDay, 0, 0, 0);
-
-    // Calcular la diferencia en milisegundos desde este momento hasta el inicio del día marcado
-    const timeDiff = targetDate - today;
-
-    // Calcular correctamente los días, horas y minutos restantes
-    const remainingDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-    const remainingHours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const remainingMinutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-
-    // Mostrar la cuenta regresiva con los valores correctos
-    daysRemainingText.textContent = `${remainingDays} Days`;
-    timeRemainingText.textContent = `${remainingHours} hours, ${remainingMinutes} minutes`;
-
-    // Crear el calendario
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement("div");
-        dayElement.classList.add("day");
-        dayElement.textContent = day;
-
-        if (day < currentDay) {
-            dayElement.classList.add("past");
-        } else if (day === currentDay) {
-            dayElement.classList.add("today");
-        } else if (day === markedDay) {
-            dayElement.classList.add("marked");
-        } else {
-            dayElement.classList.add("remaining");
-        }
-
-        calendarContainer.appendChild(dayElement);
+    if (startDate && endDate) {
+        currentMonth = startDate.getMonth();
+        currentYear = startDate.getFullYear();
     }
+
+    function updateCalendar(year, month) {
+        calendarContainer.innerHTML = '';
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+        const currentDay = today.getDate();
+        const markedDay = endDate.getDate(); // Cambia este número según el día que desees marcar
+
+        // Crear fecha objetivo (inicio del día marcado, es decir, a las 00:00:00)
+        const targetDate = new Date(year, month, markedDay, 0, 0, 0);
+
+        // Calcular la diferencia en milisegundos desde este momento hasta el inicio del día marcado
+        const timeDiff = targetDate - today;
+
+        // Calcular correctamente los días, horas y minutos restantes
+        const remainingDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const remainingHours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const remainingMinutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+        // Mostrar la cuenta regresiva con los valores correctos
+        daysRemainingText.textContent = `${remainingDays} Days`;
+        timeRemainingText.textContent = `${remainingHours} hours, ${remainingMinutes} minutes`;
+
+        // Crear el calendario
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement("div");
+            dayElement.classList.add("day");
+            dayElement.textContent = day;
+
+            if (day < currentDay && year === today.getFullYear() && month === today.getMonth()) {
+                dayElement.classList.add("past");
+            } else if (day === currentDay && year === today.getFullYear() && month === today.getMonth()) {
+                dayElement.classList.add("today");
+            } else if (day === markedDay) {
+                dayElement.classList.add("marked");
+            } else {
+                dayElement.classList.add("remaining");
+            }
+
+            calendarContainer.appendChild(dayElement);
+        }
+    }
+
+    prevMonthButton.addEventListener("click", () => {
+        if (new Date(currentYear, currentMonth - 1) >= startDate) {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendar(currentYear, currentMonth);
+        }
+    });
+
+    nextMonthButton.addEventListener("click", () => {
+        if (new Date(currentYear, currentMonth + 1) <= endDate) {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendar(currentYear, currentMonth);
+        }
+    });
+
+    updateCalendar(currentYear, currentMonth);
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Datos de progreso iniciales

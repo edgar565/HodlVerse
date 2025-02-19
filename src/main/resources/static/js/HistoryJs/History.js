@@ -110,42 +110,17 @@ class History {
     static histories = [];
 
     // 🔄 Cargar todas las entradas del historial desde la API
-    static loadHistories(callback) {
-        $.ajax({
-            url: '/history',
-            type: 'GET',
-            success: (data) => {
-                History.histories = data.map(h => {
-                    try {
-                        History.validateHistoryData(h);
-                        return new History(
-                            h.historyId,
-                            h.currentPrice,
-                            h.marketCap,
-                            h.marketCapRank,
-                            h.totalVolume,
-                            h.high24h,
-                            h.low24h,
-                            h.priceChange24h,
-                            h.priceChangePercentage24h,
-                            h.marketCapChange24h,
-                            h.marketCapChangePercentage24h,
-                            h.totalSupply,
-                            new Date(h.lastUpdated),
-                            new Currency(h.currency)
-                        );
-                    } catch (error) {
-                        console.warn(`Entrada de historial omitida debido a datos inválidos:`, h, error.message);
-                        return null;
-                    }
-                }).filter(h => h !== null); // Filtrar entradas nulas
-                console.log('Historial actualizado:', History.histories);
-                if (callback) callback(History.histories);
-            },
-            error: (error) => {
-                console.error('Error al obtener el historial:', error);
-            }
-        });
+    static async loadHistories() {
+        try {
+            const response = await $.ajax({
+                url: '/history',
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null;
+        }
     }
 
     // 🔍 Obtener una entrada de historial por su ID desde la API
