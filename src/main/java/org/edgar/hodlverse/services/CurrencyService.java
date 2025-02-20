@@ -129,5 +129,13 @@ public class CurrencyService {
         currencyRepository.deleteById(id);
     }
 
+    public List<Currency> getAllCurrenciesRandom() {
+        return currencyRepository.findAllRandom();
+    }
+    public List<Currency> findAllByIds(List<Long> ids) {
+        return currencyRepository.findAllById(ids);
+    }
+
+
 }
 
