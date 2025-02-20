@@ -260,12 +260,3 @@ class User {
     }
 }
 window.User = User;
-
-// =============================
-// 🔥 Cargar automáticamente todos los usuarios al iniciar
-// =============================
-$(document).ready(function () {
-    User.loadUsers((users) => {
-        console.log('Usuarios cargados en la aplicación:', users);
-    });
-});

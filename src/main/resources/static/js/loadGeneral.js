@@ -75,15 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 200);
     });
 
-    function formatCurrency(value) {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(value);
-    }
-
     async function fetchInfo() {
         try {
             const totalMarket = await History.getTotalMarketCap();
@@ -93,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const marketCapElements = document.querySelectorAll(".marketCapValue");
             if (marketCapElements.length > 0) {
                 marketCapElements.forEach(el => {
-                    el.innerHTML = formatCurrency(totalMarket);
+                    el.innerHTML = totalMarket.toLocaleString() + "$";
                 });
             } else {
                 console.warn('⚠️ Elemento(s) con clase "marketCapValue" no encontrado(s) en el DOM');
@@ -103,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const trendingCoinsElements = document.querySelectorAll(".trendingCoinsValue");
             if (trendingCoinsElements.length > 0) {
                 trendingCoinsElements.forEach(el => {
-                    el.innerHTML = formatCurrency(totalVolume);
+                    el.innerHTML = totalVolume.toLocaleString() + "$";
                 });
             } else {
                 console.warn('⚠️ Elemento(s) con clase "trendingCoinsValue" no encontrado(s) en el DOM');

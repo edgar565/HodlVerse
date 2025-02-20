@@ -124,43 +124,21 @@ class History {
     }
 
     // 🔍 Obtener una entrada de historial por su ID desde la API
-    static getHistoryById(historyId, callback) {
+    static async getHistoryById(historyId) {
         if (typeof historyId !== 'number' || isNaN(historyId)) {
             console.error('El ID de la entrada de historial debe ser un número válido.');
             return;
         }
-        $.ajax({
-            url: `/history/${historyId}`,
-            type: 'GET',
-            success: (data) => {
-                try {
-                    History.validateHistoryData(data);
-                    let history = new History(
-                        data.historyId,
-                        data.currentPrice,
-                        data.marketCap,
-                        data.marketCapRank,
-                        data.totalVolume,
-                        data.high24h,
-                        data.low24h,
-                        data.priceChange24h,
-                        data.priceChangePercentage24h,
-                        data.marketCapChange24h,
-                        data.marketCapChangePercentage24h,
-                        data.totalSupply,
-                        new Date(data.lastUpdated),
-                        new Currency(data.currency)
-                    );
-                    console.log(`Entrada de historial obtenida:`, history);
-                    if (callback) callback(history);
-                } catch (error) {
-                    console.error(`Error al validar la entrada de historial con ID ${historyId}:`, error.message);
-                }
-            },
-            error: (error) => {
-                console.error(`Error al obtener la entrada de historial con ID ${historyId}:`, error);
-            }
-        });
+        try {
+            const response = await $.ajax({
+                url: `/history/${historyId}`,
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null;
+        }
     }
 
     // ➕ Crear una nueva entrada de historial en la API

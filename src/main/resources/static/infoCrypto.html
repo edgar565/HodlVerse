@@ -17,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/infoCrypto.css">
 </head>
@@ -233,6 +234,95 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal Sign Up -->
+            <div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalSignin"
+                 aria-labelledby="modalSignin">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content rounded-4 shadow">
+                        <div class="modal-header p-5 pb-4 border-bottom-0">
+                            <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body p-5 pt-0">
+                            <form id="registerForm" onsubmit="registerUser(event)">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control rounded-3" id="floatingInput"
+                                           placeholder="name@example.com" required>
+                                    <label for="floatingInput">Email address</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control rounded-3" id="floatingPassword"
+                                           placeholder="Password" required>
+                                    <label for="floatingPassword">Password</label>
+                                </div>
+                                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign" type="submit">Sign up</button>
+                                <small class="text-body-secondary d-flex justify-content-center">By clicking Sign up,
+                                    you agree to the terms of use.</small>
+                                <hr class="my-4">
+                                <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
+                                <a href="/oauth2/authorization/google">
+                                    <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="button">
+                                        <i class="fa-brands fa-google"></i> Sign up with Google
+                                    </button>
+                                </a>
+                                <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="submit">
+                                    <i class="fa-brands fa-apple"></i>
+                                    Sign up with Apple
+                                </button>
+                                <div class="d-flex justify-content-center gap-2 mt-4">
+                                    <p class="d-flex justify-content-center" href="#">Already have an account?</p>
+                                    <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalLogin">Log
+                                        in</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Log In -->
+            <div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalLogin"
+                 aria-labelledby="modalSignin">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content rounded-4 shadow">
+                        <div class="modal-header p-5 pb-4 border-bottom-0">
+                            <h1 class="fw-bold mb-0 fs-2">Log in</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-5 pt-0">
+                            <form class="">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control rounded-3" id="floatingInputLogin"
+                                           placeholder="name@example.com" required>
+                                    <label for="floatingInput">Email address</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control rounded-3" id="floatingPasswordLogin"
+                                           placeholder="Password" required>
+                                    <label for="floatingPassword">Password</label>
+                                </div>
+                                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign" onclick="window.location.href='dashboard.html'" type="button">Log in</button>
+                                <hr class="my-4">
+                                <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
+                                <a href="/oauth2/authorization/google">
+                                    <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="button">
+                                        <i class="fa-brands fa-google"></i> Log in with Google
+                                    </button>
+                                </a>
+                                <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="submit">
+                                    <i class="fa-brands fa-apple"></i>
+                                    Log in with Apple
+                                </button>
+                                <div class="d-flex justify-content-center gap-2 mt-4">
+                                    <p class="d-flex justify-content-center" href="#">Don't have an account?</p>
+                                    <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalSignin">Sign
+                                        up</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 </header>
@@ -324,7 +414,7 @@
                         </div>
                     </div>
                     <!-- Botones -->
-                    <div class="d-flex gap-2 mt-3">
+                    <div class="d-flex gap-2 mt-3 buy-sell">
                         <button class="btn btn-danger w-50 py-2 btn-BuySell" id="buy-btn">Buy</button>
                         <button class="btn btn-sell w-50 py-2 btn-BuySell" id="sell-btn">Sell</button>
                     </div>
@@ -353,8 +443,7 @@
                         <div class="tab-pane fade show active" id="price-chart" role="tabpanel"
                              aria-labelledby="price-tab">
                             <div class="chart-wrapper">
-                                <canvas id="crypto-chart">
-                                </canvas>
+                                <div id="crypto-chart" style="width: 100%; height: 100%"></div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="volume-chart" role="tabpanel" aria-labelledby="volume-tab">
@@ -626,7 +715,7 @@
 <script src="/js/CurrencyJs/Currency.js"></script>
 <script src="/js/UserJs/User.js"></script>
 <script src="/js/TransactionJs/Transaction.js"></script>
-<script src="/js/javaScript.js"></script>
+<script src="/js/loadGeneral.js"></script>
 <script src="js/infoCrypto.js"></script>
 </body>
 </html>
