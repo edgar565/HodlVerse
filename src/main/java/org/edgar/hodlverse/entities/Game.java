@@ -5,6 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -16,25 +21,35 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "La dificultad no puede ser nula")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Difficulty difficulty;
 
+    @NotNull(message = "El crédito inicial no puede ser nulo")
+    @DecimalMin(value = "0.0", message = "El crédito inicial debe ser mayor o igual a 0")
     @Column(nullable = false)
     private BigDecimal initialCredit;
 
+    @NotNull(message = "El objetivo no puede ser nulo")
+    @DecimalMin(value = "0.0", message = "El objetivo debe ser mayor o igual a 0")
     @Column(nullable = false)
     private BigDecimal objective;
 
+    @Min(value = 1, message = "La duración debe ser al menos 1 día")
     @Column(nullable = false)
     private int duration;
 
+    @NotNull(message = "La fecha de inicio no puede ser nula")
+    @Future(message = "La fecha de inicio debe ser una fecha futura")
     @Column(nullable = false)
     private LocalDateTime startDate;
 
+    @NotNull(message = "La fecha de fin no puede ser nula")
     @Column(nullable = false)
-    private LocalDateTime endDate; // Nuevo atributo endDate
+    private LocalDateTime endDate;
 
+    @NotNull(message = "El usuario no puede ser nulo")
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

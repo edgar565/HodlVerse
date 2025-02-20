@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -18,18 +19,22 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resultId;
 
+    @NotNull(message = "El resultado no puede ser nulo")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Ending ending;  // Enum con los valores bankruptcy, outOfTime, goalReached
+    private Ending ending;
+  // Enum con los valores bankruptcy, outOfTime, goalReached
 
+    @NotNull(message = "El porcentaje de beneficios no puede ser nulo")
     @Column(nullable = false)
     private Double profit;  // Porcentaje de beneficios
 
+    @NotNull(message = "El juego no puede ser nulo")
     @OneToOne
     @JoinColumn(name = "game_id", nullable = false)
-    @JsonIgnore
     private Game game;  // Relación con la entidad Game
 
+    @NotNull(message = "La fecha del resultado no puede ser nula")
     @Column(nullable = false)
     private LocalDateTime resultDate;  // Fecha en la que se registra el resultado
 

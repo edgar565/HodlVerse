@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,9 +20,12 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long walletId;
 
+    @NotBlank(message = "El nombre de la billetera no puede estar en blanco")
     @Column(nullable = false, length = 50)
     private String walletName;
 
+    @NotNull(message = "La fecha de creación no puede ser nula")
+    @Past(message = "La fecha de creación debe ser una fecha pasada")
     @Column(nullable = false)
     private LocalDate creationDate;
 

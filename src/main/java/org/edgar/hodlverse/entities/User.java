@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,23 +21,31 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @NotBlank(message = "El nombre de usuario no puede estar en blanco")
     @Column(nullable = false, length = 50)
     private String username;
 
+    @NotBlank(message = "El correo electrónico no puede estar en blanco")
+    @Email(message = "El correo electrónico no es válido")
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @NotBlank(message = "La contraseña no puede estar en blanco")
     @Column(nullable = false, length = 100)
     private String password;
 
+    @NotNull(message = "La fecha de registro no puede ser nula")
+    @Past(message = "La fecha de registro debe ser una fecha pasada")
     @Column(nullable = false)
     private LocalDate registrationDate;
 
     @Column(length = 200)
-    private String picture;  // Nuevo campo para la URL de la imagen del perfil
+    private String picture;// Nuevo campo para la URL de la imagen del perfil
 
+    @NotNull(message = "La billetera no puede ser nula")
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Wallet wallet;
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,12 +23,16 @@ public class Currency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long currencyId;
 
+    @NotBlank(message = "El ticker no puede estar en blanco")
+    @Size(max = 10, message = "El ticker no puede tener más de 10 caracteres")
     @Column(nullable = false, unique = true, length = 10)
     private String ticker; // Símbolo corto de la criptomoneda
 
+    @NotBlank(message = "El nombre no puede estar en blanco")
     @Column(nullable = false)
     private String name; // Ejemplo: Bitcoin
 
+    @NotBlank(message = "La URL de la imagen no puede estar en blanco")
     @Column(nullable = false)
     private String image; // URL del logo de la criptomoneda
 
