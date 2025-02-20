@@ -360,7 +360,7 @@ class History {
     static async getHighestVolume() {
         try {
             const response = await $.ajax({
-                url: '/highest-volume',
+                url: '/history/highest-volume',
                 type: 'GET'
             });
             return response;

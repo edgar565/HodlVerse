@@ -66,129 +66,120 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function loadHistory() {
         try {
-            const crypto = await History.loadHistories();
-            return crypto;
+            const history = await History.loadHistories();
+            return history;
         } catch (error) {
             console.error("Error fetching data from API:", error);
             return null;
         }
     }
 
-    async function main() {
-        try {
-            // Cargar datos históricos
-            const histories = await loadHistory();
-            if (!histories) {
-                throw new Error("No se pudieron cargar los datos de historial.");
-            }
+    const histories = await loadHistory();
+    console.log(histories);
 
-            let priceLabels = [];
-            let prices = [];
 
-            // Cargar datos para el gráfico
-            function loadInfo() {
-                for (const history of histories) {
-                    if (!history.currency || !history.currency.currencyId) {
-                        console.warn("Datos incompletos en:", history);
-                        continue;
-                    }
-                    if (!history.lastUpdated || !history.currentPrice) {
-                        console.warn("Faltan datos de precio o fecha:", history);
-                        continue;
-                    }
-                    // Convertimos la fecha en timestamp para ECharts
-                    priceLabels.push(new Date(history.lastUpdated).getTime());
-                    prices.push(history.currentPrice);
-                }
-            }
-
-            loadInfo();
-
-            // Verificar si hay datos antes de graficar
-            if (priceLabels.length === 0 || prices.length === 0) {
-                console.warn("No hay datos suficientes para graficar.");
-                return;
-            }
-
-            // Configurar gráfico con ECharts
-            const chartDom = document.getElementById('crypto-chart');
-            if (!chartDom) {
-                console.error("No se encontró el elemento #crypto-chart");
-                return;
-            }
-
-            const myChart = echarts.init(chartDom);
-
-            // Configurar opciones de ECharts
-            const option = {
-                tooltip: {
-                    trigger: 'axis',
-                    backgroundColor: 'rgba(255,255,255,0.9)',
-                    borderColor: '#ddd',
-                    borderWidth: 1,
-                    textStyle: { color: '#000' },
-                    formatter: function (params) {
-                        let date = new Date(params[0].data[0]).toLocaleDateString();
-                        let price = params[0].data[1].toLocaleString();
-                        return `<strong>Date:</strong> ${date}<br><strong>Price:</strong> $${price}`;
-                    }
-                },
-                title: {
-                    left: 'center',
-                    text: 'Crypto Price Evolution',
-                    textStyle: { color: 'rgb(6, 20, 40)' }
-                },
-                toolbox: {
-                    feature: {
-                        dataZoom: { yAxisIndex: 'none' },
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                xAxis: {
-                    type: 'time',
-                    boundaryGap: false,
-                    axisLabel: { color: 'rgb(6, 20, 40)' }
-                },
-                yAxis: {
-                    type: 'value',
-                    boundaryGap: [0, '100%'],
-                    axisLabel: {
-                        formatter: function (value) {
-                            return `${value.toLocaleString()}$`;
-                        },
-                        color: 'rgb(6, 20, 40)'
-                    }
-                },
-                dataZoom: [
-                    { type: 'inside', start: 0, end: 20 },
-                    { start: 0, end: 20 }
-                ],
-                series: [
-                    {
-                        name: 'Crypto Price ($)',
-                        type: 'line',
-                        smooth: true,
-                        symbol: 'none',
-                        areaStyle: { color: 'rgba(6, 20, 40, 0.2)' },
-                        lineStyle: { color: 'rgb(6, 20, 40)', width: 2 },
-                        itemStyle: { color: 'rgb(6, 20, 40)' },
-                        data: priceLabels.map((time, index) => [time, prices[index]])
-                    }
-                ]
-            };
-
-            // Aplicar opciones al gráfico
-            myChart.setOption(option);
-            window.addEventListener('resize', () => myChart.resize());
-
-        } catch (error) {
-            console.error("Error cargando el gráfico:", error);
-        }
+    if (!histories) {
+        throw new Error("No se pudieron cargar los datos de historial.");
     }
 
-// Ejecutar la función principal
-    main();
+    function loadPriceLabels() {
+        let priceLabels = [];
+        for (const history of histories) {
+            if (crypto.currencyId === history.currency.currencyId) {
+                priceLabels.push(history.lastUpdated)
+            }
+        }
+        return priceLabels;
+    }
+    let priceLabels = await loadPriceLabels();
+
+
+    // Cargar datos para el gráfico
+    function loadInfo() {
+        let prices = [];
+        for (const history of histories) {
+            if (history.currency.currencyId === crypto.currencyId) {
+                // Convertimos la fecha en timestamp para ECharts
+                prices.push(history.currentPrice);
+            }
+        }
+        return prices;
+    }
+
+    let prices = await loadInfo();
+    console.log(priceLabels);
+    console.log(prices);
+
+    // Configurar gráfico con ECharts
+    const chartDom = document.getElementById('crypto-chart');
+    if (!chartDom) {
+        console.error("No se encontró el elemento #crypto-chart");
+        return;
+    }
+
+    const myChart = echarts.init(chartDom);
+
+    // Configurar opciones de ECharts
+    const option = {
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            borderColor: '#ddd',
+            borderWidth: 1,
+            textStyle: {color: '#000'},
+            formatter: function (params) {
+                let date = new Date(params[0].data[0]).toLocaleDateString();
+                let price = params[0].data[1].toLocaleString();
+                return `<strong>Date:</strong> ${date}<br><strong>Price:</strong> $${price}`;
+            }
+        },
+        title: {
+            left: 'center',
+            text: 'Crypto Price Evolution',
+            textStyle: {color: 'rgb(6, 20, 40)'}
+        },
+        toolbox: {
+            feature: {
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'time',
+            boundaryGap: false,
+            axisLabel: {color: 'rgb(6, 20, 40)'}
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            axisLabel: {
+                formatter: function (value) {
+                    return `${value.toLocaleString()}$`;
+                },
+                color: 'rgb(6, 20, 40)'
+            }
+        },
+        dataZoom: [
+            {type: 'inside', start: 0, end: 20},
+            {start: 0, end: 20}
+        ],
+        series: [
+            {
+                name: 'Crypto Price ($)',
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+                areaStyle: {color: 'rgba(6, 20, 40, 0.2)'},
+                lineStyle: {color: 'rgb(6, 20, 40)', width: 2},
+                itemStyle: {color: 'rgb(6, 20, 40)'},
+                data: priceLabels.map((time, index) => [time, prices[index]])
+            }
+        ]
+    };
+
+    // Aplicar opciones al gráfico
+    myChart.setOption(option);
+    window.addEventListener('resize', () => myChart.resize());
 
 // ================================
 // GRÁFICO DE EVOLUCIÓN DE VOLUMEN
@@ -250,7 +241,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         }
     });
-});
+})
+;
 
 document.querySelectorAll('.buy-sell button').forEach(button => {
     button.addEventListener('click', async function () {

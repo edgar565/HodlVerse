@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let li = document.createElement("li");
             li.classList.add("row", "py-1", "mt-2", "mb-2", "card-item");
             li.innerHTML = `
-                <div class="col-6" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'">
+                <div class="col-6 bg-white" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
                     <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">${coin.currency.name}
                 </div>
                 <div class="col-3 text-end">${coin.currentPrice.toLocaleString()}$</div>
@@ -83,19 +83,39 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     topWinners();
 
-    // async function highestVolume() {
-    //     try {
-    //         const coins = await History.getHighestVolume();
-    //         const top5Coins = coins.slice(0, 5);
-    //         console.log(top5Coins);
-    //         let lista = document.getElementById("highest-volume-list");
-    //         listas(lista, top5Coins);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-    //
-    // highestVolume();
+    async function highestVolume() {
+        try {
+            const coins = await History.getHighestVolume();
+            const top5Coins = coins.slice(0, 5); // Tomar solo las 5 con mayor volumen
+            console.log(top5Coins);
+
+            let lista = document.getElementById("highest-volume-list");
+            lista.innerHTML = ""; // Limpiar la lista antes de agregar nuevos elementos
+
+            top5Coins.forEach(coin => {
+                let li = document.createElement("li");
+                li.classList.add("row", "py-1", "mt-2", "mb-2", "card-item");
+
+                li.innerHTML = `
+                <div class="col-6 d-flex align-items-center" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
+                    <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">
+                    <span>${coin.currency.name} (${coin.currency.ticker.toUpperCase()})</span>
+                </div>
+                <div class="col-6 text-end fw-bold">
+                    ${coin.totalVolume.toLocaleString()}$
+                </div>
+            `;
+
+                lista.appendChild(li);
+            });
+
+        } catch (error) {
+            console.error("Error al obtener las criptomonedas con mayor volumen:", error);
+        }
+    }
+
+    highestVolume();
+
 
 
     // ================================
@@ -144,7 +164,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 let row = `
                 <tr>
                     <td class="text-end">${contador}</td>
-                    <td class="sticky-col start-0 text-start"><div onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'"><img src="${coin.currency.image}" height="24" alt="Icono de " ${coin.currency.name}> ${coin.currency.name} (${coin.currency.ticker.toUpperCase()})</div></td>
+                    <td class="sticky-col start-0 text-start" style="cursor:pointer;"><div onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'"><img src="${coin.currency.image}" height="24" alt="Icono de " ${coin.currency.name}> ${coin.currency.name} (${coin.currency.ticker.toUpperCase()})</div></td>
                     <td class="text-end">${coin.currentPrice.toLocaleString()}$</td>
                     <td class="text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'}">${coin.priceChangePercentage24h.toLocaleString()}%</td>
                     <td class="text-end">${coin.totalVolume.toLocaleString()}$</td>
@@ -163,4 +183,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     updateCryptoTable();
     setInterval(updateCryptoTable, 300000); // Actualiza cada 5 min
 
+});
+document.getElementById("trendingCoins").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=trendingCoins";
+});
+document.getElementById("topLosers").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=topLosers";
+});
+document.getElementById("topWinners").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=topWinners";
+});
+document.getElementById("highestVolume").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=highestVolume";
 });

@@ -1,68 +1,97 @@
-async function fetchCryptoData() {
-    const response = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true");
-    const data = await response.json();
-    async function fetchCryptoData() {
+document.addEventListener('DOMContentLoaded', async function () {
+    // ================================
+    // OBTENER DATOS DE LA CRYPTO
+    // ================================
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const nameRanking = urlParams.get('nameRanking');
+
+    if (nameRanking === "trendingCoins") {
+        trendingCoins();
+    } else if (nameRanking === "topLosers") {
+        topLosers();
+    } else if (nameRanking === "topWinners") {
+        topWinners();
+    } else if (nameRanking === "highestVolume") {
+        highestVolume();
+    }
+
+    function loadTable(coins) {
+        const tableBody = document.getElementById("rankingTable");
+        tableBody.innerHTML = ""; // Limpiar contenido anterior
+        coins.forEach((coin, index) => {
+            let row = document.createElement("tr");
+
+            row.innerHTML = `
+            <th scope="row">${index + 1}</th>
+            <td onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
+                <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">
+                ${coin.currency.name} (${coin.currency.ticker.toUpperCase()})
+            </td>
+            <td class="text-end">${coin.currentPrice.toLocaleString()}$</td>
+            <td class="${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold text-end">
+                ${coin.priceChangePercentage24h.toFixed(2)}%
+            </td>
+            <td class="text-end">${coin.marketCap.toLocaleString()}$</td>
+            <td class="text-end">${coin.totalVolume.toLocaleString()}$</td>
+        `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function loadName(name, message){
+        const nameElements = document.querySelectorAll(".breadcrumbNamePage");
+        nameElements.forEach(el => {
+            el.innerHTML = name;
+        });
+        document.title = name + " - HodlVerse";
+        document.getElementById("message").innerHTML = message;
+    }
+
+    async function trendingCoins() {
+        let name = "Trending Coins";
+        let message = "Discover the hottest cryptocurrencies trending right now, driven by market activity and user interest.";
+        loadName(name, message);
         try {
-            const response = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true");
-            const data = await response.json();
-            console.log(data); // Verifica que la respuesta es correcta
-            const rankingData = data.map(coin => ({
-                rank: coin.market_cap_rank,
-                coin: coin.name,
-                id: coin.id,
-                logo: coin.image,
-                price: `$${coin.current_price.toLocaleString()}`,
-                marketCap: `$${coin.market_cap.toLocaleString()}`,
-                change: `${coin.price_change_percentage_7d_in_currency.toFixed(2)}%`,
-                trend: `https://www.coingecko.com/coins/${coin.id}/sparkline.svg`
-            }));
-            renderTable(rankingData);
+            const coins = await History.getTrendingCoins();
+            loadTable(coins);
         } catch (error) {
-            console.error("Error fetching data from API:", error); // En caso de error
+            console.error(error);
         }
     }
 
+    async function topLosers() {
+        let name = "Top Losers";
+        let message = "Explore the biggest market drops of the day, highlighting cryptocurrencies with the steepest declines in value.";
+        loadName(name, message);
+        try {
+            const coins = await History.getTopLosers();
+            loadTable(coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-    const rankingData = data.map(coin => ({
-        rank: coin.market_cap_rank,
-        coin: coin.name,
-        id: coin.id,
-        logo: coin.image,
-        price: `$${coin.current_price.toLocaleString()}`,
-        marketCap: `$${coin.market_cap.toLocaleString()}`,
-        change: `${coin.price_change_percentage_7d_in_currency.toFixed(2)}%`,
-        trend: `https://www.coingecko.com/coins/${coin.id}/sparkline.svg`
-    }));
-
-    renderTable(rankingData);
-}
-
-function renderTable(rankingData) {
-    const rankingTable = document.getElementById("rankingCards");
-    rankingTable.innerHTML = ''; // Limpiar tabla antes de renderizar
-
-    rankingData.forEach(item => {
-        const row = `
-        <tr>
-            <td>${item.rank}</td>
-            <td>
-                <div class="d-flex align-items-center">
-                    <img src="${item.logo}" alt="${item.coin}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
-                    <span>${item.coin}</span>
-                </div>
-            </td>
-            <td>${item.price}</td>
-            <td>${item.marketCap}</td>
-            <td class="${item.change.includes('-') ? 'text-danger' : 'text-success'}">
-                ${item.change}
-            </td>
-            <td>
-                <img src="${item.trend}" alt="trend" class="trend-chart" style="width: 50px; height: 25px;">
-            </td>
-        </tr>
-        `;
-        rankingTable.innerHTML += row;
-    });
-}
-
-fetchCryptoData();
+    async function topWinners() {
+        let name = "Top Winners";
+        let message = "Check out the top-performing cryptocurrencies, showcasing the biggest price surges in the market today.";
+        loadName(name, message);
+        try {
+            const coins = await History.getTopWinners();
+            loadTable(coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    async function highestVolume() {
+        let name = "Highest Volume";
+        let message = "Uncover the most traded cryptocurrencies, ranked by trading volume and market liquidity.";
+        loadName(name, message);
+        try {
+            const coins = await History.getHighestVolume();
+            loadTable(coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+});
