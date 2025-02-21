@@ -49,12 +49,13 @@ class Transaction {
             const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-            const response = await $.ajax({
+
+            /*const response = await $.ajax({
                 url: '/transactions',
                 type: 'POST',
                 contentType: 'application/json',
                 headers: {
-                    [csrfHeader]: csrfToken,  // Envía el token CSRF en la cabecera
+                    "csrfHeader": csrfToken,  // Envía el token CSRF en la cabecera
                     "Authorization": "Bearer " + localStorage.getItem("google_token"),
                 },
                 data: JSON.stringify(transactionData),
@@ -63,8 +64,58 @@ class Transaction {
                 },
                 error: function(xhr, status, error) {
                     console.error("❌ Error al crear la transacción:", xhr);
+                    console.error("❌ STATUS / ERRoR:", status, error);
                 }
-            });
+            });*/
+
+            // 7️⃣ Actualizar el balance de la moneda de origen
+
+            let originBalanceArray = await Balance.getBalancesByCurrency(transactionData.originCurrency.currencyId);
+            console.log("originBalanceArray", originBalanceArray);
+
+            if (!originBalanceArray || originBalanceArray.length === 0) {
+                // Si no hay balance previo, se crea uno nuevo con la cantidad inicial (en negativo porque es una salida)
+                let newOriginBalance = {
+                    currencyId: transactionData.originCurrency.currencyId,
+                    walletAmount: -transactionData.originTransactionAmount, // Se resta porque es un gasto
+                    userId: transactionData.userId // Asegúrate de incluir el userId
+                };
+                await Balance.createBalance(newOriginBalance, (createdBalance) => {
+                    console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
+                });
+            } else {
+                let originBalance = originBalanceArray[0]; // Se asume que existe al menos un balance
+                let updatedOriginAmount = originBalance.walletAmount - transactionData.originTransactionAmount;
+
+                Balance.updateBalance(originBalance.balanceId, { walletAmount: updatedOriginAmount }, (data) => {
+                    console.log("✅ Balance de moneda origen actualizado:", data);
+                });
+            }
+
+            // 8️⃣ Actualizar el balance de la moneda de destino
+            let destinationBalanceArray = await Balance.getBalancesByCurrency(transactionData.destinationCurrency.currencyId);
+            console.log("destinationBalanceArray", destinationBalanceArray);
+
+            if (!destinationBalanceArray || destinationBalanceArray.length === 0) {
+                // Si no hay balance previo, se crea uno nuevo con la cantidad inicial
+                let newDestinationBalance = {
+                    currencyId: transactionData.destinationCurrency.currencyId,
+                    walletAmount: transactionData.destinationTransactionAmount,
+                    userId: transactionData.userId // Asegúrate de incluir el userId
+                };
+                await Balance.createBalance(newDestinationBalance, (createdBalance) => {
+                    console.log("✅ Nuevo balance de moneda destino creado:", createdBalance);
+                });
+            } else {
+                let destinationBalance = destinationBalanceArray[0]; // Se asume que existe al menos un balance
+                let updatedDestinationAmount = destinationBalance.walletAmount + transactionData.destinationTransactionAmount;
+
+                Balance.updateBalance(destinationBalance.balanceId, { walletAmount: updatedDestinationAmount }, (data) => {
+                    console.log("✅ Balance de moneda destino actualizado:", data);
+                });
+            }
+
+
 
         } catch (error) {
             console.error('❌ Error al crear la transacción:', error);
