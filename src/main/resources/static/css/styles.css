@@ -2,112 +2,178 @@
     --azulclaro: #E0EBFB;
     --oro: #C58120;
     --azuloscuro: #061428;
+    --fondodark: #121212; /* Fondo oscuro */
+    --textodark: #E0E0E0; /* Texto claro */
 }
+
 html, body {
     height: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
 }
+
 body {
     background-color: var(--azulclaro);
     color: var(--azuloscuro);
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
 }
+
+body.dark-mode {
+    background-color: var(--fondodark);
+    color: var(--textodark);
+}
+
 main {
     flex: 1;
 }
-header{
+
+header {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     z-index: 2;
 }
-.nav{
+
+body.dark-mode header {
+    background-color: var(--azuloscuro);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.nav {
     align-items: center;
 }
-.nav-item a:hover{
+
+.nav-item a:hover {
     color: #656565 !important;
 }
-.navbar{
+
+body.dark-mode .nav-item a:hover {
+    color: var(--textodark) !important;
+}
+
+.navbar {
     border-bottom: 2px solid var(--azuloscuro);
 }
-.active{
+
+body.dark-mode .navbar {
+    border-bottom: 2px solid var(--textodark);
+}
+
+.active {
     color: var(--oro) !important;
 }
-.search{
+
+.search {
     border: 1px solid var(--azuloscuro);
     border-radius: 8px;
 }
+
+body.dark-mode .search {
+    border: 1px solid var(--textodark);
+}
+
 .nav-link {
     color: var(--azuloscuro) !important;
 }
+
+body.dark-mode .nav-link {
+    color: var(--textodark) !important;
+}
+
 .nav-link:hover {
     color: var(--oro) !important;
 }
+
 .nav-item.dropdown:hover .dropdown-menu {
     display: block;
 }
+
 .nav-item .nav-link.active {
-    color: var(--oro) !important;  /* Asegúrate de que sea un enlace activo */
+    color: var(--oro) !important;
 }
-.wallet{
+
+.wallet {
     gap: 5px;
     margin-right: 15px;
 }
+
 footer {
     background-color: var(--azuloscuro);
 }
+
+body.dark-mode footer {
+    background-color: var(--fondodark);
+}
+
 footer * {
     color: white !important;
 }
+
+body.dark-mode footer * {
+    color: var(--textodark) !important;
+}
+
 footer a {
     text-decoration: none;
 }
+
 footer a:hover {
     color: var(--oro) !important;
 }
+
 /* Estilo del carrusel */
 .awards-carousel {
-    animation: scroll-continuous 80s linear infinite; /* Animación circular */
+    animation: scroll-continuous 80s linear infinite;
     display: flex;
-    gap: 2rem; /* Espacio entre elementos */
-    will-change: transform; /* Optimización de rendimiento */
-    animation-play-state: running; /* Asegurarse de que la animación esté en marcha por defecto */
-    width: calc(200%); /* Duplica el ancho para un ciclo completo */
+    gap: 2rem;
+    will-change: transform;
+    animation-play-state: running;
+    width: calc(200%);
 }
-.awards-carousel p{
+
+.awards-carousel p {
     color: var(--oro) !important;
 }
-.percentage{
+
+.percentage {
     color: red !important;
 }
-.awards-carousel:hover{
+
+.awards-carousel:hover {
     animation-play-state: paused;
 }
 
 @keyframes scroll-continuous {
     0% {
-        transform: translateX(0); /* Comienza en el inicio */
+        transform: translateX(0);
     }
     100% {
-        transform: translateX(-100%); /* Se mueve la mitad del contenido */
+        transform: translateX(-100%);
     }
 }
 
 /* Evitar problemas de diseño */
 .awards-item {
-    min-width: auto; /* Ancho mínimo para cada elemento */
-    flex-shrink: 0; /* Evita que los elementos se compriman */
-    margin-right: 15px;  /* Ajusta el margen para que no se solapen */
+    min-width: auto;
+    flex-shrink: 0;
+    margin-right: 15px;
     display: flex;
 }
-.config-item{
+
+.config-item {
     color: var(--azuloscuro) !important;
 }
-.config{
+
+body.dark-mode .config-item {
+    color: var(--textodark) !important;
+}
+
+.config {
     gap: 6%;
 }
+
 .config i {
     cursor: pointer;
     border-radius: 8px;
@@ -116,24 +182,42 @@ footer a:hover {
     height: 40px;
     display: flex;
 }
+
+body.dark-mode .config i {
+    border: 1px solid var(--textodark) !important;
+}
+
 .config i:hover {
     box-shadow: 0px 0px 3px 3px #bdd7fa;
     color: var(--oro);
 }
-header .border-bottom{
+
+header .border-bottom {
     border-bottom: 1px solid var(--azuloscuro) !important;
 }
-.offcanvas{
+
+body.dark-mode header .border-bottom {
+    border-bottom: 1px solid var(--textodark) !important;
+}
+
+.offcanvas {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
+
+body.dark-mode .offcanvas {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
 /* Asegurarte de que el contenido colapsado funcione correctamente */
 .offcanvas .collapse {
-    display: none !important; /* Por defecto, ocultar el contenido */
-    transition: height 0.3s ease; /* Animación suave */
+    display: none !important;
+    transition: height 0.3s ease;
 }
+
 .offcanvas .collapse.show {
-    display: block !important; /* Mostrar el contenido cuando esté expandido */
+    display: block !important;
 }
+
 .btn-toggle {
     background: transparent;
     color: var(--azuloscuro);
@@ -143,61 +227,87 @@ header .border-bottom{
     cursor: pointer;
     border: none;
 }
+
+body.dark-mode .btn-toggle {
+    color: var(--textodark);
+}
+
 .btn-toggle:focus,
 .btn-toggle:hover {
     color: var(--oro);
 }
+
 .btn-toggle-nav .link-body-emphasis {
     color: var(--azuloscuro);
 }
+
+body.dark-mode .btn-toggle-nav .link-body-emphasis {
+    color: var(--textodark);
+}
+
 .btn-toggle-nav .link-body-emphasis:hover {
     color: var(--oro);
 }
-i{
+
+i {
     cursor: pointer;
     margin-right: 5px;
 }
+
 /* Estilo para los enlaces de las listas en offcanvas */
 .offcanvas-body ul.btn-toggle-nav li a {
-    padding: 0.5rem 1rem; /* Espaciado interno */
-    margin-bottom: 0.5rem; /* Separación entre elementos */
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
     display: flex;
-    align-items: center; /* Alinea texto e íconos */
-    text-decoration: none; /* Elimina subrayados */
-    border: 1px solid var(--azuloscuro); /* Borde */
-    border-radius: 8px; /* Bordes redondeados */
-    color: var(--azuloscuro); /* Color del texto */
-    background-color: var(--azulclaro); /* Fondo suave */
-    transition: all 0.3s ease; /* Transición suave */
+    align-items: center;
+    text-decoration: none;
+    border: 1px solid var(--azuloscuro);
+    border-radius: 8px;
+    color: var(--azuloscuro);
+    background-color: var(--azulclaro);
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .offcanvas-body ul.btn-toggle-nav li a {
+    border: 1px solid var(--textodark);
+    color: var(--textodark);
+    background-color: var(--fondodark);
 }
 
 .offcanvas-body ul.btn-toggle-nav li a:hover {
-    background-color: var(--oro); /* Cambia el fondo al pasar el cursor */
-    color: white; /* Cambia el color del texto */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para resaltar */
+    background-color: var(--oro);
+    color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* Íconos en las listas */
 .offcanvas-body ul.btn-toggle-nav li a i {
-    margin-right: 0.5rem; /* Espaciado entre ícono y texto */
-    font-size: 1.2rem; /* Tamaño del ícono */
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
 }
 
 /* Espaciado general */
 .offcanvas-body ul.btn-toggle-nav {
-    padding: 0; /* Elimina padding por defecto */
-    list-style: none; /* Sin viñetas */
+    padding: 0;
+    list-style: none;
 }
-hr{
+
+hr {
     border: 1px solid var(--azuloscuro);
     margin-right: 3%;
     margin-left: 3%;
 }
+
+body.dark-mode hr {
+    border: 1px solid var(--textodark);
+}
+
 @media (max-width: 1399px) {
     .footer-info {
         max-width: 30%;
     }
 }
+
 .form-check-input {
     width: 40px;
     height: 20px;
@@ -206,28 +316,49 @@ hr{
     transition: background-color 0.3s, transform 0.3s;
 }
 
+body.dark-mode .form-check-input {
+    background-color: var(--fondodark);
+}
+
 .form-check-input:checked {
     background-color: var(--azuloscuro);
+}
+
+body.dark-mode .form-check-input:checked {
+    background-color: var(--textodark);
 }
 
 .form-check-input:checked:focus {
     box-shadow: none;
 }
+
 .modal-content {
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
+
+body.dark-mode .modal-content {
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.5);
+}
+
 .modal-title {
     font-weight: bold;
     color: var(--azuloscuro);
 }
+
+body.dark-mode .modal-title {
+    color: var(--textodark);
+}
+
 .modal-backdrop {
     display: none;
 }
-.container{
-    max-width:1500px;
+
+.container {
+    max-width: 1500px;
 }
-.card{
+
+.card {
     border-radius: 30px;
 }
 
@@ -252,6 +383,7 @@ hr{
 .table tbody td.sticky-col.start-0 {
     left: 0;
     z-index: 3;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Segunda columna (Coin) fija, alineada correctamente */
@@ -264,6 +396,14 @@ hr{
 /* Bordes inferiores para mejorar la visualización */
 .table tbody td {
     border-bottom: 1px solid #ddd;
+}
+
+/* Fijar la segunda columna (Moneda) */
+.sticky-col.start-50 {
+    left: 50px;
+    z-index: 4;
+    border-left: 1px solid #ddd;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Asegurar que en pantallas pequeñas el scroll se pueda hacer correctamente */
@@ -288,6 +428,10 @@ hr{
     transition: color 0.3s ease-in-out;
 }
 
+body.dark-mode .breadcrumb-item a {
+    color: var(--textodark);
+}
+
 /* Efecto hover */
 .breadcrumb-item a:hover {
     color: var(--oro);
@@ -298,18 +442,25 @@ hr{
 .breadcrumb-item.active {
     color: var(--oro);
 }
+
 .breadcrumb-item + .breadcrumb-item::before {
-    margin: 0 8px; /* Espaciado a ambos lados del separador */
+    margin: 0 8px;
 }
 
-.container{
+.container {
     max-width: 1500px;
 }
-.text{
+
+.text {
     color: var(--azuloscuro) !important;
 }
+
+body.dark-mode .text {
+    color: var(--textodark) !important;
+}
+
 /* Solo aplica el blur al contenido detrás del modal */
 body.modal-open main {
     filter: blur(5px);
-    pointer-events: none; /* Evita clics en el fondo */
+    pointer-events: none;
 }

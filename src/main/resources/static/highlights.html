@@ -329,57 +329,8 @@
                             <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
-                        <ul class="list-unstyled mt-2">
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/pancakeswap-cake-logo.png?v=040"
-                                         alt="HyperCoin" height="24" class="me-2">
-                                    PancakeSwap
-                                </div>
-                                <div class="col-3 text-end">$1.20</div>
-                                <div class="col-3 text-end text-success fw-bold">+10%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/based-brett-brett-logo.png?v=040"
-                                         alt="MetaToken" height="24" class="me-2">
-                                    Brett
-                                </div>
-                                <div class="col-3 text-end">$0.85</div>
-                                <div class="col-3 text-end text-success fw-bold">+7.3%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/bonk1-bonk-logo.png?v=040"
-                                         alt="Web3Token"
-                                         height="24" class="me-2">
-                                    Bonk
-                                </div>
-                                <div class="col-3 text-end">$2.50</div>
-                                <div class="col-3 text-end text-success fw-bold">+5.6%</div>
-                            </li>
-                            <!-- New Coins Added -->
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/ponke-ponke-logo.png?v=040"
-                                         alt="StarCoin"
-                                         height="24" class="me-2">
-                                    Ponke
-                                </div>
-                                <div class="col-3 text-end">$4.10</div>
-                                <div class="col-3 text-end text-success fw-bold">+8.1%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/pepe-pepe-logo.png?v=040" alt="SkyChain"
-                                         height="24" class="me-2">
-                                    Pepe
-                                </div>
-                                <div class="col-3 text-end">$3.85</div>
-                                <div class="col-3 text-end text-success fw-bold">+6.4%</div>
-                            </li>
-                        </ul>
-                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x">
+                        <ul class="list-unstyled mt-2" id="recommendations-list"></ul>
+                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="recommendations">
                             View
                             More
                         </button>
@@ -399,55 +350,9 @@
                             <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
-                        <ul class="list-unstyled mt-2">
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/juno-juno-logo.png?v=040" alt="HyperCoin"
-                                         height="24" class="me-2">
-                                    JUNO
-                                </div>
-                                <div class="col-3 text-end">$1.20</div>
-                                <div class="col-3 text-end text-danger fw-bold">-9%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/catcoin-token-cats-logo.png?v=040"
-                                         alt="MetaToken" height="24" class="me-2">
-                                    CATCOIN
-                                </div>
-                                <div class="col-3 text-end">$100.85</div>
-                                <div class="col-3 text-end text-success fw-bold">+7.3%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/poocoin-poocoin-logo.png?v=040"
-                                         alt="Web3Token" height="24" class="me-2">
-                                    PooCoin
-                                </div>
-                                <div class="col-3 text-end">$2.50</div>
-                                <div class="col-3 text-end text-success fw-bold">+5%</div>
-                            </li>
-                            <!-- New Coins Added -->
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/crown-crw-logo.png?v=040" alt="StarCoin"
-                                         height="24" class="me-2">
-                                    Crown
-                                </div>
-                                <div class="col-3 text-end">$4.10</div>
-                                <div class="col-3 text-end text-danger fw-bold">-5.2%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/tera-tera-logo.png?v=040" alt="SkyChain"
-                                         height="24" class="me-2">
-                                    TERA
-                                </div>
-                                <div class="col-3 text-end">$0.05</div>
-                                <div class="col-3 text-end text-danger fw-bold">-4.9%</div>
-                            </li>
+                        <ul class="list-unstyled mt-2" id="mostViewed-list">
                         </ul>
-                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x">
+                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="mostViewed">
                             View More
                         </button>
                     </div>

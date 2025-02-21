@@ -149,6 +149,34 @@ class Currency {
             }
         });
     }
+
+    // 🔊 Obtener las monedas recomendadas
+    static async getRecommendations() {
+        try {
+            const response = await $.ajax({
+                url: '/currencies/random',
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
+    }
+
+    // 🔊 Obtener las monedas mas vistas
+    static async getMostViewed() {
+        try {
+            const response = await $.ajax({
+                url: '/currencies/random',
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
+    }
 }
 
 window.Currency = Currency;

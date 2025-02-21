@@ -83,6 +83,51 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     topWinners();
 
+    async function recommended() {
+        try {
+            const coins = await Currency.getRecommendations();
+            let history = [];
+
+            // Usamos Promise.all para manejar múltiples llamadas async
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
+
+            console.log(coins);
+            const top5Coins = history.slice(0, 5);
+            console.log(top5Coins);
+
+            let lista = document.getElementById("recommendations-list");
+            listas(lista, top5Coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+    recommended();
+    async function mostViewed() {
+        try {
+            const coins = await Currency.getMostViewed();
+            let history = [];
+
+            // Usamos Promise.all para manejar múltiples llamadas async
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
+
+            console.log(coins);
+            const top5Coins = history.slice(0, 5);
+            console.log(top5Coins);
+            let lista = document.getElementById("mostViewed-list");
+            listas(lista, top5Coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    mostViewed();
+
     async function highestVolume() {
         try {
             const coins = await History.getHighestVolume();
@@ -195,4 +240,10 @@ document.getElementById("topWinners").addEventListener("click" , function () {
 });
 document.getElementById("highestVolume").addEventListener("click" , function () {
     window.location.href = "rankings.html?nameRanking=highestVolume";
+});
+document.getElementById("recommendations").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=recommendations";
+});
+document.getElementById("mostViewed").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=mostViewed";
 });

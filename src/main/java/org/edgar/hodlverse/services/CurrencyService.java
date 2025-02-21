@@ -83,7 +83,7 @@ public class CurrencyService {
     public CryptoData getCryptoData(String cryptoId) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="
-                + cryptoId + "&x_cg_demo_api_key=CG-znytHBgZBqGquS3aSyJMhuHA";
+                + cryptoId + "&x_cg_demo_api_key=CG-UL3PNqrycQ5iBy12fiJ6teBR";
 
         logger.info("Haciendo solicitud a la API: {}", url);
 
@@ -128,6 +128,14 @@ public class CurrencyService {
     public void deleteById(Long id) {
         currencyRepository.deleteById(id);
     }
+
+    public List<Currency> getAllCurrenciesRandom() {
+        return currencyRepository.findAllRandom();
+    }
+    public List<Currency> findAllByIds(List<Long> ids) {
+        return currencyRepository.findAllById(ids);
+    }
+
 
 }
 

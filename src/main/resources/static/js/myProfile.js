@@ -1,3 +1,41 @@
+document.addEventListener("DOMContentLoaded", function () {
+
+
+
+
+
+
+});
+
+
+document.getElementById("logout-btn").addEventListener("click", function () {
+    fetch("/logout", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": getCsrfToken() // Agregar el token CSRF
+        },
+        credentials: "same-origin"
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = "/index.html";
+        } else {
+            alert("Error al cerrar sesión");
+        }
+    }).catch(error => console.error("Error:", error));
+});
+
+// Función para obtener el token CSRF del HTML (Spring Security lo genera automáticamente)
+function getCsrfToken() {
+    let csrfMeta = document.querySelector('meta[name="_csrf"]');
+    return csrfMeta ? csrfMeta.content : "";
+}
+
+
+
+
+
+
+
 let balance = 0;
 let totalBalance = 1200; // Valor del balance
 const totalBalanceElement = document.getElementById('total-balance');
@@ -18,54 +56,3 @@ function animateBalance() {
 
 // Iniciar animación después de un pequeño retraso
 setTimeout(animateBalance);
-
-document.addEventListener("DOMContentLoaded", function () {
-    const ctx = document.getElementById("balanceChart").getContext("2d");
-
-    // Generar etiquetas de los últimos 30 días
-    const labels = [];
-    const dataValues = [];
-    for (let i = 29; i >= 1; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        labels.push(date.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" }));
-        dataValues.push(Math.floor(Math.random() * 1000) + 1850 * (Math.random() > 0.5 ? 1 : -1)); // Valores alrededor de 2350
-    }
-
-    // Asegurar que el último valor sea 2350
-    labels.push(new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" }));
-    dataValues.push(2350);
-
-    new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Balance (€)",
-                data: dataValues,
-                backgroundColor: dataValues.map(value => value >= 0 ? "#4CAF50" : "#FF5733"),
-                borderWidth: 1,
-            }],
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                tooltip: {
-                    backgroundColor: "white",
-                    titleColor: "black",
-                    bodyColor: "black",
-                    borderColor: "#ddd",
-                    borderWidth: 1
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
-        },
-    });
-});
-document.getElementById("dropdownMenu").addEventListener("click", function(event) {
-    window.location.href = "highlights.html";
-});
