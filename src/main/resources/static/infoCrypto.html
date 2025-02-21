@@ -23,312 +23,210 @@
 </head>
 <body>
 <header>
-    <div id="awards" class="awards-block bg-light border-bottom">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="mt-3 col-12 position-relative overflow-hidden">
-                    <div class="awards-carousel awards-items-wrapper">
-                        <!-- Contenido duplicado para efecto circular -->
-                        <div class="awards-item text-center gap-1">
-                            <span class="fw-bold d-block">Coins: </span>
-                            <p>16.937</p>
+<!-- TOP DATA CAROUSEL -->
+<div id="awards" class="awards-block bg-light border-bottom">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="mt-3 col-12 position-relative overflow-hidden">
+                <div class="awards-carousel awards-items-wrapper">
+                    <div class="awards-item text-center gap-1">
+                        <span class="fw-bold d-block">Coins: </span>
+                        <p>16.937</p>
+                    </div>
+                    <div class="awards-item text-center gap-1">
+                        <span class="fw-bold d-block">Exchanges: </span>
+                        <p>1.216</p>
+                    </div>
+                    <div class="awards-item text-center gap-1">
+                        <span class="fw-bold d-block">Market Cap: </span>
+                        <p class="marketCapValue"></p>
+                    </div>
+                    <div class="awards-item text-center gap-1">
+                        <span class="fw-bold d-block">24h Vol: </span>
+                        <p class="trendingCoinsValue"></p>
+                    </div>
+                    <div class="awards-item text-center gap-1">
+                        <span class="fw-bold d-block">Dominance: </span>
+                        <p class="dominance"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- NAVIGATION BAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- HODLVERSE LOGO FOR LARGE SCREENS -->
+        <a class="navbar-brand mx-auto d-block d-lg-none" href="dashboard.html">
+            <img src="images/logo.png" alt="HodlVerse Logo" height="70">
+        </a>
+        <!-- HODLVERSE LOGO FOR SMALL SCREENS -->
+        <a class="navbar-brand d-none d-lg-block" href="dashboard.html">
+            <img src="images/logo.png" alt="HodlVerse Logo" height="50">
+        </a>
+        <!-- DISPLAY BUTTON FOR SMALL SCREENS -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- MENU DISPLAY FOR LARGE SCREENS -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav-underline">
+                <!-- Dashboard Link -->
+                <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="dashboard.html"><i
+                            class="fa-solid fa-gauge-high"></i>Dashboard</a>
+                </li>
+                <!-- Highlights Link & Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown" href="highlights.html" id="dropdownMenu" role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false"><i class="fa-solid fa-chart-line"></i>Highlights</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                        <li><a class="dropdown-item" href="#" >Trending Coins</a></li>
+                        <li><a class="dropdown-item" href="#">Top Gainers</a></li>
+                        <li><a class="dropdown-item" href="#">Top Losers</a></li>
+                        <li><a class="dropdown-item" href="#">Recommendations</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Your Crypto Link -->
+            <div class="d-flex align-items-center mb-lg-0 wallet">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-currency-bitcoin" viewBox="0 0 16 16">
+                    <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927z"/>
+                </svg>
+                <a class="nav-link" href="myCryptos.html">My Cryptos</a>
+            </div>
+            <!-- Search Bar -->
+            <form class="d-flex search me-3" role="search">
+                <input class="form-control " type="search" placeholder="Search" aria-label="Search">
+            </form>
+            <!-- Configuration Modal Button -->
+            <div class="d-flex align-items-center justify-content-end config">
+                <a class="text-decoration-none config-item" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                    <i class="fa-solid fa-gear border border-2 p-2 justify-content-center align-items-center"></i>
+                </a>
+                <a href="myProfile.html" class="text-decoration-none config-item"><i
+                        class="fa-solid fa-user border border-2 p-2 justify-content-center align-items-center"></i></a>
+            </div>
+        </div>
+        <!-- MENU DISPLAY FOR SMALL SCREENS -->
+        <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="offcanvasRight"
+             aria-labelledby="offcanvasRightLabel">
+            <!-- OFFCANVAS TOP HODLVERSE LOGO -->
+            <div class="offcanvas-header">
+                <img src="images/logo.png" alt="HodlVerse Logo" height="55">
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <hr>
+            <!-- OFFCANVAS MENU -->
+            <div class="offcanvas-body">
+                <ul class="list-unstyled ps-0">
+                    <!-- Dashboard link -->
+                    <li class="mb-1 ms-3">
+                        <button type="button" onclick="window.location.href='dashboard.html'"
+                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+                            <i class="fa-solid fa-gauge-high"></i> Dashboard
+                        </button>
+                    </li>
+                    <!-- Highlights link & Dropdown -->
+                    <li class="mb-1 ms-3">
+                        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0"
+                                id="dropdownButton" onclick="window.location.href='highlights.html'">
+                            <i class="fa-solid fa-chart-line"></i> Highlights
+                        </button>
+                        <div class="collapse" id="dashboard-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li><a href="#"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
+                                <li><a href="#"><i class="fa-solid fa-arrow-up"></i> Top Gainers</a></li>
+                                <li><a href="#"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
+                                <li><a href="#"><i class="fa-solid fa-star"></i> Recommendations</a></li>
+                            </ul>
                         </div>
-                        <div class="awards-item text-center gap-1">
-                            <span class="fw-bold d-block">Exchanges: </span>
-                            <p>1.216</p>
+                    </li>
+                    <hr>
+                    <!-- My Profile Link -->
+                    <li class="mb-1 ms-3">
+                        <button type="button" onclick="window.location.href='myProfile.html'"
+                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+                            <i class="fa-solid fa-user"></i> My Profile
+                        </button>
+                    </li>
+                    <!-- My Cryptos Link -->
+                    <li class="mb-1 ms-3">
+                        <button type="button" onclick="window.location.href='myCryptos.html'"
+                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-currency-bitcoin" viewBox="0 0 16 16">
+                                <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927z"/>
+                            </svg>
+                            My Cryptos
+                        </button>
+                    </li>
+                    <hr>
+                    <!-- Settings Modal Button -->
+                    <li class="mb-1 ms-3">
+                        <button type="button"
+                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                                data-bs-toggle="modal"
+                                data-bs-target="#settingsModal">
+                            <i class="fa-solid fa-gear"></i> Settings
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- MODAL CONFIGURATION -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <i class="fa-solid fa-language"></i>
+                            <label for="languageSelect" class="form-label">Language</label>
+                            <select class="form-select" id="languageSelect">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                            </select>
                         </div>
-                        <div class="awards-item text-center gap-1">
-                            <span class="fw-bold d-block">Market Cap: </span>
-                            <p class="marketCapValue"></p>
+
+                        <div class="mb-3">
+                            <i class="fa-solid fa-money-bill"></i>
+                            <label for="currencySelect" class="form-label">Currency</label>
+                            <select class="form-select" id="currencySelect">
+                                <option value="usd">USD</option>
+                                <option value="eur">EUR</option>
+                                <option value="gbp">GBP</option>
+                            </select>
                         </div>
-                        <div class="awards-item text-center gap-1">
-                            <span class="fw-bold d-block">24h Vol: </span>
-                            <p class="trendingCoinsValue"></p>
-                        </div>
-                        <div class="awards-item text-center gap-1">
-                            <span class="fw-bold d-block">Dominance: </span>
-                            <p class="dominance"></p>
+
+                        <div class="mb-3 d-flex align-items-center">
+                            <i class="fa-solid fa-moon"></i>
+                            <label for="darkModeSwitch">Dark Mode</label>
+                            <div class="form-check form-switch ms-auto">
+                                <input class="form-check-input dark-mode-toggle" type="checkbox"
+                                       id="darkModeSwitch">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand mx-auto d-block d-lg-none" href="dashboard.html">
-                <img src="images/logo.png" alt="Logo de la aplicación" height="70">
-            </a>
-            <!-- Logo en su posición original en pantallas grandes -->
-            <a class="navbar-brand d-none d-lg-block" href="dashboard.html">
-                <img src="images/logo.png" alt="Logo de la aplicación" height="50">
-            </a>
-            <!-- Botón para abrir el offcanvas en pantallas pequeñas -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                    aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!-- Menú que se muestra en pantallas grandes -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav-underline">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="dashboard.html"><i
-                                class="fa-solid fa-gauge-high"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown" href="#" id="dropdownMenu" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false"><i class="fa-solid fa-chart-line"></i>Highlights</a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" href="#">Trending Coins</a></li>
-                            <li><a class="dropdown-item" href="#">Top Gainers</a></li>
-                            <li><a class="dropdown-item" href="#">Top Losers</a></li>
-                            <li><a class="dropdown-item" href="#">New Coins</a></li>
-                        </ul>
-                    </li>
-                    <!--                    <li class="nav-item dropdown">-->
-                    <!--                        <a class="nav-link dropdown" href="#" id="dropdownMenu2" role="button" data-bs-toggle="dropdown"-->
-                    <!--                           aria-expanded="false"><i class="fa-solid fa-graduation-cap"></i>Learn</a>-->
-                    <!--                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">-->
-                    <!--                            <li><a class="dropdown-item" href="learnCrypto.html">Learn Crypto</a></li>-->
-                    <!--                            <li><a class="dropdown-item" href="news.html">News</a></li>-->
-                    <!--                            <li><a class="dropdown-item" href="researchInsights.html">Research Insights</a></li>-->
-                    <!--                        </ul>-->
-                    <!--                    </li>-->
-                </ul>
-                <div class="d-flex align-items-center mb-lg-0 wallet">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-currency-bitcoin" viewBox="0 0 16 16">
-                        <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927z"/>
-                    </svg>
-                    <a class="nav-link" href="myCryptos.html">My Cryptos</a>
-                </div>
-                <form class="d-flex search me-3" role="search">
-                    <input class="form-control " type="search" placeholder="Search" aria-label="Search">
-                </form>
-                <div class="d-flex align-items-center justify-content-end config">
-                    <!-- Botón Configuración -->
-                    <a class="text-decoration-none config-item" data-bs-toggle="modal" data-bs-target="#settingsModal">
-                        <i class="fa-solid fa-gear border border-2 p-2 justify-content-center align-items-center"></i>
-                    </a>
-                    <a href="myProfile.html" class="text-decoration-none config-item"><i
-                            class="fa-solid fa-user border border-2 p-2 justify-content-center align-items-center"></i></a>
-                </div>
-            </div>
-            <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="offcanvasRight"
-                 aria-labelledby="offcanvasRightLabel">
-                <div class="offcanvas-header">
-                    <img src="images/logo.png" alt="Logo de la aplicación" height="55">
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <hr>
-                <div class="offcanvas-body">
-                    <ul class="list-unstyled ps-0">
-                        <li class="mb-1 ms-3">
-                            <button type="button" onclick="window.location.href='dashboard.html'"
-                                    class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-                                <i class="fa-solid fa-gauge-high"></i> Dashboard
-                            </button>
-                        </li>
-                        <li class="mb-1 ms-3">
-                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0"
-                                    id="dropdownButton" onclick="window.location.href='highlights.html'">
-                                <i class="fa-solid fa-chart-line"></i> Highlights
-                            </button>
-                            <div class="collapse" id="dashboard-collapse">
-                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="#"><i class="fa-solid fa-fire"></i> Trending Coins</a>
-                                    </li>
-                                    <li><a href="#"><i class="fa-solid fa-arrow-up"></i> Top Gainers</a>
-                                    </li>
-                                    <li><a href="#"><i class="fa-solid fa-arrow-down"></i> Top Losers</a>
-                                    </li>
-                                    <li><a href="#"><i class="fa-solid fa-star"></i> New Coins</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                        <!--                        <li class="mb-1 ms-3">-->
-                        <!--                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"-->
-                        <!--                                    data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">-->
-                        <!--                                <i class="fa-solid fa-graduation-cap"></i> Learn-->
-                        <!--                            </button>-->
-                        <!--                            <div class="collapse" id="orders-collapse">-->
-                        <!--                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">-->
-                        <!--                                    <li><a href="learnCrypto.html"><i class="fa-solid fa-book"></i> Learn Crypto</a>-->
-                        <!--                                    </li>-->
-                        <!--                                    <li><a href="news.html"><i class="fa-solid fa-newspaper"></i> News</a></li>-->
-                        <!--                                    <li><a href="researchInsights.html"><i class="fa-solid fa-lightbulb"></i> Research-->
-                        <!--                                        Insights</a></li>-->
-                        <!--                                </ul>-->
-                        <!--                            </div>-->
-                        <!--                        </li>-->
-                        <hr>
-                        <li class="mb-1 ms-3">
-                            <button type="button" onclick="window.location.href='myProfile.html'"
-                                    class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-                                <i class="fa-solid fa-user"></i> My Profile
-                            </button>
-                        </li>
-                        <li class="mb-1 ms-3">
-                            <button type="button" onclick="window.location.href='myCryptos.html'"
-                                    class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                     class="bi bi-currency-bitcoin" viewBox="0 0 16 16">
-                                    <path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.974 1.683-2.19C11.997 3.93 10.847 3 9.092 3H9V1.75a.25.25 0 0 0-.25-.25h-1a.25.25 0 0 0-.25.25V3h-.573V1.75a.25.25 0 0 0-.25-.25H5.75a.25.25 0 0 0-.25.25V3l-1.998.011a.25.25 0 0 0-.25.25v.989c0 .137.11.25.248.25l.755-.005a.75.75 0 0 1 .745.75v5.505a.75.75 0 0 1-.75.75l-.748.011a.25.25 0 0 0-.25.25v1c0 .138.112.25.25.25zm1.427-8.513h1.719c.906 0 1.438.498 1.438 1.312 0 .871-.575 1.362-1.877 1.362h-1.28zm0 4.051h1.84c1.137 0 1.756.58 1.756 1.524 0 .953-.626 1.45-2.158 1.45H6.927z"/>
-                                </svg>
-                                My Cryptos
-                            </button>
-                        </li>
-                        <hr>
-                        <li class="mb-1 ms-3">
-                            <button type="button"
-                                    class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#settingsModal">
-                                <i class="fa-solid fa-gear"></i> Settings
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <!-- Modal Configuración -->
-            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Opciones de Configuración -->
-                            <div class="mb-3">
-                                <i class="fa-solid fa-language"></i>
-                                <label for="languageSelect" class="form-label">Language</label>
-                                <select class="form-select" id="languageSelect">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <i class="fa-solid fa-money-bill"></i>
-                                <label for="currencySelect" class="form-label">Currency</label>
-                                <select class="form-select" id="currencySelect">
-                                    <option value="usd">USD</option>
-                                    <option value="eur">EUR</option>
-                                    <option value="gbp">GBP</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-moon"></i>
-                                <label for="darkModeSwitch">Dark Mode</label>
-                                <div class="form-check form-switch ms-auto">
-                                    <input class="form-check-input dark-mode-toggle" type="checkbox"
-                                           id="darkModeSwitch">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal Sign Up -->
-            <div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalSignin"
-                 aria-labelledby="modalSignin">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content rounded-4 shadow">
-                        <div class="modal-header p-5 pb-4 border-bottom-0">
-                            <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <div class="modal-body p-5 pt-0">
-                            <form id="registerForm" onsubmit="registerUser(event)">
-                                <div class="form-floating mb-3">
-                                    <input type="email" class="form-control rounded-3" id="floatingInput"
-                                           placeholder="name@example.com" required>
-                                    <label for="floatingInput">Email address</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="password" class="form-control rounded-3" id="floatingPassword"
-                                           placeholder="Password" required>
-                                    <label for="floatingPassword">Password</label>
-                                </div>
-                                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign" type="submit">Sign up</button>
-                                <small class="text-body-secondary d-flex justify-content-center">By clicking Sign up,
-                                    you agree to the terms of use.</small>
-                                <hr class="my-4">
-                                <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
-                                <a href="/oauth2/authorization/google">
-                                    <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="button">
-                                        <i class="fa-brands fa-google"></i> Sign up with Google
-                                    </button>
-                                </a>
-                                <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="submit">
-                                    <i class="fa-brands fa-apple"></i>
-                                    Sign up with Apple
-                                </button>
-                                <div class="d-flex justify-content-center gap-2 mt-4">
-                                    <p class="d-flex justify-content-center" href="#">Already have an account?</p>
-                                    <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalLogin">Log
-                                        in</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal Log In -->
-            <div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalLogin"
-                 aria-labelledby="modalSignin">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content rounded-4 shadow">
-                        <div class="modal-header p-5 pb-4 border-bottom-0">
-                            <h1 class="fw-bold mb-0 fs-2">Log in</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body p-5 pt-0">
-                            <form class="">
-                                <div class="form-floating mb-3">
-                                    <input type="email" class="form-control rounded-3" id="floatingInputLogin"
-                                           placeholder="name@example.com" required>
-                                    <label for="floatingInput">Email address</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="password" class="form-control rounded-3" id="floatingPasswordLogin"
-                                           placeholder="Password" required>
-                                    <label for="floatingPassword">Password</label>
-                                </div>
-                                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign" onclick="window.location.href='dashboard.html'" type="button">Log in</button>
-                                <hr class="my-4">
-                                <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
-                                <a href="/oauth2/authorization/google">
-                                    <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="button">
-                                        <i class="fa-brands fa-google"></i> Log in with Google
-                                    </button>
-                                </a>
-                                <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="submit">
-                                    <i class="fa-brands fa-apple"></i>
-                                    Log in with Apple
-                                </button>
-                                <div class="d-flex justify-content-center gap-2 mt-4">
-                                    <p class="d-flex justify-content-center" href="#">Don't have an account?</p>
-                                    <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalSignin">Sign
-                                        up</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+</nav>
 </header>
 <main class="container my-4">
     <div class="p-5 bg-white rounded shadow">
-        <!-- Breadcrumbs -->
+        <!-- BREADCRUMBS -->
         <nav class="mb-5" style="--bs-breadcrumb-divider: '>';">
             <ol class="breadcrumb  align-items-center">
                 <li class="breadcrumb-item"><a href="highlights.html">Highlights</a></li>
@@ -336,23 +234,19 @@
             </ol>
             <hr>
         </nav>
-        <!-- Sección Principal: Dos columnas -->
+        <!-- MAIN SECTION -->
         <div class="row align-items-start mb-3">
-            <!-- Información de la criptomoneda -->
+            <!-- CRYPTOCURRENCY INFO -->
             <div class="col-lg-4 col-md-12 col-sm-12 mb-4 h-100">
                 <div class="crypto-info p-3 rounded-3 shadow-lg bg-white">
-                    <!-- Header con logo y cambio de precio -->
                     <div class="d-flex align-items-center mb-3">
-                        <img id="icon" class="me-3"
-                             style="width: 50px; height: 50px;">
+                        <img id="icon" alt="Cryptocurrency icon" class="me-3" style="width: 50px; height: 50px;">
                         <div>
                             <h1 class="mb-1 fw-bold text-dark cryptoName"></h1>
                             <span class="small fw-semibold text-danger" id="price-change">▼ 2.7%</span>
                         </div>
                     </div>
-                    <!-- Precio -->
                     <p class="h3 crypto-price crypto-price" ></p>
-                    <!-- Detalles de la criptomoneda -->
                     <div class="crypto-stats p-3 mt-5 rounded bg-white">
 
                         <div class="d-flex justify-content-between mb-2">
@@ -412,18 +306,16 @@
                             <span class="text-muted" id="low-24"></span>
                         </div>
                     </div>
-                    <!-- Botones -->
                     <div class="d-flex gap-2 mt-3 buy-sell">
                         <button class="btn btn-danger w-50 py-2 btn-BuySell" id="buy-btn">Buy</button>
                         <button class="btn btn-sell w-50 py-2 btn-BuySell" id="sell-btn">Sell</button>
                     </div>
                 </div>
             </div>
-            <!-- Columna Derecha: Gráfico Unificado con Tabs -->
+            <!-- CHARTS SECTION (Price & Volume evolution)-->
             <div class="col-lg-8 col-md-12 ">
                 <div class="graph-section p-4 rounded-3 shadow-lg bg-white">
                     <h4 class="text-center mb-3">Market Trends</h4>
-                    <!-- Tabs para cambiar entre gráficos -->
                     <ul class="nav nav-tabs mb-3" id="chartTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="price-tab" data-bs-toggle="tab"
@@ -455,11 +347,10 @@
             </div>
         </div>
 
-        <!-- Sección: Más Recomendaciones de Criptos -->
+        <!-- MORE CRYPTO SECTION -->
         <div class="more-crypto-section mb-5">
             <h4 class="fw-bold mb-4 text-center">More Crypto</h4>
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                <!-- Card 1 -->
                 <div class="col">
                     <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
                         <div class="card-body d-flex align-items-center justify-content-center">
@@ -474,7 +365,6 @@
                         <a href="#" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
                     </div>
                 </div>
-                <!-- Card 2 -->
                 <div class="col">
                     <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
                         <div class="card-body d-flex align-items-center justify-content-center">
@@ -489,7 +379,6 @@
                         <a href="#" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
                     </div>
                 </div>
-                <!-- Card 3 -->
                 <div class="col">
                     <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
                         <div class="card-body d-flex align-items-center justify-content-center">
@@ -581,7 +470,8 @@
 
     </div>
 </main>
-<!-- Confirmation Modal -->
+
+<!-- CONFIRMATION BUY/SELL MODAL -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -601,7 +491,7 @@
     </div>
 </div>
 
-<!-- Buy Modal -->
+<!-- PURCHASE MODAL -->
 <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -634,7 +524,7 @@
     </div>
 </div>
 
-<!-- Sell Modal -->
+<!-- SELL MODAL -->
 <div class="modal fade" id="sellModal" tabindex="-1" aria-labelledby="sellModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -668,48 +558,48 @@
 </div>
 
 
+
 <footer>
-    <!-- Footer para pantallas grandes (pantallas de 768px o más) -->
+    <!-- FOOTER FOR LARGE SCREENS -->
     <div class="d-none d-lg-block">
         <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
             <p class="col-md-4 mb-0 ">© 2025 HodlStakers, Inc</p>
 
-            <a href="hodlStakers.html"
+            <a href="#"
                class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <img src="images/logo_hodlstakers.png" alt="Logo de HodlStakers" height="100">
+                <img src="images/logo_hodlstakers.png" alt="HodlStakers Logo" height="100">
             </a>
 
             <ul class="nav col-md-4 justify-content-end footer-info">
                 <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                <li><a href="subscriptions.html" class="px-2">Subscriptions</a></li>
-                <li><a href="privacyPolicy.html" class="px-2">Privacy & Policy</a></li>
-                <li><a href="faqs.html" class="px-2">FAQs</a></li>
+                <li><a href="#" class="px-2">Subscriptions</a></li>
+                <li><a href="#" class="px-2">Privacy & Policy</a></li>
+                <li><a href="#" class="px-2">FAQs</a></li>
             </ul>
         </div>
     </div>
-    <!-- Footer para pantallas medianas (menos de 768px) -->
+    <!-- FOOTER FOR SMALL SCREENS -->
     <div class="d-block d-lg-none">
         <div class="container text-center">
             <footer class="py-3 my-4">
-                <!-- Centrar la imagen -->
-                <!-- Enlace con imagen y margen inferior directamente en el HTML -->
-                <a href="hodlStakers.html"
+                <a href="#"
                    class="d-flex align-items-center justify-content-center mb-3 me-md-auto link-body-emphasis text-decoration-none">
-                    <img src="images/logo_hodlstakers.png" alt="Logo de HodlStakers" height="100"
+                    <img src="images/logo_hodlstakers.png" alt="HodlStakers Logo" height="100"
                          style="margin-bottom: 20px;">
                 </a>
 
-                <!-- Centrar los enlaces -->
                 <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                     <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                    <li><a href="privacyPolicy.html" class="px-2">Privacy & Policy</a></li>
-                    <li><a href="faqs.html" class="px-2">FAQs</a></li>
+                    <li><a href="#" class="px-2">Subscriptions</a></li>
+                    <li><a href="#" class="px-2">Privacy & Policy</a></li>
+                    <li><a href="#" class="px-2">FAQs</a></li>
                 </ul>
                 <p class="text-center">© 2025 HodlStakers, Inc</p>
             </footer>
         </div>
     </div>
 </footer>
+
 <script src="/js/HistoryJs/History.js"></script>
 <script src="/js/CurrencyJs/Currency.js"></script>
 <script src="/js/UserJs/User.js"></script>
