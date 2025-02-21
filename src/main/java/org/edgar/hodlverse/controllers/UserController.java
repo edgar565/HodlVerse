@@ -44,7 +44,8 @@ public class UserController {
                 "id", user.getUserId(),
                 "name", user.getUsername(),
                 "email", user.getEmail(),
-                "picture", user.getPicture()
+                "picture", user.getPicture(),
+                "token", user.getToken()
         );
     }
 
@@ -65,6 +66,7 @@ public class UserController {
                     user.setEmail(newUser.getEmail());
                     user.setPassword(newUser.getPassword());
                     user.setRegistrationDate(newUser.getRegistrationDate());
+                    user.setToken(newUser.getToken());
                     return userService.save(user);
                 })
                 .orElseGet(() -> {

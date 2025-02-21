@@ -112,8 +112,9 @@ class Wallet {
     }
 
     // Crear una nueva billetera
-    static createWallet(walletData, callback) {
+    static async createWallet(walletData) {
         try {
+            // Validación de los datos de la billetera
             this.validateData({
                 walletId: null,
                 walletName: walletData.walletName,
@@ -121,28 +122,34 @@ class Wallet {
                 user: walletData.user,
                 balances: []
             });
-            $.ajax({
-                url: '/wallets',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    walletName: walletData.walletName,
-                    creationDate: new Date().toISOString(),
-                    user: walletData.user
-                }),
-                success: (data) => {
-                    console.log('Billetera creada:', data);
-                    if (callback) callback(data);
-                    Wallet.loadWallets(); // Recargar la lista de billeteras
-                },
-                error: (error) => {
-                    console.error('Error al crear la billetera:', error);
-                }
+
+            // Realizar la solicitud AJAX usando $.ajax para crear la billetera
+            const walletResponse = await $.ajax({
+                    url: '/wallets',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        walletName: walletData.walletName,
+                        creationDate: new Date().toISOString(),
+                        user: walletData.user
+                    }),
+                    success: (response) => resolve(response),  // Resolvemos la promesa con la respuesta exitosa
+                    error: (error) => reject(new Error('Error al crear la billetera: ' + error.statusText))  // Rechazamos la promesa en caso de error
             });
+
+            // Procesar la respuesta de la creación de la billetera
+            console.log('Billetera creada:', walletResponse);
+
+            // Si se requiere alguna lógica adicional después de crear la billetera (como cargar o actualizar información de billeteras)
+            Wallet.loadWallets(); // Recargar la lista de billeteras si es necesario
+
+            return walletResponse;  // Retornar la respuesta de la creación de la billetera
+
         } catch (error) {
-            console.error('Datos inválidos para crear la billetera:', error.message);
+            console.error('Error al crear la billetera:', error.message);
         }
     }
+
 
     // Actualizar una billetera existente
     static updateWallet(id, updatedData, callback) {

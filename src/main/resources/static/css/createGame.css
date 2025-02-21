@@ -1,0 +1,73 @@
+/* ---- MAIN STYLES & SUBTITLE STYLE---- */
+body {
+    background-color: var(--azuloscuro);
+}
+
+main {
+    color: white;
+}
+
+.container {
+    background-color: rgba(6, 20, 40, 1);
+    border: 1px rgba(224, 235, 251, 0.3) solid;
+    border-radius: 20px;
+}
+
+.text-sb {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #ffffff;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* --- BUTTONS STYLE (btn-play-now & btn-start-game) -- */
+.btn-play-now {
+    width: 150px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.btn-play-now:active {
+    background-color: var(--azuloscuro);
+    color: var(--oro);
+}
+
+.btn-start-game {
+    background-color: var(--oro);
+    border-radius: 30px;
+    width: 150px;
+    color: white;
+}
+
+.btn-start-game:hover {
+    background-color: var(--oro);
+    color: white;
+}
+
+/* ---- GAME INFO CARDS ---- */
+.difficulty-info {
+    background-color: rgb(214, 227, 255);
+    max-width: 350px;
+    width: 100%;
+    margin: 0 auto;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, visibility 0.3s;
+}
+
+.difficulty-info i {
+    color: var(--oro);
+}
+
+.difficulty-info.show {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+}
+
+
+
+

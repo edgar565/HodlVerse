@@ -32,6 +32,9 @@ public class User {
     @Column(length = 200)
     private String picture;  // Nuevo campo para la URL de la imagen del perfil
 
+    @Column(nullable = false)
+    private int token;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Wallet wallet;
 
@@ -116,5 +119,21 @@ public class User {
 
     public void setGames(List<Game> games) {
         this.games = games;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getToken() {
+        return token;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

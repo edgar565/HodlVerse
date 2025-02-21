@@ -2,11 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-
 });
-
 
 document.getElementById("logout-btn").addEventListener("click", function () {
     fetch("/logout", {
@@ -30,18 +26,12 @@ function getCsrfToken() {
     return csrfMeta ? csrfMeta.content : "";
 }
 
-
-
-
-
-
-
+// ================================
+// ANIMATION TOTAL BALANCE
+// ================================
 let balance = 0;
-let totalBalance = 1200; // Valor del balance
+let totalBalance = 1200; // Valance value
 const totalBalanceElement = document.getElementById('total-balance');
-const progressBar = document.getElementById('balance-progress');
-
-// Función para animar el número
 function animateBalance() {
     let step = totalBalance / 100;
     let interval = setInterval(function () {
@@ -51,8 +41,6 @@ function animateBalance() {
         } else {
             clearInterval(interval);
         }
-    }, 20); // Tiempo de intervalo
+    }, 20);
 }
-
-// Iniciar animación después de un pequeño retraso
 setTimeout(animateBalance);

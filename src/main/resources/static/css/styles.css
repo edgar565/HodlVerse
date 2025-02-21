@@ -1,3 +1,4 @@
+/* ---- GENERAL COLOR PALETTE ---- */
 :root {
     --azulclaro: #E0EBFB;
     --oro: #C58120;
@@ -5,7 +6,7 @@
     --fondodark: #121212; /* Fondo oscuro */
     --textodark: #E0E0E0; /* Texto claro */
 }
-
+/* ---- MAIN STYLES ---- */
 html, body {
     height: 100%;
     margin: 0;
@@ -41,7 +42,8 @@ body.dark-mode header {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.nav {
+/* ----- NAVIGATION BAR STYLES ----- */
+.nav{
     align-items: center;
 }
 
@@ -99,6 +101,7 @@ body.dark-mode .nav-link {
     margin-right: 15px;
 }
 
+/* ----- FOOTER STYLE ----- */
 footer {
     background-color: var(--azuloscuro);
 }
@@ -122,8 +125,7 @@ footer a {
 footer a:hover {
     color: var(--oro) !important;
 }
-
-/* Estilo del carrusel */
+/* ----- CAROUSEL STYLE ----- */
 .awards-carousel {
     animation: scroll-continuous 80s linear infinite;
     display: flex;
@@ -457,10 +459,4 @@ body.dark-mode .breadcrumb-item a {
 
 body.dark-mode .text {
     color: var(--textodark) !important;
-}
-
-/* Solo aplica el blur al contenido detrás del modal */
-body.modal-open main {
-    filter: blur(5px);
-    pointer-events: none;
 }

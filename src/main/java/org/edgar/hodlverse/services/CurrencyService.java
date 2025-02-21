@@ -83,7 +83,7 @@ public class CurrencyService {
     public CryptoData getCryptoData(String cryptoId) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="
-                + cryptoId + "&x_cg_demo_api_key=CG-UL3PNqrycQ5iBy12fiJ6teBR";
+                + cryptoId + "&x_cg_demo_api_key=CG-nCaPsSfNMeubq77wtD6CM8z6";
 
         logger.info("Haciendo solicitud a la API: {}", url);
 

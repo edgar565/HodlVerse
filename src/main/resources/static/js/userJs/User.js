@@ -1,20 +1,21 @@
 class User {
-    constructor(userId, username, email, password, registrationDate, picture, wallet, transactions, game) {
+    constructor(userId, name, email, password, token, registrationDate, picture, wallet, transactions, game) {
         // Validar cada propiedad antes de inicializar el objeto
         this.validateUserData({
             userId,
-            username,
+            name,
             email,
             password,
             registrationDate,
             picture,
             wallet,
             transactions,
-            game
+            game,
+            token
         });
 
         this.userId = userId;
-        this.username = username;
+        this.name = name;
         this.email = email;
         this.password = password;
         this.registrationDate = registrationDate;
@@ -22,18 +23,14 @@ class User {
         this.wallet = wallet;
         this.transactions = transactions;
         this.game = game;
+        this.token = token;
     }
 
     // Validar los datos del usuario
     static validateUserData(userData) {
-        // Validar userId
-        if (typeof userData.userId !== 'number' || isNaN(userData.userId)) {
-            throw new Error('userId debe ser un número válido.');
-        }
-
-        // Validar username
-        if (typeof userData.username !== 'string' || userData.username.trim() === '') {
-            throw new Error('username debe ser una cadena no vacía.');
+        // Validar name
+        if (typeof userData.name !== 'string' || userData.name.trim() === '') {
+            throw new Error('name debe ser una cadena no vacía.');
         }
 
         // Validar email
@@ -51,11 +48,6 @@ class User {
             throw new Error('registrationDate debe ser una instancia de Date.');
         }
 
-        // Validar picture
-        if (typeof userData.picture !== 'string' || !this.isValidUrl(userData.picture)) {
-            throw new Error('picture debe ser una URL válida.');
-        }
-
         // Validar wallet
         if (!(userData.wallet instanceof Wallet)) {
             throw new Error('wallet debe ser una instancia de la clase Wallet.');
@@ -69,6 +61,11 @@ class User {
         // Validar game
         if (userData.game && !(userData.game instanceof Game)) {
             throw new Error('game debe ser una instancia de la clase Game o null.');
+        }
+
+        // Validar token
+        if (typeof userData.token !== 'string' || userData.token.trim() === '') {
+            throw new Error('token debe ser una cadena no vacía.');
         }
     }
 
@@ -102,7 +99,7 @@ class User {
                     try {
                         User.validateUserData(u);
                         User.users.push(new User(
-                            u.userId, u.username, u.email, u.password, new Date(u.registrationDate), u.picture,
+                            u.userId, u.name, u.email, u.password, new Date(u.registrationDate), u.picture,
                             new Wallet(u.wallet), u.transactions.map(t => new Transaction(t)), u.game ? new Game(u.game) : null
                         ));
                     } catch (error) {
@@ -154,46 +151,68 @@ class User {
     }
 
     // ➕ Crear un nuevo usuario en la API
-    static createUser(username, email, password, registrationDate, picture, callback) {
+    static async createUser(name, email, password, registrationDate, picture) {
         try {
+            // Validación de los datos del usuario
             this.validateUserData({
                 userId: null,
-                username,
+                name,
                 email,
                 password,
-                registrationDate: new Date(registrationDate),
+                registrationDate: registrationDate,
                 picture,
                 wallet: null,
                 transactions: [],
                 game: null
             });
 
-            let newUser = { username, email, password, registrationDate: registrationDate.toISOString(), picture };
-            $.ajax({
-                url: '/users',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(newUser),
-                success: (data) => {
-                    let user = new User(
-                        data.userId, data.username, data.email, data.password, new Date(data.registrationDate), data.picture,
-                        data.wallet ? new Wallet(data.wallet) : null, data.transactions.map(t => new Transaction(t)), data.game ? new Game(data.game) : null
-                    );
-                    User.users.push(user);
-                    console.log('Usuario creado y almacenado:', user);
-                    if (callback) callback(user);
-                },
-                error: (error) => {
-                    console.error('Error al crear el usuario:', error);
-                }
+            // Crear el objeto del nuevo usuario
+            let newUser = {
+                name,
+                email,
+                password,
+                registrationDate: registrationDate.toISOString(),
+                picture,
+                wallet: null,
+                transactions: [],
+                game: null
+            };
+
+            // Realizar la solicitud AJAX usando $.ajax
+            const data = await $.ajax({
+                    url: '/users',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(newUser),
+                    success: (response) => resolve(response), // Resolvemos la promesa con la respuesta exitosa
+                    error: (error) => reject(new Error('Error al crear el usuario: ' + error.statusText)) // Rechazamos la promesa en caso de error
             });
+
+            // Crear el nuevo usuario con los datos obtenidos
+            let user = new User(
+                data.userId,
+                data.name,
+                data.email,
+                data.password,
+                new Date(data.registrationDate),
+                data.picture,
+                data.wallet ? new Wallet(data.wallet) : null,
+                data.transactions.map(t => new Transaction(t)),
+                data.game ? new Game(data.game) : null
+            );
+
+            // Almacenar el usuario en el array de usuarios
+            User.users.push(user);
+            console.log('Usuario creado y almacenado:', user);
+
         } catch (error) {
-            console.error('Datos inválidos para crear el usuario:', error.message);
+            console.error('Error al crear el usuario:', error.message);
         }
     }
 
+
     // 🔄 Actualizar un usuario en la API
-    static updateUser(userId, username, email, password, registrationDate, picture, callback) {
+    static updateUser(userId, name, email, password, registrationDate, picture, callback) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
             return;
@@ -202,7 +221,7 @@ class User {
         try {
             this.validateUserData({
                 userId,
-                username,
+                name,
                 email,
                 password,
                 registrationDate: new Date(registrationDate),
@@ -212,7 +231,7 @@ class User {
                 game: null
             });
 
-            let updatedUser = { username, email, password, registrationDate: registrationDate.toISOString(), picture };
+            let updatedUser = { name, email, password, registrationDate: registrationDate.toISOString(), picture };
             $.ajax({
                 url: `/users/${userId}`,
                 type: 'PUT',
@@ -222,7 +241,7 @@ class User {
                     let index = User.users.findIndex(u => u.userId === userId);
                     if (index !== -1) {
                         User.users[index] = new User(
-                            data.userId, data.username, data.email, data.password, new Date(data.registrationDate), data.picture,
+                            data.userId, data.name, data.email, data.password, new Date(data.registrationDate), data.picture,
                             data.wallet ? new Wallet(data.wallet) : null, data.transactions.map(t => new Transaction(t)), data.game ? new Game(data.game) : null
                         );
                         console.log('Usuario actualizado:', User.users[index]);
