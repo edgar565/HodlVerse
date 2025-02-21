@@ -16,8 +16,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByOriginCurrencyCurrencyId(Long currencyId); // Buscar transacciones por ID de divisa origen
     List<Transaction> findByDestinationCurrencyCurrencyId(Long currencyId); // Buscar transacciones por ID de divisa destino
     List<Transaction> findByUser_UserId(Long userId); //Buscar transacciones por el id de usuario.
-    // Obtener transacciones del usuario desde una fecha específica, ordenadas por fecha descendente (la buena)
-    @Query("SELECT t FROM Transaction t WHERE t.user.userId = :userId AND t.transactionDate >= :startDate ORDER BY t.transactionDate DESC")
-    List<Transaction> findTransactionsByUser_UserIdAndTransactionDateGreaterThanEqualOrderByTransactionDateDesc(@Param("userId") Long userId, @Param("startDate") LocalDate startDate);
+    @Query("SELECT t FROM Transaction t WHERE t.user.userId = :userId AND t.transactionDate < :targetDate ORDER BY t.transactionDate ASC")
+    List<Transaction> findTransactionsBeforeDate(@Param("userId") Long userId, @Param("targetDate") LocalDate targetDate);
+
 
 }

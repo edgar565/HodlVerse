@@ -15,6 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     <link rel="stylesheet" href="css/myCryptos.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <header>
@@ -34,8 +35,7 @@
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Market Cap: </span>
-                            <p class="marketCapValue"></p><span class="percentage"><i
-                                class="fa-solid fa-caret-down"></i> 1.2%</span>
+                            <p class="marketCapValue"></p>
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">24h Vol: </span>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Dominance: </span>
-                            <p>BTC 55.4% / ETH 44.6%</p>
+                            <p class="dominance"></p>
                         </div>
                     </div>
                 </div>
@@ -257,30 +257,9 @@
                                 <th>Coin</th>
                                 <th>Quantity</th>
                                 <th>Current Price</th>
-                                <th>Gains</th>
                             </tr>
                             </thead>
-                            <tbody id="cryptoHoldingsTable">
-                            <!-- Filas de ejemplo; en producción se llenará dinámicamente -->
-                            <tr>
-                                <td>Bitcoin</td>
-                                <td>0.5</td>
-                                <td>$20,000</td>
-                                <td class="text-success">+5%</td>
-                            </tr>
-                            <tr>
-                                <td>Ethereum</td>
-                                <td>2</td>
-                                <td>$1,500</td>
-                                <td class="text-danger">-3%</td>
-                            </tr>
-                            <tr>
-                                <td>Solana</td>
-                                <td>1.5</td>
-                                <td>$200</td>
-                                <td class="text-success">+10%</td>
-                            </tr>
-                            </tbody>
+                            <tbody id="cryptoHoldingsTable"></tbody>
                         </table>
                     </div>
                 </div>
@@ -375,8 +354,10 @@
         </div>
     </div>
 </footer>
+<script src="/js/UserJs/User.js"></script>
+<script src="/js/WalletJs/Wallet.js"></script>
 <script src="/js/HistoryJs/History.js"></script>
-<script src="/js/javaScript.js"></script>
+<script src="/js/loadGeneral.js"></script>
 <script src="js/myCryptos.js"></script>
 </body>
 </html>

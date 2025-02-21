@@ -44,6 +44,6 @@ public class TransactionService {
 
     // Obtener todas las transacciones del usuario desde una fecha específica (la buena)
     public List<Transaction> findTransactionsByUserIdAndTransactionDateGreaterThanEqual(Long userId, LocalDate startDate) {
-        return transactionRepository.findTransactionsByUser_UserIdAndTransactionDateGreaterThanEqualOrderByTransactionDateDesc(userId, startDate);
+        return transactionRepository.findTransactionsBeforeDate(userId, startDate);
     }
 }

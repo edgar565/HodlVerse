@@ -217,7 +217,7 @@ class Wallet {
     }
 
     // *** NUEVA FUNCIÓN PARA OBTENER EL BALANCE HISTÓRICO DE UN USUARIO EN UN DÍA ESPECÍFICO ***
-    static getUserBalanceOnSpecificDate(userId, date, callback) {
+    static async getUserBalanceOnSpecificDate(userId, date) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
             return;
@@ -227,18 +227,16 @@ class Wallet {
             console.error('La fecha debe ser una instancia de Date.');
             return;
         }
-
-        $.ajax({
-            url: `/wallets/user/${userId}/balance/on/${date.toISOString().split('T')[0]}`, // Formatear la fecha como YYYY-MM-DD
-            type: 'GET',
-            success: (data) => {
-                console.log(`Balance histórico para el usuario con ID ${userId} en la fecha ${date.toISOString().split('T')[0]}:`, data);
-                if (callback) callback(data);
-            },
-            error: (error) => {
-                console.error('Error al obtener el balance histórico:', error);
-            }
-        });
+        try {
+            const response = await $.ajax({
+                url: `/wallets/user/${userId}/balance/on/${date.toISOString().split('T')[0]}`, // Formatear la fecha como YYYY-MM-DD
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
     }
 }
  window.Wallet = Wallet;

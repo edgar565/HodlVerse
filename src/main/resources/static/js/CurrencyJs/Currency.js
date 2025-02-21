@@ -43,48 +43,31 @@ class Currency {
     static currencies = [];
 
     // 🔄 Cargar todas las monedas desde la API (limpia la lista antes)
-    static loadCurrencies(callback) {
-        $.ajax({
-            url: '/currencies',
-            type: 'GET',
-            success: (data) => {
-                Currency.currencies = []; // Vacía la lista antes de llenarla
-                data.forEach(c => {
-                    try {
-                        Currency.validateCurrencyData(c);
-                        Currency.currencies.push(new Currency(c.currencyId, c.name, c.ticker, c.image));
-                    } catch (error) {
-                        console.warn(`Moneda omitida debido a datos inválidos:`, c, error.message);
-                    }
-                });
-                console.log('Lista de monedas recargada:', Currency.currencies);
-                if (callback) callback(Currency.currencies);
-            },
-            error: (error) => {
-                console.error('Error al obtener las monedas:', error);
-            }
-        });
+    static async loadCurrencies() {
+        try {
+            const response = await $.ajax({
+                url: '/currencies',
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el ID del usuario:', error);
+            return null; // Retorna null en caso de error
+        }
     }
 
     // 🔍 Obtener una moneda por su ID desde la API
-    static getCurrencyById(currencyId, callback) {
-        $.ajax({
-            url: `/currencies/${currencyId}`,
-            type: 'GET',
-            success: (data) => {
-                try {
-                    Currency.validateCurrencyData(data);
-                    let currency = new Currency(data.currencyId, data.name, data.ticker, data.image);
-                    console.log(`Moneda obtenida de la API:`, currency);
-                    if (callback) callback(currency);
-                } catch (error) {
-                    console.error(`Error al validar la moneda con ID ${currencyId}:`, error.message);
-                }
-            },
-            error: (error) => {
-                console.error(`Error al obtener la moneda con ID ${currencyId}:`, error);
-            }
-        });
+    static async getCurrencyById(currencyId) {
+        try {
+            const response = await $.ajax({
+                url: `/currencies/${currencyId}`,
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el ID del usuario:', error);
+            return null; // Retorna null en caso de error
+        }
     }
 
     // ➕ Crear una nueva moneda en la API

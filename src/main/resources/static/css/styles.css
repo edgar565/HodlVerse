@@ -235,42 +235,47 @@ hr{
     border-radius: 30px;
 }
 
-
-
 /*CSS PARA LISTA DE CRIPTOS */
 
-/* Asegurar scroll horizontal en pantallas pequeñas */
+/* 🟢 Contenedor que permite el scroll horizontal */
 .table-responsive {
     overflow-x: auto;
-    white-space: nowrap;
+    width: 100%;
 }
 
-/* Fijar las columnas # y Moneda para que no se muevan */
-.sticky-col {
+/* Asegurar que las columnas fijas no se mezclen */
+.table thead th.sticky-col,
+.table tbody td.sticky-col {
     position: sticky;
-    background: white; /* Mantiene el fondo visible al superponerse */
-    z-index: 3; /* Se mantiene por encima de las demás columnas */
+    background-color: white; /* Fondo sólido para evitar superposición */
+    z-index: 2; /* Mantiene las columnas fijas por encima del contenido */
 }
 
-/* Fijar la primera columna (#) a la izquierda */
-.sticky-col.start-0 {
+/* Primera columna (#) fija a la izquierda */
+.table thead th.sticky-col.start-0,
+.table tbody td.sticky-col.start-0 {
     left: 0;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra para diferenciarla */
+    z-index: 3;
 }
 
-/* Fijar la segunda columna (Moneda) */
-.sticky-col.start-50 {
+/* Segunda columna (Coin) fija, alineada correctamente */
+.table thead th.sticky-col:nth-child(2),
+.table tbody td.sticky-col:nth-child(2) {
     left: 50px; /* Ajusta según el ancho de la primera columna */
-    z-index: 4; /* Asegura que se superpone correctamente */
-    border-left: 1px solid #ddd;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 2;
 }
 
-/* Mejoras en modo oscuro */
-.dark-mode .sticky-col {
-    background: #061428;
-    color: white;
-    border-color: #ddd;
+/* Bordes inferiores para mejorar la visualización */
+.table tbody td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Asegurar que en pantallas pequeñas el scroll se pueda hacer correctamente */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+        display: block;
+    }
 }
 
 /* Estilo general */
@@ -312,4 +317,3 @@ body.modal-open main {
     filter: blur(5px);
     pointer-events: none; /* Evita clics en el fondo */
 }
-

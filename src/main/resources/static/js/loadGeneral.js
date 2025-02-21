@@ -75,15 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 200);
     });
 
-    function formatCurrency(value) {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(value);
-    }
-
     async function fetchInfo() {
         try {
             const totalMarket = await History.getTotalMarketCap();
@@ -93,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const marketCapElements = document.querySelectorAll(".marketCapValue");
             if (marketCapElements.length > 0) {
                 marketCapElements.forEach(el => {
-                    el.innerHTML = formatCurrency(totalMarket);
+                    el.innerHTML = totalMarket.toLocaleString() + "$";
                 });
             } else {
                 console.warn('⚠️ Elemento(s) con clase "marketCapValue" no encontrado(s) en el DOM');
@@ -103,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const trendingCoinsElements = document.querySelectorAll(".trendingCoinsValue");
             if (trendingCoinsElements.length > 0) {
                 trendingCoinsElements.forEach(el => {
-                    el.innerHTML = formatCurrency(totalVolume);
+                    el.innerHTML = totalVolume.toLocaleString() + "$";
                 });
             } else {
                 console.warn('⚠️ Elemento(s) con clase "trendingCoinsValue" no encontrado(s) en el DOM');
@@ -115,5 +106,43 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     fetchInfo();
+
+    function dominance(coins) {
+        let topCoins = coins.slice(0, 2);
+        let text = "";
+        let text2 = "";
+
+        topCoins.forEach((coin, index) => {
+            // Obtenemos el valor numérico del porcentaje
+            let percentageValue = coin.priceChangePercentage24h;
+            // Dependiendo del valor, asignamos la clase CSS adecuada
+            let percentageClass = percentageValue < 0 ? 'text-danger' : 'text-success';
+            // Creamos el HTML que incluye el span con la clase correspondiente y el símbolo %
+            let percentageDisplay = `<span class="${percentageClass}">${percentageValue.toFixed(1)}%</span>`;
+
+            if (index === 0) {
+                text = coin.currency.ticker.toUpperCase() + " " + percentageDisplay;
+            } else {
+                text2 = coin.currency.ticker.toUpperCase() + " " + percentageDisplay;
+            }
+        });
+
+        let textFinal = text + " / " + text2;
+        const dominanceElements = document.querySelectorAll(".dominance");
+        dominanceElements.forEach(el => {
+            el.innerHTML = textFinal;
+        });
+    }
+
+    async function trendingCoins() {
+        try {
+            const coins = await History.getTrendingCoins();
+            const top5Coins = coins.slice(0, 5);
+            dominance(top5Coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    trendingCoins();
 
 });

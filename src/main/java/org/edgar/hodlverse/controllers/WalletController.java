@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -82,75 +83,64 @@ public class WalletController {
         return walletService.getCurrenciesByUserId(userId);
     }
 
-    // Endpoint para calcular el balance total de un usuario en una fecha específica
     @GetMapping("/user/{userId}/balance/on/{date}")
     public ResponseEntity<BigDecimal> getUserBalanceOnSpecificDate(
             @PathVariable Long userId,
             @PathVariable String date) {
 
         try {
-            // Parsear la fecha desde la URL
             LocalDate targetDate = LocalDate.parse(date);
 
-            // Obtener el balance actual del usuario
-            BigDecimal currentBalance = walletService.calculateTotalWalletValueInUSD(userId);
-
-            // Obtener todas las transacciones del usuario ordenadas por fecha descendente
+            // Obtener todas las transacciones antes de la fecha dada, en orden ascendente
             List<Transaction> transactions = transactionService.findTransactionsByUserIdAndTransactionDateGreaterThanEqual(userId, targetDate);
 
-            // Retroceder en el tiempo aplicando los cambios inversos de cada transacción
-            BigDecimal historicalBalance = calculateHistoricalBalance(currentBalance, transactions, targetDate);
+            if (transactions.isEmpty()) {
+                // Si no hay transacciones antes de la fecha, devolver el balance más antiguo disponible
+                return ResponseEntity.ok(BigDecimal.ZERO);
+            }
+
+            // Obtener el balance actual
+            BigDecimal currentBalance = walletService.calculateTotalWalletValueInUSD(userId);
+
+            // Calcular el balance histórico
+            BigDecimal historicalBalance = calculateHistoricalBalance(currentBalance, transactions);
 
             return ResponseEntity.ok(historicalBalance);
 
         } catch (NotFoundException e) {
-            // Manejar caso donde no se encuentran datos
             return ResponseEntity.status(404).body(BigDecimal.ZERO);
-
         } catch (Exception e) {
-            // Manejar otros errores
             return ResponseEntity.badRequest().body(BigDecimal.ZERO);
         }
     }
 
-    // Método privado para calcular el balance histórico
-    private BigDecimal calculateHistoricalBalance(BigDecimal currentBalance, List<Transaction> transactions, LocalDate targetDate) {
-        // Inicializar el balance con el valor actual
+    // Método para calcular el balance histórico basado en transacciones en orden cronológico
+    private BigDecimal calculateHistoricalBalance(BigDecimal currentBalance, List<Transaction> transactions) {
+        // Ordenar las transacciones en orden cronológico (ya debería venir así, pero por seguridad)
+        Collections.reverse(transactions);
+
         BigDecimal balance = currentBalance;
 
-        // Recorrer las transacciones en orden cronológico inverso
         for (Transaction transaction : transactions) {
-            if (!transaction.getTransactionDate().isBefore(targetDate)) {
-                // Si la transacción ocurrió después o en la fecha objetivo, omitirla
-                continue;
-            }
-
-            // Ajustar el balance según el tipo de transacción
-            switch (transaction.getTransactionType()) {
+            switch (transaction.getTransactionType().toLowerCase()) {
                 case "buy":
-                    // Restar el monto gastado y sumar el monto recibido
-                    balance = balance.subtract(transaction.getOriginTransactionAmount().multiply(transaction.getOriginUnitPrice()));
-                    balance = balance.add(transaction.getDestinationTransactionAmount().multiply(transaction.getDestinationUnitPrice()));
-                    break;
-
-                case "sell":
-                    // Sumar el monto recibido y restar el monto enviado
                     balance = balance.add(transaction.getOriginTransactionAmount().multiply(transaction.getOriginUnitPrice()));
                     balance = balance.subtract(transaction.getDestinationTransactionAmount().multiply(transaction.getDestinationUnitPrice()));
                     break;
-
-                case "exchange":
-                    // Restar el monto enviado y sumar el monto recibido
+                case "sell":
                     balance = balance.subtract(transaction.getOriginTransactionAmount().multiply(transaction.getOriginUnitPrice()));
                     balance = balance.add(transaction.getDestinationTransactionAmount().multiply(transaction.getDestinationUnitPrice()));
                     break;
-
+                case "exchange":
+                    balance = balance.add(transaction.getOriginTransactionAmount().multiply(transaction.getOriginUnitPrice()));
+                    balance = balance.subtract(transaction.getDestinationTransactionAmount().multiply(transaction.getDestinationUnitPrice()));
+                    break;
                 default:
-                    // Ignorar transacciones con tipos desconocidos
                     continue;
             }
         }
 
         return balance;
     }
+
 }

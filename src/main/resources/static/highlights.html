@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenLite.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <header>
@@ -34,15 +35,15 @@
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Market Cap: </span>
-                            <p>$3.743</p><span class="percentage"><i class="fa-solid fa-caret-down"></i> 1.2%</span>
+                            <p class="marketCapValue"></p>
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">24h Vol: </span>
-                            <p>$90.712</p>
+                            <p class="trendingCoinsValue"></p>
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Dominance: </span>
-                            <p>BTC 55.4% / ETH 44.6%</p>
+                            <p class="dominance"></p>
                         </div>
                     </div>
                 </div>
@@ -126,9 +127,8 @@
                             </button>
                         </li>
                         <li class="mb-1 ms-3">
-                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                                    data-bs-toggle="collapse" data-bs-target="#dashboard-collapse"
-                                    aria-expanded="false">
+                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0"
+                                    id="dropdownButton" onclick="window.location.href='highlights.html'">
                                 <i class="fa-solid fa-chart-line"></i> Highlights
                             </button>
                             <div class="collapse" id="dashboard-collapse">
@@ -235,49 +235,42 @@
     </nav>
 </header>
 <main class="container my-4">
-    <div class="p-5 bg-white rounded shadow">
-        <!-- Breadcrumbs -->
-        <nav class="mb-5" style="--bs-breadcrumb-divider: '>';">
-            <ol class="breadcrumb  align-items-center">
-                <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
-                <li class="breadcrumb-item active">Highlights</li>
-            </ol>
-            <hr>
-        </nav>
+    <div class="p-5 bg-white rounded shadow d-flex flex-column ">
         <!-- Encabezado de Highlights -->
         <div class="d-flex flex-column mb-3">
             <h1 class="h2">HIGHLIGHTS</h1>
             <p class="text-secondary text-sm" style="font-style: italic;">
-                Track and discover the most interesting cryptocurrencies based on market activity, trends, and user engagement. Stay updated on the latest movements in the crypto market and explore top-performing coins, emerging tokens, and potential investment opportunities.
+                Track and discover the most interesting cryptocurrencies based on market activity, trends, and user
+                engagement. Stay updated on the latest movements in the crypto market and explore top-performing coins,
+                emerging tokens, and potential investment opportunities.
             </p>
-            <div class="form-check form-switch text-end ms-auto d-flex align-items-center gap-2">
-                <input class="form-check-input" type="checkbox" id="toggleRankingSwitch">
-                <label class="form-check-label" for="toggleRankingSwitch">Show Rankings</label>
-            </div>
         </div>
-
-        <div class="row gx-3 mb-3" id="rankingCards">
+        <div class="form-check form-switch text-end ms-auto d-flex align-items-center gap-2">
+            <input class="form-check-input" type="checkbox" id="toggleRankingSwitch">
+            <label class="form-check-label" for="toggleRankingSwitch">Show Rankings</label>
+        </div>
+        <div class="row gx-3 mb-3 d-none"  id="rankingCards">
             <!-- Trending Coins -->
             <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="fw-bold mb-4 text-uppercase text-center">
                             <div class="d-flex align-items-center gap-1 justify-content-center">
-                                <img src="images/icons/fuego.png" height="20" class="d-flex">
+                                <img src="images/icons/fuego.png" alt="Icono de fuego" height="20" class="d-flex">
                                 <span class="d-flex">Trending Coins</span>
-                                <img src="images/icons/fuego.png" height="20" class="d-flex">
+                                <img src="images/icons/fuego.png" alt="Icono de fuego" height="20" class="d-flex">
                             </div>
 
                         </div>
                         <div class="row fw-bold text-muted border-bottom pb-2 extra-small-text">
                             <div class="col-6">Coin</div>
-                            <div class="col-3 text-end">Price</div>
+                            <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
-                        <ul id="top-winners-list" class="list-unstyled mt-2">
+                        <ul id="top-trending-list" class="list-unstyled mt-2">
                             <!-- Datos insertados aquí -->
                         </ul>
-                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x">
+                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="trendingCoins">
                             View More
                         </button>
                     </div>
@@ -293,68 +286,39 @@
                         </div>
                         <div class="row fw-bold text-muted border-bottom pb-2 extra-small-text">
                             <div class="col-6">Coin</div>
-                            <div class="col-3 text-end">Price</div>
+                            <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
-                        <ul class="list-unstyled mt-2">
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" alt="XRP" height="24"
-                                         class="me-2">
-                                    XRP
-                                </div>
-                                <div class="col-3 text-end">$0.52</div>
-                                <div class="col-3 text-end text-danger fw-bold">-5.1%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" alt="Dogecoin"
-                                         height="24" class="me-2">
-                                    Dogecoin
-                                </div>
-                                <div class="col-3 text-end">$0.075</div>
-                                <div class="col-3 text-end text-danger fw-bold">-3.9%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/shiba-inu-shib-logo.png" alt="Shiba Inu"
-                                         height="24" class="me-2">
-                                    Shiba Inu
-                                </div>
-                                <div class="col-3 text-end">$0.012</div>
-                                <div class="col-3 text-end text-danger fw-bold">-2.4%</div>
-                            </li>
-                            <!-- New Losers Added -->
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" alt="Cardano"
-                                         height="24" class="me-2">
-                                    Cardano
-                                </div>
-                                <div class="col-3 text-end">$1.10</div>
-                                <div class="col-3 text-end text-danger fw-bold">-4.7%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png"
-                                         alt="Binance Coin"
-                                         height="24" class="me-2">
-                                    Binance Coin
-                                </div>
-                                <div class="col-3 text-end">$285.00</div>
-                                <div class="col-3 text-end text-danger fw-bold">-3.0%</div>
-                            </li>
-                        </ul>
-                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x">
-                            View
-                            More
+                        <ul id="top-losers-list" class="list-unstyled mt-2"></ul>
+                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="topLosers">
+                            View More
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Winners -->
+            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="fw-bold mb-4 text-uppercase text-center">
+                            🚀 Top Winners 🚀
+                        </div>
+                        <div class="row fw-bold text-muted border-bottom pb-2 extra-small-text">
+                            <div class="col-6">Coin</div>
+                            <div class="col-3 text-center">Price</div>
+                            <div class="col-3 text-end">Gains</div>
+                        </div>
+                        <ul id="top-winners-list" class="list-unstyled mt-2"></ul>
+                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="topWinners">
+                            View More
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Recommended -->
-            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-4">
+            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-2">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="fw-bold mb-4 text-uppercase text-center">
@@ -362,7 +326,7 @@
                         </div>
                         <div class="row fw-bold text-muted border-bottom pb-2 extra-small-text">
                             <div class="col-6">Coin</div>
-                            <div class="col-3 text-end">Price</div>
+                            <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
                         <ul class="list-unstyled mt-2">
@@ -423,75 +387,6 @@
                 </div>
             </div>
 
-            <!-- Top Winners -->
-            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-2">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <div class="fw-bold mb-4 text-uppercase text-center">
-                            🚀 Top Winners 🚀
-                        </div>
-                        <div class="row fw-bold text-muted border-bottom pb-2 extra-small-text">
-                            <div class="col-6">Coin</div>
-                            <div class="col-3 text-end">Price</div>
-                            <div class="col-3 text-end">Gains</div>
-                        </div>
-                        <ul class="list-unstyled mt-2">
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/baby-doge-coin-babydoge-logo.png?v=040"
-                                         alt="HyperCoin" height="24" class="me-2">
-                                    Baby DogeCoin
-                                </div>
-                                <div class="col-3 text-end">$3.44</div>
-                                <div class="col-3 text-end text-danger fw-bold">-1.0%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/simonscat-cat-logo.png?v=040"
-                                         alt="MetaToken"
-                                         height="24" class="me-2">
-                                    Simon's Cat
-                                </div>
-                                <div class="col-3 text-end">$12.61</div>
-                                <div class="col-3 text-end text-success fw-bold">+3.3%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/uma-uma-logo.png?v=040" alt="Web3Token"
-                                         height="24" class="me-2">
-                                    UMA
-                                </div>
-                                <div class="col-3 text-end">$6.50</div>
-                                <div class="col-3 text-end text-danger fw-bold">-5.9%</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/yooshi-yooshi-logo.png?v=040"
-                                         alt="StarCoin"
-                                         height="24" class="me-2">
-                                    YooShi
-                                </div>
-                                <div class="col-3 text-end">$24.02</div>
-                                <div class="col-3 text-end text-success fw-bold">+3.1%</div>
-                            </li>
-                            <li class="row py-1 mt-2 card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/dogebonk-dobo-logo.png?v=040"
-                                         alt="SkyChain"
-                                         height="24" class="me-2">
-                                    DogeBonk
-                                </div>
-                                <div class="col-3 text-end">$9.85</div>
-                                <div class="col-3 text-end text-success fw-bold">+7.4%</div>
-                            </li>
-                        </ul>
-                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x">
-                            View More
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <!-- Most Viewed -->
             <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-2">
                 <div class="card shadow-sm">
@@ -501,7 +396,7 @@
                         </div>
                         <div class="row fw-bold text-muted border-bottom pb-2 extra-small-text">
                             <div class="col-6">Coin</div>
-                            <div class="col-3 text-end">Price</div>
+                            <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
                         <ul class="list-unstyled mt-2">
@@ -568,53 +463,10 @@
                         </div>
                         <div class="row fw-bold text-muted border-bottom pb-2 extra-small-text d-flex justify-content-between">
                             <div class="col-6">Coin</div>
-                            <div class="col-4 text-end">Volume</div>
+                            <div class="col-6 text-end">Volume</div>
                         </div>
-                        <ul class="list-unstyled mt-2">
-                            <li class="row py-1 mt-2 mb-2 d-flex justify-content-between card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/pearl-pearl-logo.png?v=040"
-                                         alt="HyperCoin"
-                                         height="24" class="me-2">
-                                    Pearl
-                                </div>
-                                <div class="col-4 text-end">170,823,677</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 d-flex justify-content-between card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/shibadoge-shibdoge-logo.png?v=040"
-                                         alt="MetaToken" height="24" class="me-2">
-                                    ShibaDoge
-                                </div>
-                                <div class="col-4 text-end">184,879,592</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 d-flex justify-content-between card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/alpaca-finance-alpaca-logo.png?v=040"
-                                         alt="Web3Token" height="24" class="me-2">
-                                    Alpaca Finance
-                                </div>
-                                <div class="col-4 text-end">150,805,849</div>
-                            </li>
-                            <!-- New Coins Added -->
-                            <li class="row py-1 mt-2 mb-2 d-flex justify-content-between card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/beefy-finance-bifi-logo.png?v=040"
-                                         alt="StarCoin" height="24" class="me-2">
-                                    Beefy
-                                </div>
-                                <div class="col-4 text-end">10,000,000</div>
-                            </li>
-                            <li class="row py-1 mt-2 mb-2 d-flex justify-content-between card-item">
-                                <div class="col-6">
-                                    <img src="https://cryptologos.cc/logos/braintrust-btrst-logo.png?v=040"
-                                         alt="SkyChain" height="24" class="me-2">
-                                    Braintrust
-                                </div>
-                                <div class="col-4 text-end">250,000,000</div>
-                            </li>
-                        </ul>
-                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x">
+                        <ul class="list-unstyled mt-2" id="highest-volume-list"></ul>
+                        <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="highestVolume">
                             View More
                         </button>
                     </div>
@@ -622,36 +474,22 @@
             </div>
         </div>
         <div class="row mt-4 mb-2 px-3">
-            <div class="table-responsive mb-3">
+            <div class="table-responsive">
                 <table class="table table-hover text-center shadow-sm">
                     <thead>
                     <tr>
                         <th class="sticky-col start-0 text-end">#</th>
-                        <th class="sticky-col start-0 text-start">Moneda</th>
-                        <th class="text-end">Precio</th>
-                        <th>1h</th>
-                        <th>24h</th>
-                        <th>7d</th>
-                        <th class="text-end">Volumen 24h</th>
-                        <th class="text-end">Capitalización</th>
+                        <th class="sticky-col start-0 text-start">Coin</th>
+                        <th class="text-end">Price</th>
+                        <th class="text-end">24h</th>
+                        <th class="text-end">24h Vol</th>
+                        <th class="text-end">Market Cap</th>
                     </tr>
                     </thead>
                     <tbody id="cryptoTableBody"></tbody>
                 </table>
             </div>
 
-            <!-- Paginación -->
-            <nav>
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <button class="page-link" onclick="changePage(-1)">⬅ Anterior</button>
-                    </li>
-                    <li class="page-item"><span id="currentPage" class="page-link">1</span></li>
-                    <li class="page-item">
-                        <button class="page-link" onclick="changePage(1)">Siguiente ➡</button>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </div>
 </main>
@@ -669,7 +507,6 @@
 
             <ul class="nav col-md-4 justify-content-end footer-info">
                 <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                <li><a href="subscriptions.html" class="px-2">Subscriptions</a></li>
                 <li><a href="privacyPolicy.html" class="px-2">Privacy & Policy</a></li>
                 <li><a href="faqs.html" class="px-2">FAQs</a></li>
             </ul>
@@ -690,7 +527,6 @@
                 <!-- Centrar los enlaces -->
                 <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                     <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                    <li><a href="subscriptions.html" class="px-2">Subscriptions</a></li>
                     <li><a href="privacyPolicy.html" class="px-2">Privacy & Policy</a></li>
                     <li><a href="faqs.html" class="px-2">FAQs</a></li>
                 </ul>
@@ -699,9 +535,9 @@
         </div>
     </div>
 </footer>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/CurrencyJs/Currency.js"></script>
 <script src="/js/HistoryJs/History.js"></script>
-<script src="/js/javaScript.js"></script>
+<script src="/js/loadGeneral.js"></script>
 <script src="js/highlights.js"></script>
 
 </body>

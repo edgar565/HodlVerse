@@ -19,47 +19,73 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+    function getLocalISODate(date) {
+        return date.getFullYear() + '-' +
+            String(date.getMonth() + 1).padStart(2, '0') + '-' +
+            String(date.getDate()).padStart(2, '0');
+    }
+
     const startDate = await fetchStartDate();
-    const formattedStartDate = new Date("2025-02-25"); // Formato YYYY-MM-DD
-    const isoDate = formattedStartDate.toISOString().split("T")[0];
-    console.log(isoDate);
+    if (!startDate) {
+        console.error("❌ No se pudo obtener la fecha de inicio.");
+        return;
+    }
+
+    const formattedStartDate = new Date(startDate);
+    const isoDate = getLocalISODate(formattedStartDate);
+    console.log("📅 Fecha de inicio:", isoDate);
+
     const endDate = new Date();
 
-    function generateDateArray(isoDate) {
-        const endDate = new Date(); // Fecha actual
-
-        // Si la fecha de inicio está en el futuro, devolvemos un array vacío
-        if (isoDate > endDate) {
-            console.warn("⚠️ Advertencia: startDate está en el futuro. No hay fechas disponibles.");
-            return [];
-        }
-
+    function generateDateArray(start) {
         let dates = [];
-        let current = new Date(isoDate); // Clonamos la fecha inicial
-
+        let current = new Date(start);
         while (current <= endDate) {
-            dates.push(new Date(current)); // Guardamos la fecha
-            current.setDate(current.getDate() + 1); // Avanzamos un día
+            dates.push(new Date(current)); // Guardamos la fecha como objeto Date
+            current.setDate(current.getDate() + 1);
         }
-
         return dates;
     }
 
-    const dateArray = generateDateArray(isoDate);
-    console.log(dateArray); // Debería imprimir un array vacío con advertencia
+    const dateArray = generateDateArray(startDate);
+    console.log("📅 Fechas generadas:", dateArray);
 
+    async function fetchData() {
+        try {
+            const userId = await User.getUserId();
 
-    let data = [];
-    let current = new Date(startDate.getTime());
+            // Usamos Promise.all() para esperar todas las promesas antes de continuar
+            const data = await Promise.all(
+                dateArray.map(async (date) => {
+                    return await Wallet.getUserBalanceOnSpecificDate(userId, date);
+                })
+            );
 
-    while (current <= endDate) {
-        let time = current.getTime();
-        let value = Math.round(Math.random() * 200 + 50);
-        data.push([time, value]);
-        current.setDate(current.getDate() + 1);
+            console.log("📊 Datos obtenidos:", data);
+            return data;
+        } catch (error) {
+            console.error('❌ Error al obtener datos de balance:', error);
+            return [];
+        }
     }
 
-    console.log("📊 Datos generados:", data);
+    // Obtener valores de balance
+    let balanceValues = await fetchData();
+
+    if (balanceValues.length === 0) {
+        console.error("❌ No se obtuvieron datos de balance.");
+        return;
+    }
+
+    let data = [];
+
+    for (let i = 0; i < dateArray.length; i++) {
+        let time = dateArray[i].getTime(); // Convertimos la fecha a timestamp
+        let value = balanceValues[i] ?? 0; // Si no hay valor, asignamos 0 por seguridad
+        data.push([time, value]);
+    }
+
+    console.log("📊 Datos procesados para gráfico:", data);
 
     let option = {
         title: {
@@ -79,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         },
         grid: {
-            bottom: 95  // ⬆ Aumentamos espacio inferior para la barra de zoom
+            bottom: 95
         },
         xAxis: {
             type: 'time',
@@ -119,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     width: 2
                 },
                 areaStyle: {
-                    color: 'rgba(126, 172, 237, 0.3)' // 🔹 Color del fondo con transparencia
+                    color: 'rgba(126, 172, 237, 0.3)'
                 },
                 data: data
             }
@@ -140,16 +166,34 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
+
 document.addEventListener("DOMContentLoaded", async function () {
     const calendarContainer = document.getElementById("calendar");
     const daysRemainingText = document.getElementById("daysRemaining");
     const timeRemainingText = document.getElementById("timeRemaining");
+    const prevMonthButton = document.getElementById("prevMonth");
+    const nextMonthButton = document.getElementById("nextMonth");
+
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
 
     async function fetchEndDate() {
         try {
-            const userId = await User.getUserId(); // Obtener ID del usuario
-            const game = await Game.getLastFinishedGameByUserId(userId); // Obtener el usuario por su ID
-            return date = game.endDate;
+            const userId = await User.getUserId();
+            const game = await Game.getActiveGameByUserId(userId);
+            return new Date(game.endDate);
+        } catch (error) {
+            console.error('❌ Error al obtener el usuario:', error);
+            return null;
+        }
+    }
+
+    async function fetchStartDate() {
+        try {
+            const userId = await User.getUserId();
+            const game = await Game.getActiveGameByUserId(userId);
+            return new Date(game.startDate);
         } catch (error) {
             console.error('❌ Error al obtener el usuario:', error);
             return null;
@@ -157,47 +201,81 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     const endDate = await fetchEndDate();
+    const startDate = await fetchStartDate();
     console.log("📈 Fecha objetivo:", endDate);
 
-    const today = new Date();
-    const currentDay = today.getDate();
-    const markedDay = 28; // Cambia este número según el día que desees marcar
-    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-
-    // Crear fecha objetivo (inicio del día marcado, es decir, a las 00:00:00)
-    const targetDate = new Date(today.getFullYear(), today.getMonth(), markedDay, 0, 0, 0);
-
-    // Calcular la diferencia en milisegundos desde este momento hasta el inicio del día marcado
-    const timeDiff = targetDate - today;
-
-    // Calcular correctamente los días, horas y minutos restantes
-    const remainingDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-    const remainingHours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const remainingMinutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-
-    // Mostrar la cuenta regresiva con los valores correctos
-    daysRemainingText.textContent = `${remainingDays} Días`;
-    timeRemainingText.textContent = `${remainingHours} horas, ${remainingMinutes} minutos`;
-
-    // Crear el calendario
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayElement = document.createElement("div");
-        dayElement.classList.add("day");
-        dayElement.textContent = day;
-
-        if (day < currentDay) {
-            dayElement.classList.add("past");
-        } else if (day === currentDay) {
-            dayElement.classList.add("today");
-        } else if (day === markedDay) {
-            dayElement.classList.add("marked");
-        } else {
-            dayElement.classList.add("remaining");
-        }
-
-        calendarContainer.appendChild(dayElement);
+    if (startDate && endDate) {
+        currentMonth = startDate.getMonth();
+        currentYear = startDate.getFullYear();
     }
+
+    function updateCalendar(year, month) {
+        calendarContainer.innerHTML = '';
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+        const currentDay = today.getDate();
+        const markedDay = endDate.getDate(); // Cambia este número según el día que desees marcar
+
+        // Crear fecha objetivo (inicio del día marcado, es decir, a las 00:00:00)
+        const targetDate = new Date(year, month, markedDay, 0, 0, 0);
+
+        // Calcular la diferencia en milisegundos desde este momento hasta el inicio del día marcado
+        const timeDiff = targetDate - today;
+
+        // Calcular correctamente los días, horas y minutos restantes
+        const remainingDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const remainingHours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const remainingMinutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+        // Mostrar la cuenta regresiva con los valores correctos
+        daysRemainingText.textContent = `${remainingDays} Days`;
+        timeRemainingText.textContent = `${remainingHours} hours, ${remainingMinutes} minutes`;
+
+        // Crear el calendario
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement("div");
+            dayElement.classList.add("day");
+            dayElement.textContent = day;
+
+            if (day < currentDay && year === today.getFullYear() && month === today.getMonth()) {
+                dayElement.classList.add("past");
+            } else if (day === currentDay && year === today.getFullYear() && month === today.getMonth()) {
+                dayElement.classList.add("today");
+            } else if (day === markedDay) {
+                dayElement.classList.add("marked");
+            } else {
+                dayElement.classList.add("remaining");
+            }
+
+            calendarContainer.appendChild(dayElement);
+        }
+    }
+
+    prevMonthButton.addEventListener("click", () => {
+        if (new Date(currentYear, currentMonth - 1) >= startDate) {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendar(currentYear, currentMonth);
+        }
+    });
+
+    nextMonthButton.addEventListener("click", () => {
+        if (new Date(currentYear, currentMonth + 1) <= endDate) {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendar(currentYear, currentMonth);
+        }
+    });
+
+    updateCalendar(currentYear, currentMonth);
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Datos de progreso iniciales
@@ -261,7 +339,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    async function fetchTransactionsAllById() {
+        try {
+            const userId = await User.getUserId(); // Obtener ID del usuario
+            console.log('✅ ID del usuario:', userId);
+
+            const transactions = await Transaction.getTransactionsByUserId(userId); // Obtener transacciones
+            console.log('✅ Transacciones todas del usuario:', transactions);
+
+            // Llenar la tabla con las transacciones
+            populateTransactionTableAll(transactions);
+
+        } catch (error) {
+            console.error('❌ Error en fetchTransactionsById:', error);
+        }
+    }
+
     fetchTransactionsById();
+    fetchTransactionsAllById();
 
     function populateTransactionTable(transactions) {
         const tableBody = document.getElementById("transactionTableBody");
@@ -303,14 +398,53 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("✅ Tabla actualizada con transacciones.");
     }
 
+    function populateTransactionTableAll(transactions) {
+        const tableBody = document.getElementById("transactionTableBodyFull");
+        tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar datos
+
+        transactions.forEach(transaction => {
+            const row = document.createElement("tr");
+
+            let badgeClass = "";
+            switch (transaction.transactionType.toLowerCase()) {
+                case "buy":
+                    badgeClass = "badge-buy";
+                    break;
+                case "sell":
+                    badgeClass = "badge-sell";
+                    break;
+                case "exchange":
+                    badgeClass = "badge-exchange";
+                    break;
+                default:
+                    badgeClass = "badge-secondary";
+            }
+
+            row.innerHTML = `
+            <td class="col-4">
+                <img src="${transaction.destinationCurrency.image}" alt="Logo de ${transaction.destinationCurrency.name}" height="24">
+                ${transaction.destinationCurrency.name}
+            </td>
+            <td class="col-2 text-center">
+                <span class="badge ${badgeClass}">${transaction.transactionType}</span>
+            </td>
+            <td class="col-3 text-end">${transaction.destinationUnitPrice.toFixed(2)}</td>
+            <td class="col-3 text-end">$${transaction.destinationTransactionAmount.toFixed(2)}</td>
+        `;
+
+            tableBody.appendChild(row);
+        });
+
+        console.log("✅ Tabla actualizada con transacciones.");
+    }
 
 
 });
 document.addEventListener("DOMContentLoaded", async () => {
     let user;
 
-    async function getCryptos(){
-        try{
+    async function getCryptos() {
+        try {
             const userId = await User.getUserId(); // Obtener ID del usuario
             user = await User.getUserById(userId);
             const currencies = await Wallet.getWalletsCurrenciesById(userId);
@@ -322,22 +456,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             return []; // Devuelve un array vacío en caso de error
         }
     }
+
     const cryptos = await getCryptos();
+    console.log(cryptos);
 
-    let currencies = await getCurrencies();
-
-    async function getCurrencies(){
-        try{
-            const response = await $.ajax({
-                url: `/wallets/${user.wallet.walletId}/currencies`,
-                type: 'GET'
-            });
-            return response;
-        } catch (error) {
-            console.error('❌ Error al obtener el usuario:', error);
-            return [];
-        }
-    }
+    let currencies = await Wallet.getWalletsCurrenciesById(user.wallet.walletId);
 
     async function getTotalValue() {
         try {
@@ -358,9 +481,47 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-
     let totalValue = await getTotalValue();
     console.log(totalValue);
+
+    async function getValueFinal() {
+        let value = [];
+        try {
+            currencies.forEach( async (currency) => {
+                let currencyValue = await History.getLatestHistoryByCurrencyId(currency.currencyId);
+                value.push(currencyValue.currentPrice);
+                console.log(value);
+            });
+
+            return value || []; // Retorna un array vacío si es null/undefined
+
+        } catch (error) {
+            console.error('❌ Error al obtener el usuario:', error);
+            return []; // Devuelve un array vacío en caso de error
+        }
+    }
+    let value = [95903,1];
+    console.log(value);
+    function calculateTotalValueForCurrency(value, totalValue) {
+        let total = [];
+
+        for (let i = 0; i < value.length; i++) {
+            let price = Number(value[i])
+            console.log(price);
+            let balance = Number(totalValue[i])
+            console.log(balance);
+
+            let totalValuePerCurrency = price * balance;
+            total.push(totalValuePerCurrency);
+        }
+
+        console.log("📊 Total calculado por moneda:", total);
+        return total;
+    }
+
+
+    let valueFinal = calculateTotalValueForCurrency(value, totalValue);
+    console.log(valueFinal);
 
     // Verifica que cryptos sea un array antes de iterar
     if (!Array.isArray(cryptos)) {
@@ -376,13 +537,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const card = document.createElement("div");
         card.classList.add("card", "crypto", "shadow-sm", "mb-2");
         let amount = totalValue[contador];
+        let final = valueFinal[contador];
         console.log(amount);
         card.innerHTML = `
       <div class="card-body d-flex align-items-center justify-content-between">
         <div>
           <div class="mb-2">
             <h5 class="text">${crypto.name}</h5>
-            <h5 class="text">${crypto.value}</h5>
+            <h5 class="text">${final}</h5>
             <div class="d-flex align-items-center gap-2">
               <h6 class="text-muted">${crypto.ticker}</h6>
               <h6 class="text-muted">${amount}</h6>

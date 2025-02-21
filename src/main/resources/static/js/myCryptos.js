@@ -1,6 +1,80 @@
-/* PIE CHART */
-document.addEventListener("DOMContentLoaded", function() {
-    // Espera a que el DOM esté completamente cargado antes de ejecutar el código
+let user;  // Declaramos 'user' a nivel global para poder acceder a él desde cualquier parte.
+let currencies;  // Definimos 'currencies' globalmente para que pueda ser utilizada en distintas funciones.
+let value = [];  // Variable global para almacenar los valores de las criptos.
+
+async function getCryptos() {
+    try {
+        const userId = await User.getUserId(); // Obtener ID del usuario
+        user = await User.getUserById(userId);
+        currencies = await Wallet.getWalletsCurrenciesById(userId); // Asignamos currencies globalmente
+        console.log(currencies);
+        return currencies || []; // Retorna un array vacío si es null/undefined
+    } catch (error) {
+        console.error('❌ Error al obtener el usuario:', error);
+        return []; // Devuelve un array vacío en caso de error
+    }
+}
+
+// Definir getValueFinal() para obtener los valores finales de las criptos
+async function getValueFinal() {
+    try {
+        let value = [];
+        for (let currency of currencies) {
+            let currencyValue = await History.getLatestHistoryByCurrencyId(currency.currencyId);
+            value.push(currencyValue.currentPrice);
+        }
+        console.log(value);
+        return value || []; // Retorna un array vacío si es null/undefined
+    } catch (error) {
+        console.error('❌ Error al obtener los valores finales:', error);
+        return []; // Devuelve un array vacío en caso de error
+    }
+}
+
+// Definir getTotalValue() para obtener los valores totales de las criptos
+async function getTotalValue() {
+    try {
+        let promises = currencies.map(async (currency) => {
+            const response = await $.ajax({
+                url: `/balances/total/${user.wallet.walletId}/${currency.currencyId}`,
+                type: 'GET'
+            });
+            return response; // Retorna el valor de la solicitud
+        });
+
+        let totalsValue = await Promise.all(promises); // Espera a que todas las promesas se resuelvan
+        console.log("📊 totalValue cargado:", totalsValue);
+        return totalsValue;
+    } catch (error) {
+        console.error('❌ Error al obtener los valores totales:', error);
+        return [];
+    }
+}
+
+// Aquí empieza tu código que se ejecuta cuando el DOM está listo
+document.addEventListener("DOMContentLoaded", async function() {
+    const cryptos = await getCryptos(); // Aquí usamos getCryptos() que ahora está definida globalmente.
+    console.log(cryptos);
+
+    // Obtener valores finales
+    value = await getValueFinal();  // Guardamos los valores finales en la variable global 'value'
+
+    // Obtener valores totales
+    let totalValue = await getTotalValue();  // Usamos la función global getTotalValue()
+
+    function pushData(currencies, totalValue) {
+        let data = [];
+        for (let i = 0; i < currencies.length; i++) {
+            data.push({
+                name: currencies[i].name,
+                value: totalValue[i]
+            });
+        }
+        return data;
+    }
+
+    const data = pushData(currencies, totalValue);
+    console.log(data);
 
     // Obtener el elemento del DOM donde se renderizará el gráfico
     let chartDom = document.getElementById('cryptoPieChart');
@@ -44,17 +118,52 @@ document.addEventListener("DOMContentLoaded", function() {
                 labelLine: {
                     show: false // Oculta las líneas de conexión entre etiquetas y segmentos
                 },
-                data: [
-                    { value: 1048, name: 'Bitcoin', image: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png' },
-                    { value: 735, name: 'Ethereum', image: 'https://cryptologos.cc/logos/ethereum-eth-logo.png' },
-                    { value: 580, name: 'Cardano', image: 'https://cryptologos.cc/logos/cardano-ada-logo.png' },
-                    { value: 484, name: 'Solana', image: 'https://cryptologos.cc/logos/solana-sol-logo.png' },
-                    { value: 300, name: 'Dogecoin', image: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png' }
-                ]
+                data: data
             }
         ]
     };
 
     // Aplicar la configuración al gráfico y renderizarlo
     myChart.setOption(option);
+
+    // Llamar a la función para llenar la tabla
+    fillCryptoTable();  // Llamamos a la función para llenar la tabla
 });
+
+// Función para llenar la tabla con los datos obtenidos
+async function fillCryptoTable() {
+    try {
+        let tableBody = document.getElementById("cryptoHoldingsTable");
+
+        // Verificar que el tbody existe
+        if (!tableBody) {
+            console.error("❌ Error: No se encontró el elemento 'cryptoHoldingsTable'.");
+            return;
+        }
+
+        // Limpiar contenido previo de la tabla
+        tableBody.innerHTML = "";
+
+        // Obtener datos de la API
+        const cryptos = await getCryptos();  // Usar la función global getCryptos
+        const totalValues = await getTotalValue();  // Usar la función global getTotalValue()
+
+        // Construir las filas dinámicamente
+        cryptos.forEach((currency, index) => {
+            let currentPrice = value[index];  // Obtener el valor de 'value' para cada moneda
+            let quantity = totalValues[index];
+
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="d-flex align-items-center gap-2"><img src="${currency.image}" alt="Icon de ${currency.name}" height="24">${currency.name}</td>
+                <td>${quantity}</td>
+                <td>$${currentPrice.toLocaleString()}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        console.log("✅ Tabla actualizada con éxito.");
+    } catch (error) {
+        console.error("❌ Error al llenar la tabla:", error);
+    }
+}

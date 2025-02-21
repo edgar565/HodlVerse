@@ -67,9 +67,6 @@ public class HistoryService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-
-
-
     public Record getDailyPrices(Long currencyId, LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23, 59);
@@ -86,6 +83,11 @@ public class HistoryService {
         BigDecimal low24h = endPrice.map(History::getLow24h).orElse(BigDecimal.ZERO);
 
         return new Record(openPrice, closePrice, high24h, low24h);
+    }
+
+    // Obtener la última entrada de History para una moneda por su ID
+    public Optional<History> getLatestHistoryByCurrencyId(Long currencyId) {
+        return historyRepository.findLatestHistoryByCurrencyId(currencyId);
     }
 
     public static class Record {
@@ -116,5 +118,6 @@ public class HistoryService {
         public BigDecimal getLow24h() {
             return low24h;
         }
+
     }
 }

@@ -21,13 +21,11 @@ public class WalletService {
     private final WalletRepository walletRepository;
     private final HistoryRepository historyRepository;
     private final TransactionRepository transactionRepository;
-    private final TransactionService transactionService;
 
-    public WalletService(WalletRepository walletRepository, HistoryRepository historyRepository, TransactionRepository transactionRepository, TransactionService transactionService) {
+    public WalletService(WalletRepository walletRepository, HistoryRepository historyRepository, TransactionRepository transactionRepository) {
         this.walletRepository = walletRepository;
         this.historyRepository = historyRepository;
         this.transactionRepository = transactionRepository;
-        this.transactionService = transactionService;
     }
 
     // Obtener todas las billeteras
@@ -87,65 +85,6 @@ public class WalletService {
                 .map(Balance::getCurrency) // Obtener las divisas de cada balance
                 .distinct() // Evitar duplicados
                 .collect(Collectors.toList());
-    }
-
-    public BigDecimal calculateUserBalanceOnDate(Long userId, LocalDate targetDate) {
-        // Obtener todas las transacciones del usuario hasta la fecha objetivo
-        List<Transaction> transactions = transactionService.findTransactionsByUserIdAndTransactionDateGreaterThanEqual(userId, targetDate);
-
-        if (transactions.isEmpty()) {
-            // Si no hay transacciones, el balance es 0
-            return BigDecimal.ZERO;
-        }
-
-        // Crear un mapa para almacenar las cantidades netas de cada divisa
-        Map<org.edgar.hodlverse.entities.Currency, BigDecimal> balances = new HashMap<>();
-
-        for (Transaction transaction : transactions) {
-            // Sumar las cantidades recibidas (destinationCurrency)
-            balances.merge(
-                    transaction.getDestinationCurrency(),
-                    transaction.getDestinationTransactionAmount(),
-                    BigDecimal::add
-            );
-
-            // Restar las cantidades gastadas (originCurrency)
-            balances.merge(
-                    transaction.getOriginCurrency(),
-                    transaction.getOriginTransactionAmount().negate(),
-                    BigDecimal::add
-            );
-        }
-
-        // Calcular el valor total en USD basado en los precios históricos
-        BigDecimal totalBalance = BigDecimal.ZERO;
-
-        for (Map.Entry<org.edgar.hodlverse.entities.Currency, BigDecimal> entry : balances.entrySet()) {
-            org.edgar.hodlverse.entities.Currency currency = entry.getKey();
-            BigDecimal quantity = entry.getValue();
-
-            // Saltar si la cantidad es cero
-            if (quantity.compareTo(BigDecimal.ZERO) == 0) {
-                continue;
-            }
-
-            // Convertir LocalDate a LocalDateTime antes de llamar al repositorio
-            LocalDateTime targetDateTime = targetDate.atStartOfDay();
-
-            // Obtener el precio histórico de la divisa en la fecha objetivo
-            Optional<History> historyOptional = historyRepository.findLatestHistoryByCurrencyBeforeDate(currency, LocalDate.from(targetDateTime));
-
-            if (historyOptional.isPresent()) {
-                History history = historyOptional.get();
-                BigDecimal price = history.getCurrentPrice();
-                totalBalance = totalBalance.add(quantity.multiply(price));
-            } else {
-                // Si no hay datos históricos, asumir un precio de 0 para esa divisa
-                totalBalance = totalBalance.add(BigDecimal.ZERO);
-            }
-        }
-
-        return totalBalance;
     }
 
 }

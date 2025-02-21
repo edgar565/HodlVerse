@@ -34,7 +34,7 @@
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Market Cap: </span>
-                            <p class="marketCapValue"></p><span class="percentage"><i class="fa-solid fa-caret-down"></i> 1.2%</span>
+                            <p class="marketCapValue"></p>
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">24h Vol: </span>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Dominance: </span>
-                            <p>BTC 55.4% / ETH 44.6%</p>
+                            <p class="dominance"></p>
                         </div>
                     </div>
                 </div>
@@ -212,12 +212,15 @@
                                 <h3 id="daysRemaining" class="fw-bold mb-1 text"></h3>
                                 <p id="timeRemaining" class="text-muted"></p>
                             </div>
-                            <div class="d-flex justify-content-center">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button id="prevMonth" class="btn btn-secondary">Previous Month</button>
                                 <div id="calendar"></div>
+                                <button id="nextMonth" class="btn btn-secondary">Next Month</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Carrusel -->
                 <div id="gameCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
@@ -225,7 +228,7 @@
                         <!-- Tarjeta 1: Barra de progreso circular -->
                         <div class="carousel-item active">
                             <div class="card text-center p-3 shadow-sm">
-                                <h5 class="fw-bold text">Progreso del Juego</h5>
+                                <h5 class="fw-bold text">Game Progress</h5>
                                 <div class="d-flex justify-content-center mt-3">
                                     <svg width="150" height="150">
                                         <circle cx="70" cy="70" r="60" stroke="#061428" stroke-width="10" fill="none"/>
@@ -243,7 +246,7 @@
                         <!-- Tarjeta 2: Progreso de partidas -->
                         <div class="carousel-item">
                             <div class="card text-center p-3 shadow-sm">
-                                <h5 class="fw-bold text">Progreso de Partidas</h5>
+                                <h5 class="fw-bold text">Session Progress</h5>
                                 <div class="progress-container">
                                     <div class="progress-bar">
                                         <div class="progress-bubble bubble-prev" id="partidaAnteriorText"></div>
@@ -334,69 +337,7 @@
                         <th class="col-3 text-end">Price</th>
                     </tr>
                     </thead>
-                    <tbody id="transactionTableBodyFull">
-                    <!-- Filas de ejemplo -->
-                    <tr>
-                        <td>Bitcoin</td>
-                        <td class="text-center">Buy</td>
-                        <td class="text-end">0.5</td>
-                        <td class="text-end">$20,000</td>
-                    </tr>
-                    <tr>
-                        <td>Ethereum</td>
-                        <td class="text-center">Sell</td>
-                        <td class="text-end">2</td>
-                        <td class="text-end">$1,500</td>
-                    </tr>
-                    <tr>
-                        <td>Bitcoin</td>
-                        <td class="text-center">Buy</td>
-                        <td class="text-end">0.5</td>
-                        <td class="text-end">$20,000</td>
-                    </tr>
-                    <tr>
-                        <td>Ethereum</td>
-                        <td class="text-center">Sell</td>
-                        <td class="text-end">2</td>
-                        <td class="text-end">$1,500</td>
-                    </tr>
-                    <tr>
-                        <td>Bitcoin</td>
-                        <td class="text-center">Buy</td>
-                        <td class="text-end">0.5</td>
-                        <td class="text-end">$20,000</td>
-                    </tr>
-                    <tr>
-                        <td>Ethereum</td>
-                        <td class="text-center">Sell</td>
-                        <td class="text-end">2</td>
-                        <td class="text-end">$1,500</td>
-                    </tr>
-                    <tr>
-                        <td>Bitcoin</td>
-                        <td class="text-center">Buy</td>
-                        <td class="text-end">0.5</td>
-                        <td class="text-end">$20,000</td>
-                    </tr>
-                    <tr>
-                        <td>Ethereum</td>
-                        <td class="text-center">Sell</td>
-                        <td class="text-end">2</td>
-                        <td class="text-end">$1,500</td>
-                    </tr>
-                    <tr>
-                        <td>Bitcoin</td>
-                        <td class="text-center">Buy</td>
-                        <td class="text-end">0.5</td>
-                        <td class="text-end">$20,000</td>
-                    </tr>
-                    <tr>
-                        <td>Ethereum</td>
-                        <td class="text-center">Sell</td>
-                        <td class="text-end">2</td>
-                        <td class="text-end">$1,500</td>
-                    </tr>
-                    </tbody>
+                    <tbody id="transactionTableBodyFull"></tbody>
                 </table>
             </div>
             <div class="modal-footer">
@@ -496,7 +437,7 @@
 <script src="/js/GameJs/Game.js"></script>
 <script src="/js/HistoryJs/History.js"></script>
 <script src="/js/WalletJs/Wallet.js"></script>
-<script src="/js/javaScript.js"></script>
+<script src="/js/loadGeneral.js"></script>
 <script src="/js/dashboard.js"></script>
 </body>
 </html>
