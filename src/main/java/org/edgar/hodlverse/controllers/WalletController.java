@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/wallets") // Ruta base para el controlador
@@ -141,6 +142,16 @@ public class WalletController {
         }
 
         return balance;
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getWalletByUserId(@PathVariable Long userId) {
+        Optional<Wallet> wallet = walletService.getWalletByUserId(userId);
+        if (wallet.isPresent()) {
+            return ResponseEntity.ok(wallet.get());
+        } else {
+            return ResponseEntity.badRequest().body("No se encontró una billetera para el usuario con ID " + userId);
+        }
     }
 
 }

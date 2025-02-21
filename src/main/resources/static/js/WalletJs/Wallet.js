@@ -218,5 +218,19 @@ class Wallet {
             return null; // Retorna null en caso de error
         }
     }
+
+    static async getWalletByUserId(userId) {
+        try {
+            return await $.ajax({
+                url: `/wallets/user/${userId}`,
+                type: 'GET'
+            });
+
+        } catch (error) {
+            console.error(`❌ Error al obtener la billetera del usuario con ID ${userId}:`, error);
+            return null;
+        }
+    }
+
 }
  window.Wallet = Wallet;

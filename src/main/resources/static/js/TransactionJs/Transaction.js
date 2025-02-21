@@ -24,9 +24,9 @@ class Transaction {
             this.validateData(transactionData);
 
             // Obtener el balance real de la currency en la wallet
-            let userOriginBalanceCurrency =   await Balance.getBalancesByCurrency(transactionData.originCurrency.currencyId);
+            let userOriginBalanceCurrency = await Balance.getBalancesByCurrency(transactionData.originCurrency.currencyId);
             let userOriginBalanceAmount = userOriginBalanceCurrency[0].walletAmount;
-            let userOriginBalancePrice =   await History.getLatestHistoryByCurrencyId(transactionData.originCurrency.currencyId);
+            let userOriginBalancePrice = await History.getLatestHistoryByCurrencyId(transactionData.originCurrency.currencyId);
             userOriginBalancePrice = userOriginBalancePrice.currentPrice;
             let userOriginBalance = userOriginBalanceAmount * userOriginBalancePrice;
             console.log(`💰 Saldo en la moneda origen : ${userOriginBalance}`);
@@ -59,66 +59,117 @@ class Transaction {
                     "Authorization": "Bearer " + localStorage.getItem("google_token"),
                 },
                 data: JSON.stringify(transactionData),
-                success: function(response) {
+                success: function (response) {
                     console.log("✅ Transacción creada con éxito:", response);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("❌ Error al crear la transacción:", xhr);
                     console.error("❌ STATUS / ERRoR:", status, error);
                 }
             });*/
 
-            // 7️⃣ Actualizar el balance de la moneda de origen
+            try {
+                // 7️⃣ Actualizar el balance de la moneda de origen
+                let originBalanceArray = await Balance.getBalancesByCurrency(transactionData.originCurrency.currencyId);
+                console.log("originBalanceArray", originBalanceArray);
 
-            let originBalanceArray = await Balance.getBalancesByCurrency(transactionData.originCurrency.currencyId);
-            console.log("originBalanceArray", originBalanceArray);
+                // Verificar si el balance existe y tiene datos
+                if (Array.isArray(originBalanceArray) && originBalanceArray.length > 0) {
+                    let originBalance = originBalanceArray[0]; // Primer balance encontrado
+                    if (!originBalance || typeof originBalance.balanceId !== "number") {
+                        console.error("❌ balanceId inválido en originBalance:", originBalance);
+                        return;
+                    }
 
-            if (!originBalanceArray || originBalanceArray.length === 0) {
-                // Si no hay balance previo, se crea uno nuevo con la cantidad inicial (en negativo porque es una salida)
-                let newOriginBalance = {
-                    currencyId: transactionData.originCurrency.currencyId,
-                    walletAmount: -transactionData.originTransactionAmount, // Se resta porque es un gasto
-                    userId: transactionData.userId // Asegúrate de incluir el userId
-                };
-                await Balance.createBalance(newOriginBalance, (createdBalance) => {
-                    console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
-                });
-            } else {
-                let originBalance = originBalanceArray[0]; // Se asume que existe al menos un balance
-                let updatedOriginAmount = originBalance.walletAmount - transactionData.originTransactionAmount;
+                    let updatedOriginAmount = originBalance.walletAmount - transactionData.originTransactionAmount;
+                    console.log(`💰 Actualizando balance de origen (${originBalance.balanceId}): Nuevo monto -> ${updatedOriginAmount}`);
 
-                Balance.updateBalance(originBalance.balanceId, { walletAmount: updatedOriginAmount }, (data) => {
-                    console.log("✅ Balance de moneda origen actualizado:", data);
-                });
+                    let updatedOriginBalance = {
+                        balanceId: originBalance.balanceId,
+                        walletAmount: updatedOriginAmount,
+                        wallet: originBalance.wallet.walletId,
+                        currency: originBalance.currency
+                    };
+
+                    await Balance.updateBalance(originBalance.balanceId, updatedOriginBalance, (data) => {
+                        console.log("✅ Balance de moneda origen actualizado:", data);
+                    });
+                } else {
+                    console.log("⚠️ No existe balance previo, creando uno nuevo...");
+
+                    // Obtener la wallet del usuario antes de crear el balance
+                    let userId = transactionData.user.userId; // Usando transactionData.user.userId
+                    let userWallet = await Wallet.getWalletByUserId(userId);
+                    if (!userWallet) {
+                        console.error("❌ Error: No se encontró la wallet del usuario.");
+                        return;
+                    }
+
+                    let newOriginBalance = {
+                        walletAmount: -transactionData.originTransactionAmount, // Se resta porque es un gasto
+                        wallet: userWallet, // Pasamos la wallet válida
+                        currency: transactionData.originCurrency // Pasamos la currency válida
+                    };
+
+                    await Balance.createBalance(newOriginBalance, (createdBalance) => {
+                        console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
+                    });
+                }
+
+
+                // 8️⃣ Actualizar el balance de la moneda de destino
+                let destinationBalanceArray = await Balance.getBalancesByCurrency(transactionData.destinationCurrency.currencyId);
+                console.log("destinationBalanceArray", destinationBalanceArray);
+
+                // Verificar si el balance existe y tiene datos
+                if (Array.isArray(destinationBalanceArray) && destinationBalanceArray.length > 0) {
+                    let destinationBalance = destinationBalanceArray[0]; // Primer balance encontrado
+                    if (!destinationBalance || typeof destinationBalance.balanceId !== "number") {
+                        console.error("❌ balanceId inválido en destinationBalance:", destinationBalance);
+                        return;
+                    }
+                    let updatedDestinationAmount = destinationBalance.walletAmount + transactionData.destinationTransactionAmount;
+                    console.log(`💰 Actualizando balance de destino (${destinationBalance.balanceId}): Nuevo monto -> ${updatedDestinationAmount}`);
+
+                    let updatedDestinationBalance = {
+                        balanceId: destinationBalance.balanceId,
+                        walletAmount: updatedDestinationAmount,
+                        wallet: destinationBalance.wallet,
+                        currency: destinationBalance.currency
+                    };
+
+                    await Balance.updateBalance(destinationBalance.balanceId, updatedDestinationBalance, (data) => {
+                        console.log("✅ Balance de moneda destino actualizado:", data);
+                    });
+                } else {
+                    console.log("⚠️ No existe balance previo, creando uno nuevo...");
+
+                    // Obtener la wallet del usuario antes de crear el balance de destino
+                    let userId = transactionData.user.userId; // Usando transactionData.user.userId
+                    let userWallet = await Wallet.getWalletByUserId(userId);
+                    if (!userWallet) {
+                        console.error("❌ Error: No se encontró la wallet del usuario.");
+                        return;
+                    }
+
+                    let newDestinationBalance = {
+                        walletAmount: transactionData.destinationTransactionAmount, // Se suma porque es un ingreso
+                        wallet: userWallet, // Pasamos la misma wallet
+                        currency: transactionData.destinationCurrency // Pasamos la currency válida
+                    };
+
+                    await Balance.createBalance(newDestinationBalance, (createdBalance) => {
+                        console.log("✅ Nuevo balance de moneda destino creado:", createdBalance);
+                    });
+                }
+            } catch (error) {
+                console.error('❌ Error al crear la transacción:', error);
+            } finally {
+                // Este bloque se ejecuta siempre, incluso si ocurre un error
+                console.log("🔄 Proceso de transacción terminado.");
             }
+        } catch {
 
-            // 8️⃣ Actualizar el balance de la moneda de destino
-            let destinationBalanceArray = await Balance.getBalancesByCurrency(transactionData.destinationCurrency.currencyId);
-            console.log("destinationBalanceArray", destinationBalanceArray);
-
-            if (!destinationBalanceArray || destinationBalanceArray.length === 0) {
-                // Si no hay balance previo, se crea uno nuevo con la cantidad inicial
-                let newDestinationBalance = {
-                    currencyId: transactionData.destinationCurrency.currencyId,
-                    walletAmount: transactionData.destinationTransactionAmount,
-                    userId: transactionData.userId // Asegúrate de incluir el userId
-                };
-                await Balance.createBalance(newDestinationBalance, (createdBalance) => {
-                    console.log("✅ Nuevo balance de moneda destino creado:", createdBalance);
-                });
-            } else {
-                let destinationBalance = destinationBalanceArray[0]; // Se asume que existe al menos un balance
-                let updatedDestinationAmount = destinationBalance.walletAmount + transactionData.destinationTransactionAmount;
-
-                Balance.updateBalance(destinationBalance.balanceId, { walletAmount: updatedDestinationAmount }, (data) => {
-                    console.log("✅ Balance de moneda destino actualizado:", data);
-                });
-            }
-
-
-
-        } catch (error) {
-            console.error('❌ Error al crear la transacción:', error);
         }
     }
 

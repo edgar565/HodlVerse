@@ -7,10 +7,6 @@ class Balance {
     }
 
     static validateBalanceData(balanceData) {
-        // Validar balanceId
-        if (typeof balanceData.balanceId !== 'number' || isNaN(balanceData.balanceId)) {
-            throw new Error('balanceId debe ser un número válido.');
-        }
 
         // Validar walletAmount
         if (typeof balanceData.walletAmount !== 'number' || isNaN(balanceData.walletAmount)) {
@@ -66,6 +62,7 @@ class Balance {
     static createBalance(balanceData, callback) {
         try {
             // Validar los datos antes de enviar la solicitud
+            console.log("balanceData", balanceData);
             this.validateBalanceData(balanceData);
 
             $.ajax({
@@ -87,32 +84,25 @@ class Balance {
         }
     }
 
-    static updateBalance(id, updatedData, callback) {
+    static async updateBalance(balanceId, updatedBalance, callback) {
+        console.log("AYUDA", balanceId, updatedBalance)
         try {
-            // Validar el ID del balance
-            if (typeof id !== 'number' || isNaN(id)) {
-                throw new Error('El ID del balance debe ser un número válido.');
-            }
-
-            // Validar los datos actualizados
-            this.validateBalanceData(updatedData);
-
-            $.ajax({
-                url: `/balances/${id}`,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(updatedData),
-                success: (data) => {
-                    console.log('Balance actualizado:', data);
-                    if (callback) callback(data);
-                    Balance.loadBalances();
-                },
-                error: (error) => {
-                    console.error(`Error al actualizar el balance con ID ${id}:`, error);
-                }
+            let response = await $.ajax({
+                url: `http://localhost:8080/balances/${balanceId}`,
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    balanceId: updatedBalance.balanceId,
+                    walletAmount: updatedBalance.walletAmount,
+                    wallet: { walletId: updatedBalance.wallet.walletId }, // Solo el ID
+                    currency: { currencyId: updatedBalance.currency.currencyId } // Solo el ID
+                })
             });
+
+            console.log("✅ Balance actualizado:", response);
+            if (callback) callback(response);
         } catch (error) {
-            console.error(error.message);
+            console.error(`❌ Error al actualizar el balance con ID ${balanceId}:`, error);
         }
     }
 
