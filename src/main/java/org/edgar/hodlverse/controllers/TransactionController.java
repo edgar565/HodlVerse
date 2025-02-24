@@ -25,11 +25,17 @@ public class TransactionController {
         return transactionService.findAll();
     }
 
-    // Crear una nueva transacción
     @PostMapping
     public Transaction newTransaction(@RequestBody Transaction newTransaction) {
-        return transactionService.save(newTransaction);
+        // Si el ID no se pasa, lo manejamos automáticamente en la base de datos
+        if (newTransaction.getTransactionId() != null) {
+            return transactionService.save(newTransaction);
+        } else {
+            // La base de datos genera el ID automáticamente
+            return transactionService.save(newTransaction);
+        }
     }
+
 
     // Obtener una transacción específica por su ID
     @GetMapping("/{id}")
@@ -55,10 +61,12 @@ public class TransactionController {
                     return transactionService.save(transaction);
                 })
                 .orElseGet(() -> {
+                    // Si la transacción no existe, asignamos el ID desde la URL
                     newTransaction.setTransactionId(id);
                     return transactionService.save(newTransaction);
                 });
     }
+
 
     // Eliminar una transacción por su ID
     @DeleteMapping("/{id}")

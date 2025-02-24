@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     // ================================
     // GRÁFICO DE EVOLUCIÓN DE PRECIOS
     // ================================
-
     async function loadHistory() {
         try {
             const history = await History.loadHistories();
@@ -76,12 +75,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const histories = await loadHistory();
     console.log(histories);
-
-
     if (!histories) {
         throw new Error("No se pudieron cargar los datos de historial.");
     }
-
     function loadPriceLabels() {
         let priceLabels = [];
         for (const history of histories) {
@@ -184,14 +180,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 // ================================
 // GRÁFICO DE EVOLUCIÓN DE VOLUMEN
 // ================================
-
 // Obtenemos el contexto 2D del canvas para el gráfico de volumen.
     const ctxVolume = document.getElementById('volume-chart-value').getContext('2d');
 // Usamos las mismas etiquetas (meses) para el eje X.
     const volumeLabels = priceLabels;
 // Datos de volumen correspondientes a cada mes.
     const volumes = [50000, 55000, 60000, 65000, 70000, 75000, 80000, 75000, 85000];
-
 // Creamos el gráfico de barras para el volumen.
     new Chart(ctxVolume, {
         type: 'bar', // Tipo de gráfico: 'bar' para barras.
@@ -241,8 +235,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
         }
     });
-})
-;
+});
 
 document.querySelectorAll('.buy-sell button').forEach(button => {
     button.addEventListener('click', async function () {
@@ -301,6 +294,79 @@ document.querySelectorAll('.buy-sell button').forEach(button => {
             document.getElementById('sell-amount').addEventListener('input', function () {
                 updateTotal('sell-amount', 'sell-total-price');
             });
+
+            async function confirmBuy() {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const ticker = urlParams.get('ticker');
+
+                async function fetchCryptoData() {
+                    let cryptoFinal;
+                    try {
+                        const cryptos = await Currency.loadCurrencies();
+                        console.log(cryptos);
+                        cryptos.forEach(crypto => {
+                            if (crypto.ticker === ticker) {
+                                cryptoFinal = crypto;
+                            }
+                        });
+                        return cryptoFinal;
+                    } catch (error) {
+                        console.error("Error fetching data from API:", error);
+                        return null;
+                    }
+                }
+                let cryptoFinal = await fetchCryptoData();
+
+                async function loadCryptoInfo() {
+                    try {
+                        const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
+                        return crypto;
+                    } catch (error) {
+                        console.error("Error fetching data from API:", error);
+                        return null;
+                    }
+                }
+                const crypto = await loadCryptoInfo();
+
+                async function getUser() {
+                    try {
+                        const userId = await User.getUserId();
+                        const user = await User.getUserById(userId);
+                        console.log(userId);
+                        return user;
+                    } catch (error) {
+                        console.error('❌ Error al obtener el usuario:', error);
+                        return null;
+                    }
+                }
+                let user = await getUser();
+                // Example of how to construct the transaction data:
+                const transactionData = {
+                    transactionType: 'buy', // Can be "buy", "sell" or "exchange"
+                    originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
+                    destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
+                    originUnitPrice: 1,
+                    destinationUnitPrice: crypto.currentPrice,
+                    transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
+                    user: user, // Use the already validated user object
+                    originCurrency: {
+                        currencyId: 3 // ID of the origin currency
+                    },
+                    destinationCurrency: {
+                        currencyId: cryptoFinal.currencyId // ID of the destination currency
+                    }
+                };
+
+                // Ensure transactionDate is a Date instance
+                transactionData.transactionDate = new Date(transactionData.transactionDate);
+
+                // Call createTransaction without re-validating the user
+                await Transaction.createTransaction(transactionData);
+
+                // Handle the result if necessary
+                console.log("Transacción creada correctamente.");
+            }
 
         }
     });

@@ -46,4 +46,8 @@ public class BalanceService {
         return balanceRepository.getTotalWalletAmount(walletId, currencyId);
     }
 
+    public List<Balance> findByWalletId(Long walletId) {
+        return balanceRepository.findByWalletWalletId(walletId);
+    }
+
 }

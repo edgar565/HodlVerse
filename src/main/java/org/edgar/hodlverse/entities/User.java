@@ -57,11 +57,11 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUsername() {
+    public String getName() {
         return name;
     }
 
-    public void setUsername(String username) {
+    public void setName(String username) {
         this.name = username;
     }
 
@@ -121,10 +121,6 @@ public class User {
         this.games = games;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int getToken() {
         return token;
     }
@@ -133,7 +129,4 @@ public class User {
         this.token = token;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 }

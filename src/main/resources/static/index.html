@@ -93,7 +93,7 @@
                 <img src="images/favicon.png" alt="Hodlverse mascot" class="hodlverse-mini-icon">
             </h1>
             <button class="btn btn-lg btn-play-now mt-2" data-bs-toggle="modal" data-bs-target="#modalLogin"
-                    aria-expanded="false">
+                    aria-expanded="false" id="playNow">
                 Play Now <i class="fa-solid fa-angle-right ms-3"></i>
             </button>
         </div>
@@ -107,7 +107,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-5 pt-0">
-                        <form id="registerForm" onsubmit="registerUser(event)">
+                        <form class="formRegLog" onsubmit="registerUser(event)">
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control rounded-3" id="floatingNameSignup"
                                        placeholder="Name" required>
@@ -117,13 +117,13 @@
                                 <input type="email" class="form-control rounded-3" id="floatingInput"
                                        placeholder="name@example.com" required>
                                 <label for="floatingInput">Email address</label>
-                                <p class="text-danger text-start" id="errorMessageSignup"></p>
+                                <p class="text-danger text-start error" id="errorMessageSignup"></p>
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="password" class="form-control rounded-3" id="floatingPassword"
                                        placeholder="Password" required>
                                 <label for="floatingPassword">Password</label>
-                                <p class="text-danger text-start" id="errorMessagePasswordSignup"></p>
+                                <p class="text-danger text-start error" id="errorMessagePasswordSignup"></p>
                             </div>
                             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign" type="submit">Sign up</button>
                             <small class="text-body-secondary d-flex justify-content-center">By clicking Sign up,
@@ -159,23 +159,18 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-5 pt-0">
-                        <form class="">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control rounded-3" id="floatingNameLogin"
-                                       placeholder="Name" required>
-                                <label for="floatingNameLogin">Username</label>
-                            </div>
+                        <form class="formRegLog" onsubmit="loginUser(event)">
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control rounded-3" id="floatingInputLogin"
                                        placeholder="name@example.com" required>
                                 <label for="floatingInput">Email address</label>
-                                <p class="text-danger" id="errorMessageLogin"></p>
+                                <p class="text-danger error" id="errorMessageLogin"></p>
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="password" class="form-control rounded-3" id="floatingPasswordLogin"
                                        placeholder="Password" required>
                                 <label for="floatingPassword">Password</label>
-                                <p class="text-danger " id="errorMessagePasswordLogin"></p>
+                                <p class="text-danger error" id="errorMessagePasswordLogin"></p>
                             </div>
                             <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign"
                                     onclick="window.location.href='dashboard.html'" type="button">Log in
@@ -206,8 +201,8 @@
 <!-- ===================== -->
 <!-- LINKS TO SCRIPTS -->
 <!-- ===================== -->
-<script src="/js/walletJs/Wallet.js"></script>
-<script src="/js/userJs/User.js"></script>
+<script src="/js/walletJs/wallet.js"></script>
+<script src="/js/userJs/user.js"></script>
 <script src="/js/index.js"></script>
 </body>
 </html>

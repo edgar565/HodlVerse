@@ -42,6 +42,25 @@ document.getElementById("floatingPasswordLogin").addEventListener("blur", functi
     document.getElementById("errorMessagePasswordLogin").innerHTML = checkPassword(password);
 });
 
+document.getElementById("playNow").addEventListener("click", function () {
+    document.querySelectorAll(".formRegLog").forEach((form) => {
+        form.reset();
+    });
+    document.querySelectorAll(".error").forEach((error) => {
+       error.innerHTML = "";
+    });
+});
+document.querySelectorAll(".btn-changeLogin").forEach((btn) => {
+    btn.addEventListener("click", function () {
+        document.querySelectorAll(".formRegLog").forEach((form) => {
+            form.reset();
+        });
+        document.querySelectorAll(".error").forEach((error) => {
+            error.innerHTML = "";
+        });
+    });
+});
+
 function checkPassword(password) {
     let errorMessages = [];
 
@@ -69,6 +88,14 @@ function checkPassword(password) {
     return errorMessages.join("<br>");
 }
 
+async function loadUsers() {
+    try {
+        const users = await User.loadUsers();
+        console.log("Usuarios cargados:", users);
+    } catch (error) {
+        console.error("Error al cargar los usuarios:", error);
+    }
+}
 
 function registerUser(event) {
     event.preventDefault(); // Evita que se recargue la página
@@ -77,14 +104,56 @@ function registerUser(event) {
     const email = document.getElementById("floatingInput").value;
     const password = document.getElementById("floatingPassword").value;
 
-    try {
-        const date = new Date();
-        // Llamada a la función para crear el usuario
-        User.createUser(name, email, password, date, " ");
+    // Validaciones antes de intentar registrar al usuario
+    const emailError = checkEmail(email);
+    const passwordError = checkPassword(password);
 
-    } catch (error) {
-        console.error(error);
+    // Mostrar mensajes de error en la interfaz si existen
+    document.getElementById("errorMessageSignup").innerHTML = emailError;
+    document.getElementById("errorMessagePasswordSignup").innerHTML = passwordError;
+
+    // Si hay errores, detener el registro
+    if (emailError || passwordError) {
+        console.log("Registro detenido debido a errores en los campos.");
+        return;
     }
 
+    try {
+        // Llamada a la función para crear el usuario si todo está correcto
+        User.createUser(name, email, password);
+        console.log("Usuario registrado correctamente.");
+        window.document.location.href = "createGame.html";
+    } catch (error) {
+        console.error("Error al registrar el usuario:", error);
+    }
+}
 
+async function loginUser(event) {
+    event.preventDefault(); // Evita recarga de la página
+
+    const email = document.getElementById("floatingInputLogin").value;
+    const password = document.getElementById("floatingPasswordLogin").value;
+
+    // Validación de email
+    const emailError = checkEmail(email);
+    document.getElementById("errorMessageLogin").innerHTML = emailError;
+
+    if (emailError) return; // No continuar si hay errores
+
+    try {
+        const users = await User.loadUsers(); // Esperar carga de usuarios
+        console.log("Usuarios cargados:", users);
+
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (user) {
+            console.log("✅ Usuario autenticado correctamente.");
+            window.location.href = "dashboard.html"; // Redirigir al dashboard
+        } else {
+            document.getElementById("errorMessageLogin").innerHTML = "❌ Correo o contraseña incorrectos.";
+        }
+    } catch (error) {
+        console.error("Error al iniciar sesión:", error);
+        document.getElementById("errorMessageLogin").innerHTML = "❌ Error al conectar con el servidor.";
+    }
 }

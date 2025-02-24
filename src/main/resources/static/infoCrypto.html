@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <title>Info Crypto - HodlVerse</title>
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -572,7 +574,6 @@
 
             <ul class="nav col-md-4 justify-content-end footer-info">
                 <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                <li><a href="#" class="px-2">Subscriptions</a></li>
                 <li><a href="#" class="px-2">Privacy & Policy</a></li>
                 <li><a href="#" class="px-2">FAQs</a></li>
             </ul>
@@ -590,7 +591,6 @@
 
                 <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                     <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                    <li><a href="#" class="px-2">Subscriptions</a></li>
                     <li><a href="#" class="px-2">Privacy & Policy</a></li>
                     <li><a href="#" class="px-2">FAQs</a></li>
                 </ul>
@@ -600,10 +600,14 @@
     </div>
 </footer>
 
-<script src="/js/historyJs/History.js"></script>
-<script src="/js/currencyJs/Currency.js"></script>
-<script src="/js/userJs/User.js"></script>
-<script src="/js/transactionJs/Transaction.js"></script>
+<script src="/js/historyJs/history.js"></script>
+<script src="/js/currencyJs/currency.js"></script>
+<script src="/js/userJs/user.js"></script>
+<script src="/js/transactionJs/transaction.js"></script>
+<script src="js/resultJs/result.js"></script>
+<script src="js/gameJs/game.js"></script>
+<script src="js/balanceJs/balance.js"></script>
+<script src="js/walletJs/wallet.js"></script>
 <script src="/js/loadGeneral.js"></script>
 <script src="js/infoCrypto.js"></script>
 </body>

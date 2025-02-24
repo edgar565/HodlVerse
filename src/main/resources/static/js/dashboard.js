@@ -447,7 +447,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             const userId = await User.getUserId(); // Obtener ID del usuario
             user = await User.getUserById(userId);
-            const currencies = await Wallet.getWalletsCurrenciesById(userId);
+            let currencies = await Wallet.getWalletsCurrenciesById(user.wallet.walletId);
             console.log(currencies);
             return currencies || []; // Retorna un array vacío si es null/undefined
 
@@ -460,11 +460,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cryptos = await getCryptos();
     console.log(cryptos);
 
-    let currencies = await Wallet.getWalletsCurrenciesById(user.wallet.walletId);
-
     async function getTotalValue() {
         try {
-            let promises = currencies.map(async (currency) => {
+            let promises = cryptos.map(async (currency) => {
                 const response = await $.ajax({
                     url: `/balances/total/${user.wallet.walletId}/${currency.currencyId}`,
                     type: 'GET'
@@ -485,25 +483,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(totalValue);
 
     async function getValueFinal() {
-        let value = [];
         try {
-            currencies.forEach( async (currency) => {
-                let currencyValue = await History.getLatestHistoryByCurrencyId(currency.currencyId);
-                value.push(currencyValue.currentPrice);
-                console.log(value);
+            // Crear un array de promesas
+            const promises = cryptos.map(async (currency) => {
+                const currencyValue = await History.getLatestHistoryByCurrencyId(currency.currencyId);
+                return currencyValue.currentPrice;
             });
 
-            return value || []; // Retorna un array vacío si es null/undefined
+            // Esperar a que todas las promesas se resuelvan
+            const value = await Promise.all(promises);
 
+            console.log(value);
+            return value;
         } catch (error) {
-            console.error('❌ Error al obtener el usuario:', error);
+            console.error('❌ Error al obtener los valores:', error);
             return []; // Devuelve un array vacío en caso de error
         }
     }
-    let value = [95903,1];
+
+
+
+    let value = await getValueFinal();
     console.log(value);
+
     function calculateTotalValueForCurrency(value, totalValue) {
         let total = [];
+        console.log(value.length);
 
         for (let i = 0; i < value.length; i++) {
             let price = Number(value[i])
@@ -513,6 +518,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             let totalValuePerCurrency = price * balance;
             total.push(totalValuePerCurrency);
+            console.log(price, balance);
         }
 
         console.log("📊 Total calculado por moneda:", total);
@@ -544,7 +550,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div>
           <div class="mb-2">
             <h5 class="text">${crypto.name}</h5>
-            <h5 class="text">${final}</h5>
+            <h5 class="text">${final.toFixed(2)}</h5>
             <div class="d-flex align-items-center gap-2">
               <h6 class="text-muted">${crypto.ticker}</h6>
               <h6 class="text-muted">${amount}</h6>
