@@ -241,9 +241,3 @@ document.getElementById("topWinners").addEventListener("click" , function () {
 document.getElementById("highestVolume").addEventListener("click" , function () {
     window.location.href = "rankings.html?nameRanking=highestVolume";
 });
-document.getElementById("recommendations").addEventListener("click" , function () {
-    window.location.href = "rankings.html?nameRanking=recommendations";
-});
-document.getElementById("mostViewed").addEventListener("click" , function () {
-    window.location.href = "rankings.html?nameRanking=mostViewed";
-});
