@@ -20,7 +20,7 @@
 <body>
 <header>
     <!-- TOP DATA CAROUSEL -->
-    <div id="awards" class="awards-block bg-light border-bottom">
+    <div id="awards" class="awards-block bg-white border-bottom">
         <div class="container-fluid">
             <div class="row">
                 <div class="mt-3 col-12 position-relative overflow-hidden">
@@ -51,7 +51,7 @@
         </div>
     </div>
     <!-- NAVIGATION BAR -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container-fluid">
             <!-- HODLVERSE LOGO FOR LARGE SCREENS -->
             <a class="navbar-brand mx-auto d-block d-lg-none" href="dashboard.html">
@@ -80,10 +80,10 @@
                            data-bs-toggle="dropdown"
                            aria-expanded="false"><i class="fa-solid fa-chart-line"></i>Highlights</a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" href="#" >Trending Coins</a></li>
-                            <li><a class="dropdown-item" href="#">Top Gainers</a></li>
-                            <li><a class="dropdown-item" href="#">Top Losers</a></li>
-                            <li><a class="dropdown-item" href="#">Recommendations</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending Coins</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topLosers">Top Losers</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest Volume</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -135,10 +135,10 @@
                             </button>
                             <div class="collapse" id="dashboard-collapse">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="#"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
-                                    <li><a href="#"><i class="fa-solid fa-arrow-up"></i> Top Gainers</a></li>
-                                    <li><a href="#"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
-                                    <li><a href="#"><i class="fa-solid fa-star"></i> Recommendations</a></li>
+                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
+                                    <li><a href="rankings.html?nameRanking=topWinners"><i class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
+                                    <li><a href="rankings.html?nameRanking=topLosers"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
+                                    <li><a href="rankings.html?nameRanking=highestVolume"><i class="fa-solid fa-star"></i> Highest Volume</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -321,7 +321,7 @@
             </div>
 
             <!-- Most Viewed -->
-            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-2">
+            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="fw-bold mb-4 text-uppercase text-center">
@@ -339,7 +339,7 @@
             </div>
 
             <!-- Highest Volume -->
-            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-2">
+            <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="fw-bold mb-4 text-uppercase text-center">

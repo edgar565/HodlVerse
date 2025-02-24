@@ -62,6 +62,164 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("price-change").classList.add(crypto.priceChangePercentage24h > 0 ? "text-success" : "text-danger", "price-change")
     document.getElementById("price-change").innerText = crypto.priceChangePercentage24h > 0 ? "▲ " + crypto.priceChangePercentage24h.toFixed(2) + "%" : "▼ " + crypto.priceChangePercentage24h.toFixed(2) + "%";
 
+    document.querySelectorAll('.buy-sell button').forEach(button => {
+        button.addEventListener('click', async function () {
+            console.log("Button clicked");
+            async function fetchCryptoData() {
+                let cryptoFinal;
+                try {
+                    const cryptos = await Currency.loadCurrencies();
+                    console.log(cryptos);
+                    cryptos.forEach(crypto => {
+                        if (crypto.ticker === ticker) {
+                            cryptoFinal = crypto;
+                        }
+                    });
+                    return cryptoFinal;
+                } catch (error) {
+                    console.error("Error fetching data from API:", error);
+                    return null;
+                }
+            }
+            let cryptoFinal = await fetchCryptoData();
+
+            async function loadCryptoInfo() {
+                try {
+                    const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
+                    return crypto;
+                } catch (error) {
+                    console.error("Error fetching data from API:", error);
+                    return null;
+                }
+            }
+            const crypto = await loadCryptoInfo();
+
+            let user = null;
+            async function getUserId() {
+                try {
+                    const userId = await User.getUserId();
+                    console.log(userId);
+                    user = await User.getUserById(userId);
+                    return userId
+                } catch (error) {
+                    console.error('❌ Error al obtener el usuario:', error);
+                    return null; // Devuelve un array vacío en caso de error
+                }
+            }
+            let userId = await getUserId();
+            console.log(user);
+            if (userId) {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const ticker = urlParams.get('ticker');
+                console.log(ticker);
+                /*  BUY/SELL CRYPTO EVENT */
+                let actionType = '';
+                const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                const buyModal = new bootstrap.Modal(document.getElementById('buyModal'));
+                const sellModal = new bootstrap.Modal(document.getElementById('sellModal'));
+
+                document.getElementById('buy-btn').addEventListener('click', function () {
+                    actionType = 'buy';
+                    confirmationModal.show();
+                });
+
+                document.getElementById('sell-btn').addEventListener('click', function () {
+                    actionType = 'sell';
+                    confirmationModal.show();
+                });
+
+                document.getElementById('confirm-action').addEventListener('click', function () {
+                    confirmationModal.hide();
+                    setTimeout(() => {
+                        if (actionType === 'buy') {
+                            buyModal.show();
+                        } else if (actionType === 'sell') {
+                            sellModal.show();
+                        }
+                    }, 300);
+                });
+
+                // Function to update the estimated total based on the input amount and current price
+                function updateTotal(inputId, outputId) {
+                    const amount = parseFloat(document.getElementById(inputId).value) || 0;
+                    const currentPrice = parseFloat(document.getElementById('currentPriceBuy').innerText.replace('$', '')) || 0;
+                    const total = amount * currentPrice;
+                    document.getElementById(outputId).innerText = `$${total.toFixed(2)}`;
+                }
+
+                document.getElementById('buy-amount').addEventListener('input', function () {
+                    updateTotal('buy-amount', 'buy-total-price');
+                });
+
+                document.getElementById('sell-amount').addEventListener('input', function () {
+                    updateTotal('sell-amount', 'sell-total-price');
+                });
+
+                document.getElementById('confirm-buy').addEventListener('click', async function () {
+                    let user = await getUser();
+                    const transactionData = {
+                        transactionType: 'buy',
+                        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0,
+                        destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
+                        originUnitPrice: 1,
+                        destinationUnitPrice: crypto.currentPrice,
+                        transactionDate: new Date().toISOString().split('T')[0],
+                        user: user,
+                        originCurrency: {
+                            currencyId: 3
+                        },
+                        destinationCurrency: {
+                            currencyId: cryptoFinal.currencyId
+                        }
+                    };
+                    transactionData.transactionDate = new Date(transactionData.transactionDate);
+                    await Transaction.createTransaction(transactionData);
+                    console.log("Transacción creada correctamente.");
+                    buyModal.hide();
+                });
+
+                document.getElementById('confirm-sell').addEventListener('click', async function () {
+                    let user = await getUser();
+                    const transactionData = {
+                        transactionType: 'sell',
+                        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("sell-amount").value) || 0,
+                        destinationTransactionAmount: parseFloat(document.getElementById("sell-amount").value) || 0,
+                        originUnitPrice: 1,
+                        destinationUnitPrice: crypto.currentPrice,
+                        transactionDate: new Date().toISOString().split('T')[0],
+                        user: user,
+                        originCurrency: {
+                            currencyId: cryptoFinal.currencyId
+                        },
+                        destinationCurrency: {
+                            currencyId: 3
+                        }
+                    };
+                    transactionData.transactionDate = new Date(transactionData.transactionDate);
+                    await Transaction.createTransaction(transactionData);
+                    console.log("Transacción creada correctamente.");
+                    sellModal.hide();
+                });
+
+                async function getUser() {
+                    try {
+                        const userId = await User.getUserId();
+                        const user = await User.getUserById(userId);
+                        console.log(userId);
+                        return user;
+                    } catch (error) {
+                        console.error('❌ Error al obtener el usuario:', error);
+                        return null;
+                    }
+                }
+            }
+        });
+    });
+});
+
+
+
 //     // ================================
 //     // GRÁFICO DE EVOLUCIÓN DE PRECIOS
 //     // ================================
@@ -293,145 +451,3 @@ document.addEventListener('DOMContentLoaded', async function () {
 //         // Insertamos la tarjeta en el contenedor
 //         container.appendChild(colDiv);
 //     });
-
-});
-
-document.querySelectorAll('.buy-sell button').forEach(button => {
-    button.addEventListener('click', async function () {
-        let user = null;
-        async function getUserId() {
-            try {
-                const userId = await User.getUserId();
-                console.log(userId);
-                user = await User.getUserById(userId);
-                return userId
-            } catch (error) {
-                console.error('❌ Error al obtener el usuario:', error);
-                return null; // Devuelve un array vacío en caso de error
-            }
-        }
-        console.log(user);
-        let userId = await getUserId();
-        if (userId) {
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            const ticker = urlParams.get('ticker');
-            /*  BUY/SELL CRYPTO EVENT */
-            let actionType = '';
-            const confirmationModal = document.getElementById('confirmationModal');
-            const buyModal = document.getElementById('buyModal');
-            const sellModal = document.getElementById('sellModal');
-
-            document.getElementById('buy-btn').addEventListener('click', function () {
-                actionType = 'buy';
-                buyModal.classList.add('d-block');
-            });
-
-            document.getElementById('sell-btn').addEventListener('click', function () {
-                actionType = 'sell';
-                sellModal.classList.add('d-block');
-            });
-
-            document.getElementById('confirm-action').addEventListener('click', function () {
-                confirmationModal.hide();
-                setTimeout(() => {
-                    if (actionType === 'buy') {
-                        buyModal.show();
-                    } else if (actionType === 'sell') {
-                        sellModal.show();
-                    }
-                }, 300);
-            });
-
-            // Function to update the estimated total based on the input amount and current price
-            function updateTotal(inputId, outputId) {
-                const amount = parseFloat(document.getElementById(inputId).value) || 0;
-                const currentPrice = parseFloat(document.getElementById('currentPriceBuy').innerText.replace('$', '')) || 0;
-                const total = amount * currentPrice;
-                document.getElementById(outputId).innerText = `$${total.toFixed(2)}`;
-            }
-
-            document.getElementById('buy-amount').addEventListener('input', function () {
-                updateTotal('buy-amount', 'buy-total-price');
-            });
-
-            document.getElementById('sell-amount').addEventListener('input', function () {
-                updateTotal('sell-amount', 'sell-total-price');
-            });
-
-            async function fetchCryptoData() {
-                let cryptoFinal;
-                try {
-                    const cryptos = await Currency.loadCurrencies();
-                    console.log(cryptos);
-                    cryptos.forEach(crypto => {
-                        if (crypto.ticker === ticker) {
-                            cryptoFinal = crypto;
-                        }
-                    });
-                    return cryptoFinal;
-                } catch (error) {
-                    console.error("Error fetching data from API:", error);
-                    return null;
-                }
-            }
-            let cryptoFinal = await fetchCryptoData();
-
-            async function loadCryptoInfo() {
-                try {
-                    const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
-                    return crypto;
-                } catch (error) {
-                    console.error("Error fetching data from API:", error);
-                    return null;
-                }
-            }
-            const crypto = await loadCryptoInfo();
-
-            let transactionData;
-
-            if (actionType === "buy"){
-                transactionData = {
-                    transactionType: "buy", // Can be "buy", "sell" or "exchange"
-                    originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
-                    destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
-                    originUnitPrice: 1,
-                    destinationUnitPrice: crypto.currentPrice,
-                    transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
-                    user: user, // Use the already validated user object
-                    originCurrency: {
-                        currencyId: 3 // ID of the origin currency
-                    },
-                    destinationCurrency: {
-                        currencyId: cryptoFinal.currencyId // ID of the destination currency
-                    }
-                };
-            } else if (actionType === "sell"){
-                transactionData = {
-                    transactionType: "sell", // Can be "buy", "sell" or "exchange"
-                    originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
-                    destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
-                    originUnitPrice: 1,
-                    destinationUnitPrice: crypto.currentPrice,
-                    transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
-                    user: user, // Use the already validated user object
-                    originCurrency: {
-                        currencyId: cryptoFinal.currencyId // ID of the origin currency
-                    },
-                    destinationCurrency: {
-                        currencyId: 3 // ID of the destination currency
-                    }
-                };
-            }
-
-            // Ensure transactionDate is a Date instance
-            transactionData.transactionDate = new Date(transactionData.transactionDate);
-
-            // Call createTransaction without re-validating the user
-            await Transaction.createTransaction(transactionData);
-
-            // Handle the result if necessary
-            console.log("Transacción creada correctamente.");
-        }
-    });
-});
