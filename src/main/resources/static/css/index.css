@@ -95,9 +95,15 @@ hr {
 }
 
 .btn-play-now:active {
-    background-color: rgba(197, 129, 32, 0.5);
+    background-color: var(--oro);
     transform: scale(0.95);
     box-shadow: 0 0 10px rgba(197, 129, 32, 0.5);
+}
+.btn-play-now:focus {
+    background-color: var(--oro);
+    transform: scale(0.95);
+    box-shadow: 0 0 10px rgba(197, 129, 32, 0.5);
+    color: white;
 }
 
 /* ------ ANIMATION BACKGROUND ------ */
