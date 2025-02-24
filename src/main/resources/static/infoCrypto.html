@@ -6,20 +6,17 @@
     <title>Info Crypto - HodlVerse</title>
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/infoCrypto.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+
 </head>
 <body>
 <header>
@@ -243,7 +240,7 @@
                         <img id="icon" alt="Cryptocurrency icon" class="me-3" style="width: 50px; height: 50px;">
                         <div>
                             <h1 class="mb-1 fw-bold text-dark cryptoName"></h1>
-                            <span class="small fw-semibold text-danger" id="price-change">▼ 2.7%</span>
+                            <span class="fw-bold" id="price-change"></span>
                         </div>
                     </div>
                     <p class="h3 crypto-price crypto-price" ></p>
@@ -315,7 +312,7 @@
             <!-- CHARTS SECTION (Price & Volume evolution)-->
             <div class="col-lg-8 col-md-12 ">
                 <div class="graph-section p-4 rounded-3 shadow-lg bg-white">
-                    <h4 class="text-center mb-3">Market Trends</h4>
+                    <h4 class="text-center mb-2">Market Trends</h4>
                     <ul class="nav nav-tabs mb-3" id="chartTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="price-tab" data-bs-toggle="tab"
@@ -350,49 +347,8 @@
         <!-- MORE CRYPTO SECTION -->
         <div class="more-crypto-section mb-5">
             <h4 class="fw-bold mb-4 text-center">More Crypto</h4>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
-                        <div class="card-body d-flex align-items-center justify-content-center">
-                            <img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" alt="XRP logo"
-                                 class="img-fluid me-3" style="max-height: 40px;">
-                            <div>
-                                <h5 class="fw-bold">XRP</h5>
-                                <h4 class="fw-bold text-dark">$34.50</h4>
-                                <p class="text-danger">-8.2% (24h)</p>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
-                        <div class="card-body d-flex align-items-center justify-content-center">
-                            <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" alt="Dogecoin logo"
-                                 class="img-fluid me-3" style="max-height: 40px;">
-                            <div>
-                                <h5 class="fw-bold">Dogecoin</h5>
-                                <h4 class="fw-bold text-dark">$0.075</h4>
-                                <p class="text-danger">-5.7% (24h)</p>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
-                        <div class="card-body d-flex align-items-center justify-content-center">
-                            <img src="https://cryptologos.cc/logos/shiba-inu-shib-logo.png" alt="Shiba Inu logo"
-                                 class="img-fluid me-3" style="max-height: 40px;">
-                            <div>
-                                <h5 class="fw-bold">Shiba Inu</h5>
-                                <h4 class="fw-bold text-dark">$5.20</h4>
-                                <p class="text-danger">-4.9% (24h)</p>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
-                    </div>
-                </div>
+            <div class="row row-cols-1 row-cols-md-3 g-4" id="cryptoContainer">
+                <!-- Aquí se insertarán las tarjetas desde JS -->
             </div>
         </div>
 
@@ -472,8 +428,7 @@
 </main>
 
 <!-- CONFIRMATION BUY/SELL MODAL -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="confirmationModal" aria-labelledby="confirmationModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -492,7 +447,7 @@
 </div>
 
 <!-- PURCHASE MODAL -->
-<div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+<div class="modal fade" id="buyModal" aria-labelledby="buyModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -518,14 +473,14 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button class="btn btn-danger" id="confirm-buy" onclick="confirmBuy()">Confirm Purchase</button>
+                <button class="btn btn-danger" id="confirm-buy">Confirm Purchase</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- SELL MODAL -->
-<div class="modal fade" id="sellModal" tabindex="-1" aria-labelledby="sellModalLabel" aria-hidden="true">
+<div class="modal fade" id="sellModal" aria-labelledby="sellModalLabel">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -572,7 +527,6 @@
 
             <ul class="nav col-md-4 justify-content-end footer-info">
                 <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                <li><a href="#" class="px-2">Subscriptions</a></li>
                 <li><a href="#" class="px-2">Privacy & Policy</a></li>
                 <li><a href="#" class="px-2">FAQs</a></li>
             </ul>
@@ -590,7 +544,6 @@
 
                 <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                     <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
-                    <li><a href="#" class="px-2">Subscriptions</a></li>
                     <li><a href="#" class="px-2">Privacy & Policy</a></li>
                     <li><a href="#" class="px-2">FAQs</a></li>
                 </ul>
