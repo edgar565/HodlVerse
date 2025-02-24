@@ -20,11 +20,11 @@ public class Balance {
     private BigDecimal walletAmount;
 
     @ManyToOne
-    @JoinColumn(name = "wallet_id", nullable = false)
+    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
     @ManyToOne
-    @JoinColumn(name = "currency_id", nullable = false)
+    @JoinColumn(name = "currency_id")
     private Currency currency;
 
     public Long getBalanceId() {

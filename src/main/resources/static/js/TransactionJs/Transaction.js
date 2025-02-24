@@ -50,7 +50,7 @@ class Transaction {
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
 
-            /*const response = await $.ajax({
+            const response = await $.ajax({
                 url: '/transactions',
                 type: 'POST',
                 contentType: 'application/json',
@@ -66,7 +66,7 @@ class Transaction {
                     console.error("❌ Error al crear la transacción:", xhr);
                     console.error("❌ STATUS / ERRoR:", status, error);
                 }
-            });*/
+            });
 
             try {
                 // 7️⃣ Actualizar el balance de la moneda de origen
@@ -87,8 +87,8 @@ class Transaction {
                     let updatedOriginBalance = {
                         balanceId: originBalance.balanceId,
                         walletAmount: updatedOriginAmount,
-                        wallet: originBalance.wallet.walletId,
-                        currency: originBalance.currency
+                        wallet: originBalance.wallet.walletId || originBalance.wallet, // Solo el ID
+                        currency: originBalance.currency.currencyId || originBalance.currency // Solo el ID
                     };
 
                     await Balance.updateBalance(originBalance.balanceId, updatedOriginBalance, (data) => {
@@ -98,24 +98,23 @@ class Transaction {
                     console.log("⚠️ No existe balance previo, creando uno nuevo...");
 
                     // Obtener la wallet del usuario antes de crear el balance
-                    let userId = transactionData.user.userId; // Usando transactionData.user.userId
+                    let userId = transactionData.user.userId;
                     let userWallet = await Wallet.getWalletByUserId(userId);
-                    if (!userWallet) {
+                    if (!userWallet || !userWallet.walletId) {
                         console.error("❌ Error: No se encontró la wallet del usuario.");
                         return;
                     }
 
                     let newOriginBalance = {
                         walletAmount: -transactionData.originTransactionAmount, // Se resta porque es un gasto
-                        wallet: userWallet, // Pasamos la wallet válida
-                        currency: transactionData.originCurrency // Pasamos la currency válida
+                        wallet: userWallet.walletId, // Se envía el ID de la wallet
+                        currency: transactionData.originCurrency.currencyId // Se envía el ID de la moneda
                     };
 
                     await Balance.createBalance(newOriginBalance, (createdBalance) => {
                         console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
                     });
                 }
-
 
                 // 8️⃣ Actualizar el balance de la moneda de destino
                 let destinationBalanceArray = await Balance.getBalancesByCurrency(transactionData.destinationCurrency.currencyId);
@@ -128,14 +127,15 @@ class Transaction {
                         console.error("❌ balanceId inválido en destinationBalance:", destinationBalance);
                         return;
                     }
+
                     let updatedDestinationAmount = destinationBalance.walletAmount + transactionData.destinationTransactionAmount;
                     console.log(`💰 Actualizando balance de destino (${destinationBalance.balanceId}): Nuevo monto -> ${updatedDestinationAmount}`);
 
                     let updatedDestinationBalance = {
                         balanceId: destinationBalance.balanceId,
                         walletAmount: updatedDestinationAmount,
-                        wallet: destinationBalance.wallet,
-                        currency: destinationBalance.currency
+                        wallet: destinationBalance.wallet.walletId || destinationBalance.wallet, // Ajuste para asegurar que se envía el ID correcto
+                        currency: destinationBalance.currency.currencyId || destinationBalance.currency // Ajuste para asegurar que se envía el ID correcto
                     };
 
                     await Balance.updateBalance(destinationBalance.balanceId, updatedDestinationBalance, (data) => {
@@ -145,17 +145,17 @@ class Transaction {
                     console.log("⚠️ No existe balance previo, creando uno nuevo...");
 
                     // Obtener la wallet del usuario antes de crear el balance de destino
-                    let userId = transactionData.user.userId; // Usando transactionData.user.userId
+                    let userId = transactionData.user.userId;
                     let userWallet = await Wallet.getWalletByUserId(userId);
-                    if (!userWallet) {
+                    if (!userWallet || !userWallet.walletId) {
                         console.error("❌ Error: No se encontró la wallet del usuario.");
                         return;
                     }
 
                     let newDestinationBalance = {
                         walletAmount: transactionData.destinationTransactionAmount, // Se suma porque es un ingreso
-                        wallet: userWallet, // Pasamos la misma wallet
-                        currency: transactionData.destinationCurrency // Pasamos la currency válida
+                        wallet: userWallet.walletId, // Se envía el ID de la wallet
+                        currency: transactionData.destinationCurrency.currencyId // Se envía el ID de la moneda
                     };
 
                     await Balance.createBalance(newDestinationBalance, (createdBalance) => {
@@ -163,9 +163,8 @@ class Transaction {
                     });
                 }
             } catch (error) {
-                console.error('❌ Error al crear la transacción:', error);
+                console.error('❌ Error al actualizar los balances:', error);
             } finally {
-                // Este bloque se ejecuta siempre, incluso si ocurre un error
                 console.log("🔄 Proceso de transacción terminado.");
             }
         } catch {
@@ -173,7 +172,7 @@ class Transaction {
         }
     }
 
-    static updateTransaction(id, updatedData, callback) {
+            static updateTransaction(id, updatedData, callback) {
         if (!updatedData.user || !updatedData.user.id) {
             console.error('Usuario no especificado para la actualización de la transacción.');
             return;

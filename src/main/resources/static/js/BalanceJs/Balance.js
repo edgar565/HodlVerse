@@ -61,48 +61,70 @@ class Balance {
 
     static createBalance(balanceData, callback) {
         try {
-            // Validar los datos antes de enviar la solicitud
-            console.log("balanceData", balanceData);
-            this.validateBalanceData(balanceData);
+            console.log("📤 Enviando solicitud POST con datos:", balanceData);
+
+            // Validar datos antes de enviar
+            if (!balanceData || !balanceData.wallet || !balanceData.currency) {
+                throw new Error("❌ Datos de balance inválidos.");
+            }
+
+            // Enviar solo los IDs de wallet y currency
+            const requestBody = {
+                walletAmount: balanceData.walletAmount,
+                wallet: { walletId: balanceData.wallet.walletId || balanceData.wallet }, // Solo el ID
+                currency: { currencyId: balanceData.currency.currencyId || balanceData.currency } // Solo el ID
+            };
 
             $.ajax({
                 url: '/balances',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(balanceData),
+                data: JSON.stringify(requestBody),
                 success: (data) => {
-                    console.log('Balance creado:', data);
+                    console.log("✅ Balance creado correctamente:", data);
                     if (callback) callback(data);
                     Balance.loadBalances();
                 },
                 error: (error) => {
-                    console.error('Error al crear el balance:', error);
+                    console.error("❌ Error al crear el balance:", error);
                 }
             });
         } catch (error) {
-            console.error(error.message);
+            console.error("❌ Error en createBalance:", error.message);
         }
     }
 
     static async updateBalance(balanceId, updatedBalance, callback) {
-        console.log("AYUDA", balanceId, updatedBalance)
+        console.log("🔄 Intentando actualizar balance...", balanceId, updatedBalance);
+
+        // Validación previa para evitar datos incorrectos
+        if (!updatedBalance || !updatedBalance.wallet || !updatedBalance.currency) {
+            console.error("❌ Error: updatedBalance tiene datos incorrectos.", updatedBalance);
+            return;
+        }
+
+        const requestBody = {
+            balanceId: updatedBalance.balanceId,
+            walletAmount: updatedBalance.walletAmount,
+            wallet: { walletId: updatedBalance.wallet.walletId || updatedBalance.wallet }, // Solo el ID
+            currency: { currencyId: updatedBalance.currency.currencyId || updatedBalance.currency } // Solo el ID
+        };
+
+        console.log("📤 Enviando solicitud PUT con datos:", JSON.stringify(requestBody, null, 2));
+
         try {
             let response = await $.ajax({
                 url: `http://localhost:8080/balances/${balanceId}`,
                 type: "PUT",
                 contentType: "application/json",
-                data: JSON.stringify({
-                    balanceId: updatedBalance.balanceId,
-                    walletAmount: updatedBalance.walletAmount,
-                    wallet: { walletId: updatedBalance.wallet.walletId }, // Solo el ID
-                    currency: { currencyId: updatedBalance.currency.currencyId } // Solo el ID
-                })
+                data: JSON.stringify(requestBody)
             });
 
-            console.log("✅ Balance actualizado:", response);
+            console.log("✅ Balance actualizado correctamente:", response);
             if (callback) callback(response);
-        } catch (error) {
-            console.error(`❌ Error al actualizar el balance con ID ${balanceId}:`, error);
+        } catch (xhr) {
+            console.error(`❌ Error al actualizar el balance con ID ${balanceId}:`, xhr);
+            console.error("❌ Respuesta del servidor:", xhr.responseText);
         }
     }
 
