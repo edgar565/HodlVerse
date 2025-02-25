@@ -80,20 +80,21 @@ class Transaction {
                         console.error("❌ balanceId inválido en originBalance:", originBalance);
                         return;
                     }
+                    if (transactionData.transactionType === "buy") {
+                        let updatedOriginAmount = originBalance.walletAmount - transactionData.originTransactionAmount;
+                        console.log(`💰 Actualizando balance de origen (${originBalance.balanceId}): Nuevo monto -> ${updatedOriginAmount}`);
 
-                    let updatedOriginAmount = originBalance.walletAmount - transactionData.originTransactionAmount;
-                    console.log(`💰 Actualizando balance de origen (${originBalance.balanceId}): Nuevo monto -> ${updatedOriginAmount}`);
+                        let updatedOriginBalance = {
+                            balanceId: originBalance.balanceId,
+                            walletAmount: updatedOriginAmount,
+                            wallet: originBalance.wallet.walletId || originBalance.wallet, // Solo el ID
+                            currency: originBalance.currency.currencyId || originBalance.currency // Solo el ID
+                        };
 
-                    let updatedOriginBalance = {
-                        balanceId: originBalance.balanceId,
-                        walletAmount: updatedOriginAmount,
-                        wallet: originBalance.wallet.walletId || originBalance.wallet, // Solo el ID
-                        currency: originBalance.currency.currencyId || originBalance.currency // Solo el ID
-                    };
-
-                    await Balance.updateBalance(originBalance.balanceId, updatedOriginBalance, (data) => {
-                        console.log("✅ Balance de moneda origen actualizado:", data);
-                    });
+                        await Balance.updateBalance(originBalance.balanceId, updatedOriginBalance, (data) => {
+                            console.log("✅ Balance de moneda origen actualizado:", data);
+                        });
+                    }
                 } else {
                     console.log("⚠️ No existe balance previo, creando uno nuevo...");
 
@@ -105,15 +106,19 @@ class Transaction {
                         return;
                     }
 
-                    let newOriginBalance = {
-                        walletAmount: -transactionData.originTransactionAmount, // Se resta porque es un gasto
-                        wallet: userWallet.walletId, // Se envía el ID de la wallet
-                        currency: transactionData.originCurrency.currencyId // Se envía el ID de la moneda
-                    };
+                    if (transactionData.transactionType === "buy") {
+                        let newOriginBalance = {
+                            walletAmount: -transactionData.originTransactionAmount, // Se resta porque es un gasto
+                            wallet: userWallet.walletId, // Se envía el ID de la wallet
+                            currency: transactionData.originCurrency.currencyId // Se envía el ID de la moneda
+                        };
 
-                    await Balance.createBalance(newOriginBalance, (createdBalance) => {
-                        console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
-                    });
+                        await Balance.createBalance(newOriginBalance, (createdBalance) => {
+                            console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
+                        });
+                    } else {
+
+                    }
                 }
 
                 // 8️⃣ Actualizar el balance de la moneda de destino

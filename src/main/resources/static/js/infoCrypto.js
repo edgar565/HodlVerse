@@ -76,6 +76,7 @@ document.getElementById('buy-btn').addEventListener('click', function () {
 
 document.getElementById('sell-btn').addEventListener('click', function () {
     actionType = 'sell';
+    checkUser(actionType);
 });
 
 async function checkUser(actionType) {
@@ -160,7 +161,7 @@ async function confirmBuy() {
     let user = await getUser();
     // Example of how to construct the transaction data:
     const transactionData = {
-        transactionType: 'buy', // Can be "buy", "sell" or "exchange"
+        transactionType: actionType, // Can be "buy", "sell" or "exchange"
         originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
         destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
         originUnitPrice: 1,
