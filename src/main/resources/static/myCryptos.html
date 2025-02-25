@@ -71,7 +71,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav-underline">
                     <!-- Dashboard Link -->
                     <li class="nav-item">
-                        <a class="nav-link0" aria-current="page" href="dashboard.html"><i
+                        <a class="nav-link" aria-current="page" href="dashboard.html"><i
                                 class="fa-solid fa-gauge-high"></i>Dashboard</a>
                     </li>
                     <!-- Highlights Link & Dropdown -->
@@ -174,49 +174,6 @@
                     </ul>
                 </div>
             </div>
-            <!-- MODAL CONFIGURATION -->
-            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <i class="fa-solid fa-language"></i>
-                                <label for="languageSelect" class="form-label">Language</label>
-                                <select class="form-select" id="languageSelect">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <i class="fa-solid fa-money-bill"></i>
-                                <label for="currencySelect" class="form-label">Currency</label>
-                                <select class="form-select" id="currencySelect">
-                                    <option value="usd">USD</option>
-                                    <option value="eur">EUR</option>
-                                    <option value="gbp">GBP</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-moon"></i>
-                                <label for="darkModeSwitch">Dark Mode</label>
-                                <div class="form-check form-switch ms-auto">
-                                    <input class="form-check-input dark-mode-toggle" type="checkbox"
-                                           id="darkModeSwitch">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 </header>
@@ -267,6 +224,49 @@
         </div>
     </div>
 </main>
+<!-- MODAL CONFIGURATION -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <i class="fa-solid fa-language"></i>
+                    <label for="languageSelect" class="form-label">Language</label>
+                    <select class="form-select" id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <i class="fa-solid fa-money-bill"></i>
+                    <label for="currencySelect" class="form-label">Currency</label>
+                    <select class="form-select" id="currencySelect">
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                        <option value="gbp">GBP</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <i class="fa-solid fa-moon"></i>
+                    <label for="darkModeSwitch">Dark Mode</label>
+                    <div class="form-check form-switch ms-auto">
+                        <input class="form-check-input dark-mode-toggle" type="checkbox"
+                               id="darkModeSwitch">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <footer>
     <!-- FOOTER FOR LARGE SCREENS -->
     <div class="d-none d-lg-block">

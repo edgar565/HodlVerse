@@ -176,138 +176,11 @@
                     </ul>
                 </div>
             </div>
-            <!-- MODAL CONFIGURATION -->
-            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <i class="fa-solid fa-language"></i>
-                                <label for="languageSelect" class="form-label">Language</label>
-                                <select class="form-select" id="languageSelect">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <i class="fa-solid fa-money-bill"></i>
-                                <label for="currencySelect" class="form-label">Currency</label>
-                                <select class="form-select" id="currencySelect">
-                                    <option value="usd">USD</option>
-                                    <option value="eur">EUR</option>
-                                    <option value="gbp">GBP</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-moon"></i>
-                                <label for="darkModeSwitch">Dark Mode</label>
-                                <div class="form-check form-switch ms-auto">
-                                    <input class="form-check-input dark-mode-toggle" type="checkbox"
-                                           id="darkModeSwitch">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 </header>
 <main class="container my-4">
     <div class="p-5 bg-white rounded shadow">
-        <!-- CONFIRMATION BUY/SELL MODAL -->
-        <!-- Confirmation Modal -->
-        <div class="modal fade" id="confirmationModal" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmationModalLabel">⚠️Warning⚠️</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Investing or selling cryptocurrencies can result in financial losses. Are you sure you want to continue?
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-sell btn-BuySell" data-bs-dismiss="modal">Cancel</button>
-                        <button class="btn btn-danger btn-BuySell" id="confirm-action">Yes, Continue</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Buy Modal -->
-        <div class="modal fade" id="buyModal" aria-labelledby="buyModalLabel">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="buyModalLabel">Buy Cryptocurrency</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="buy-form">
-                            <div class="mb-3">
-                                <label for="buy-amount" class="form-label">Amount to Buy</label>
-                                <input type="number" class="form-control" id="buy-amount" min="0.01" step="0.01" placeholder="Enter amount">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Current Price per Unit (USD)</label>
-                                <p class="crypto-price" id="currentPriceBuy"></p>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Estimated Total (USD)</label>
-                                <p id="buy-total-price">$0.00</p>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-danger" id="confirm-buy" onclick="confirmBuy()">Confirm Purchase</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sell Modal -->
-        <div class="modal fade" id="sellModal" aria-labelledby="sellModalLabel">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="sellModalLabel">Sell Cryptocurrency</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="sell-form">
-                            <div class="mb-3">
-                                <label for="sell-amount" class="form-label">Amount to Sell</label>
-                                <input type="number" class="form-control" id="sell-amount" min="0.01" step="0.01" placeholder="Enter amount">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Current Price per Unit (USD)</label>
-                                <p class="crypto-price" id="currentPriceSell"></p>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Estimated Total (USD)</label>
-                                <p id="sell-total-price">$0.00</p>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-danger" id="confirm-sell" onclick="confirmBuy()">Confirm Sale</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- BREADCRUMBS -->
         <nav class="mb-5" style="--bs-breadcrumb-divider: '>';">
             <ol class="breadcrumb  align-items-center">
@@ -433,12 +306,137 @@
         <div class="more-crypto-section mb-5">
             <h4 class="fw-bold mb-4 text-center">More Crypto</h4>
             <div class="row row-cols-1 row-cols-md-3 g-4" id="cryptoContainer">
-                <!-- Aquí se insertarán las tarjetas desde JS -->
+                <!-- insert cards JS -->
             </div>
         </div>
     </div>
 </main>
+<!-- MODAL CONFIGURATION -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <i class="fa-solid fa-language"></i>
+                    <label for="languageSelect" class="form-label">Language</label>
+                    <select class="form-select" id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
 
+                <div class="mb-3">
+                    <i class="fa-solid fa-money-bill"></i>
+                    <label for="currencySelect" class="form-label">Currency</label>
+                    <select class="form-select" id="currencySelect">
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                        <option value="gbp">GBP</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <i class="fa-solid fa-moon"></i>
+                    <label for="darkModeSwitch">Dark Mode</label>
+                    <div class="form-check form-switch ms-auto">
+                        <input class="form-check-input dark-mode-toggle" type="checkbox"
+                               id="darkModeSwitch">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- CONFIRMATION BUY/SELL MODAL -->
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">⚠️Warning⚠️</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Investing or selling cryptocurrencies can result in financial losses. Are you sure you want to continue?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sell btn-BuySell" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger btn-BuySell" id="confirm-action">Yes, Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Buy Modal -->
+<div class="modal fade" id="buyModal" aria-labelledby="buyModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buyModalLabel">Buy Cryptocurrency</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="buy-form">
+                    <div class="mb-3">
+                        <label for="buy-amount" class="form-label">Amount to Buy</label>
+                        <input type="number" class="form-control" id="buy-amount" min="0.01" step="0.01" placeholder="Enter amount">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Current Price per Unit (USD)</label>
+                        <p class="crypto-price" id="currentPriceBuy"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estimated Total (USD)</label>
+                        <p id="buy-total-price">$0.00</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-danger" id="confirm-buy" onclick="confirmBuy()">Confirm Purchase</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sell Modal -->
+<div class="modal fade" id="sellModal" aria-labelledby="sellModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sellModalLabel">Sell Cryptocurrency</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="sell-form">
+                    <div class="mb-3">
+                        <label for="sell-amount" class="form-label">Amount to Sell</label>
+                        <input type="number" class="form-control" id="sell-amount" min="0.01" step="0.01" placeholder="Enter amount">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Current Price per Unit (USD)</label>
+                        <p class="crypto-price" id="currentPriceSell"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estimated Total (USD)</label>
+                        <p id="sell-total-price">$0.00</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-danger" id="confirm-sell" onclick="confirmBuy()">Confirm Sale</button>
+            </div>
+        </div>
+    </div>
+</div>
 <footer>
     <!-- FOOTER FOR LARGE SCREENS -->
     <div class="d-none d-lg-block">

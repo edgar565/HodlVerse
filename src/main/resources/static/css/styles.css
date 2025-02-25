@@ -460,3 +460,8 @@ body.dark-mode .breadcrumb-item a {
 body.dark-mode .text {
     color: var(--textodark) !important;
 }
+/* Solo aplica el blur al contenido detrás del modal */
+body.modal-open main {
+    filter: blur(5px);
+    pointer-events: none; /* Evita clics en el fondo */
+}
