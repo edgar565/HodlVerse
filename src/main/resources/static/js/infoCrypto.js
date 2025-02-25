@@ -25,6 +25,79 @@ async function loadCryptoInfo(cryptoFinal) {
     }
 }
 
+async function loadHistoryByCurrency(cryptoFinal) {
+    try {
+        const crypto = await History.getLatestHistoryByCurrency(cryptoFinal.currencyId);
+        return crypto;
+    } catch (error) {
+        console.error("Error fetching data from API:", error);
+        return null;
+    }
+}
+
+async function showTable() {
+
+
+    let base = +new Date(1988, 9, 3);
+    let oneDay = 24 * 3600 * 1000;
+    let data = [[base, Math.random() * 300]];
+    for (let i = 1; i < 20000; i++) {
+        let now = new Date((base += oneDay));
+        data.push([+now, Math.round((Math.random() - 0.5) * 20 + data[i - 1][1])]);
+    }
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: 'Large Ara Chart'
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'time',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 20
+            },
+            {
+                start: 0,
+                end: 20
+            }
+        ],
+        series: [
+            {
+                name: 'Fake Data',
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+                areaStyle: {},
+                data: data
+            }
+        ]
+    };
+}
+
+
 document.addEventListener('DOMContentLoaded', async function () {
     // ================================
     // OBTENER DATOS DE LA CRYPTO
@@ -61,6 +134,57 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("price-change").classList.add(crypto.priceChangePercentage24h > 0 ? "text-success" : "text-danger", "price-change")
     document.getElementById("price-change").innerText = crypto.priceChangePercentage24h > 0 ? "▲ " + crypto.priceChangePercentage24h.toFixed(2) + "%" : "▼ " + crypto.priceChangePercentage24h.toFixed(2) + "%";
 
+    async function recommended() {
+        try {
+            const coins = await Currency.getRecommendations();
+            let history = [];
+
+            // Usamos Promise.all para manejar múltiples llamadas async
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
+
+            const top3Coins = history.slice(0, 3);
+            return top3Coins;
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const cryptoData = await recommended();
+    console.log(cryptoData);
+
+    // Seleccionamos el contenedor donde se insertarán las tarjetas
+    const container = document.getElementById("cryptoContainer");
+
+    // Iteramos sobre cada elemento del arreglo para generar las tarjetas
+    cryptoData.forEach(item => {
+        // Creamos un div que contendrá cada tarjeta
+        const colDiv = document.createElement("div");
+        colDiv.classList.add("col");
+
+        // Generamos el HTML interno usando template literals
+        colDiv.innerHTML = `
+    <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
+        <div class="card-body d-flex flex-column justify-content-center text-center">
+            <h5 class="fw-bold">${item.currency.name}</h5>
+            <div class="d-flex align-items-center me-3 text-center justify-content-center">
+                <img src="${item.currency.image}" alt="Logo de criptomoneda ${item.currency.name}" class="img-fluid me-3" style="max-height: 40px;">
+                <h4 class="fw-bold text-dark">${item.currentPrice}</h4>
+            </div>
+            <div class="text-center ${item.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">
+                ${item.priceChangePercentage24h.toLocaleString()}%
+            </div>
+        </div>
+        <a href="infoCrypto.html?ticker=${item.currency.ticker}" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
+    </div>
+`;
+        // Insertamos la tarjeta en el contenedor
+        container.appendChild(colDiv);
+    });
+
+    showTable();
 });
 
 /*  BUY/SELL CRYPTO EVENT */
@@ -76,6 +200,7 @@ document.getElementById('buy-btn').addEventListener('click', function () {
 
 document.getElementById('sell-btn').addEventListener('click', function () {
     actionType = 'sell';
+    checkUser(actionType);
 });
 
 async function checkUser(actionType) {
@@ -105,6 +230,7 @@ async function checkUser(actionType) {
                 }
             }, 300);
         });
+
         // Function to update the estimated total based on the input amount and current price
         function updateTotal(inputId, outputId) {
             const amount = parseFloat(document.getElementById(inputId).value) || 0;
@@ -367,52 +493,3 @@ async function confirmBuy() {
 //         }
 //     });
 //
-//     async function recommended() {
-//         try {
-//             const coins = await Currency.getRecommendations();
-//             let history = [];
-//
-//             // Usamos Promise.all para manejar múltiples llamadas async
-//             history = await Promise.all(coins.map(async (coin) => {
-//                 return await History.getLatestHistoryByCurrencyId(coin.currencyId);
-//             }));
-//
-//             const top3Coins = history.slice(0, 3);
-//             return top3Coins;
-//
-//         } catch (error) {
-//             console.error(error);
-//         }
-//     }
-//
-//     const cryptoData = await recommended();
-//     console.log(cryptoData);
-//
-//     // Seleccionamos el contenedor donde se insertarán las tarjetas
-//     const container = document.getElementById("cryptoContainer");
-//
-//     // Iteramos sobre cada elemento del arreglo para generar las tarjetas
-//     cryptoData.forEach(item => {
-//         // Creamos un div que contendrá cada tarjeta
-//         const colDiv = document.createElement("div");
-//         colDiv.classList.add("col");
-//
-//         // Generamos el HTML interno usando template literals
-//         colDiv.innerHTML = `
-//     <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
-//         <div class="card-body d-flex flex-column justify-content-center text-center">
-//             <h5 class="fw-bold">${item.currency.name}</h5>
-//             <div class="d-flex align-items-center me-3 text-center justify-content-center">
-//                 <img src="${item.currency.image}" alt="Logo de criptomoneda ${item.currency.name}" class="img-fluid me-3" style="max-height: 40px;">
-//                 <h4 class="fw-bold text-dark">${item.currentPrice}</h4>
-//             </div>
-//             <div class="text-center ${item.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">
-//                 ${item.priceChangePercentage24h.toLocaleString()}%
-//             </div>
-//         </div>
-//         <a href="infoCrypto.html?ticker=${item.currency.ticker}" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
-//     </div>
-// `;
-//         // Insertamos la tarjeta en el contenedor
-//         container.appendChild(colDiv);
-//     });
