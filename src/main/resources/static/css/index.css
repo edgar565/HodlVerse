@@ -624,3 +624,23 @@ hr {
     transform-origin: 25vw -20vh;
     box-shadow: -2vmin 0 0.47497747257706235vmin currentColor;
 }
+.modal h1,
+.modal h2,
+.modal label,
+.modal p{
+    color: var(--azuloscuro);
+}
+.btn-sign{
+    background-color: var(--azuloscuro);
+    color: white;
+}
+.btn-sign:hover{
+    color: var(--azuloscuro);
+    background-color: var(--oro);
+}
+.btn-changeLogin{
+    color: var(--azuloscuro);
+}
+.btn-changeLogin:hover{
+    color: var(--oro);
+}

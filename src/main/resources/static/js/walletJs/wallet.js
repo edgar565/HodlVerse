@@ -1,43 +1,25 @@
 class Wallet {
     constructor(walletId, walletName, creationDate, user, balances) {
-        // Validar cada propiedad antes de inicializar el objeto
-        this.validateData({
-            walletId,
-            walletName,
-            creationDate,
-            user,
-            balances
-        });
         this.walletId = walletId;
         this.walletName = walletName;
         this.creationDate = creationDate;
-        this.user = user;  // Debe ser un objeto de tipo User
-        this.balances = balances;  // Debe ser un arreglo de objetos Balance
+        this.user = user;  // Should be an instance of User
+        this.balances = balances;  // Should be an array of Balance objects
     }
 
-    // Validar los datos de la billetera
-    static validateData(walletData) {
-        // Validar walletId
-        if (typeof walletData.walletId !== 'number' || isNaN(walletData.walletId)) {
-            throw new Error('walletId debe ser un número válido.');
-        }
-
-        // Validar walletName
+     static validateData(walletData) {
         if (typeof walletData.walletName !== 'string' || walletData.walletName.trim() === '') {
             throw new Error('walletName debe ser una cadena no vacía.');
         }
 
-        // Validar creationDate
         if (!(walletData.creationDate instanceof Date)) {
             throw new Error('creationDate debe ser una instancia de Date.');
         }
 
-        // Validar user
         if (!(walletData.user instanceof User)) {
             throw new Error('user debe ser una instancia de la clase User.');
         }
 
-        // Validar balances
         if (!Array.isArray(walletData.balances) || !walletData.balances.every(b => b instanceof Balance)) {
             throw new Error('balances debe ser un array de instancias de la clase Balance.');
         }
@@ -100,11 +82,10 @@ class Wallet {
 
     static async getWalletsCurrenciesById(id) {
         try {
-            const response = await $.ajax({
+            return await $.ajax({
                 url: `/wallets/${id}/currencies`,
                 type: 'GET'
             });
-            return response;
         } catch (error) {
             console.error('Error al obtener el usuario:', error);
             return null;
@@ -112,8 +93,9 @@ class Wallet {
     }
 
     // Crear una nueva billetera
-    static createWallet(walletData, callback) {
+    static async createWallet(walletData) {
         try {
+            // Validación de los datos de la billetera
             this.validateData({
                 walletId: null,
                 walletName: walletData.walletName,
@@ -121,28 +103,34 @@ class Wallet {
                 user: walletData.user,
                 balances: []
             });
-            $.ajax({
-                url: '/wallets',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    walletName: walletData.walletName,
-                    creationDate: new Date().toISOString(),
-                    user: walletData.user
-                }),
-                success: (data) => {
-                    console.log('Billetera creada:', data);
-                    if (callback) callback(data);
-                    Wallet.loadWallets(); // Recargar la lista de billeteras
-                },
-                error: (error) => {
-                    console.error('Error al crear la billetera:', error);
-                }
+
+            // Realizar la solicitud AJAX usando $.ajax para crear la billetera
+            const walletResponse = await $.ajax({
+                    url: '/wallets',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        walletName: walletData.walletName,
+                        creationDate: new Date().toISOString(),
+                        user: walletData.user
+                    }),
+                    success: (response) => resolve(response),  // Resolvemos la promesa con la respuesta exitosa
+                    error: (error) => reject(new Error('Error al crear la billetera: ' + error.statusText))  // Rechazamos la promesa en caso de error
             });
+
+            // Procesar la respuesta de la creación de la billetera
+            console.log('Billetera creada:', walletResponse);
+
+            // Si se requiere alguna lógica adicional después de crear la billetera (como cargar o actualizar información de billeteras)
+            Wallet.loadWallets(); // Recargar la lista de billeteras si es necesario
+
+            return walletResponse;  // Retornar la respuesta de la creación de la billetera
+
         } catch (error) {
-            console.error('Datos inválidos para crear la billetera:', error.message);
+            console.error('Error al crear la billetera:', error.message);
         }
     }
+
 
     // Actualizar una billetera existente
     static updateWallet(id, updatedData, callback) {
@@ -228,15 +216,28 @@ class Wallet {
             return;
         }
         try {
-            const response = await $.ajax({
+            return await $.ajax({
                 url: `/wallets/user/${userId}/balance/on/${date.toISOString().split('T')[0]}`, // Formatear la fecha como YYYY-MM-DD
                 type: 'GET'
             });
-            return response;
         } catch (error) {
             console.error('Error al obtener el usuario:', error);
             return null; // Retorna null en caso de error
         }
     }
+
+    static async getWalletByUserId(userId) {
+        try {
+            return await $.ajax({
+                url: `/wallets/user/${userId}`,
+                type: 'GET'
+            });
+
+        } catch (error) {
+            console.error(`❌ Error al obtener la billetera del usuario con ID ${userId}:`, error);
+            return null;
+        }
+    }
+
 }
  window.Wallet = Wallet;

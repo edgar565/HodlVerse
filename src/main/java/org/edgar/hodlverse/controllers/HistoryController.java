@@ -150,4 +150,10 @@ public class HistoryController {
         return ResponseEntity.ok(latestHistory.get());
     }
 
+    @GetMapping("/currency/{currencyId}/all")
+    public List<History> getAllHistoryByCurrencyId(@PathVariable Long currencyId) {
+        return historyService.getAllHistoryByCurrencyId(currencyId);
+    }
+
+
 }

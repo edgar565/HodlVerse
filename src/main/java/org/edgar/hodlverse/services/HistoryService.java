@@ -90,6 +90,11 @@ public class HistoryService {
         return historyRepository.findLatestHistoryByCurrencyId(currencyId);
     }
 
+    public List<History> getAllHistoryByCurrencyId(Long currencyId) {
+        return historyRepository.findByCurrency_CurrencyId(currencyId);
+    }
+
+
     public static class Record {
         private BigDecimal openPrice;
         private BigDecimal closePrice;

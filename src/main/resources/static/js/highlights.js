@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let li = document.createElement("li");
             li.classList.add("row", "py-1", "mt-2", "mb-2", "card-item");
             li.innerHTML = `
-                <div class="col-6 bg-white" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
+                <div class="col-6" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
                     <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">${coin.currency.name}
                 </div>
                 <div class="col-3 text-end">${coin.currentPrice.toLocaleString()}$</div>
@@ -82,6 +82,51 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     topWinners();
+
+    async function recommended() {
+        try {
+            const coins = await Currency.getRecommendations();
+            let history = [];
+
+            // Usamos Promise.all para manejar múltiples llamadas async
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
+
+            console.log(coins);
+            const top5Coins = history.slice(0, 5);
+            console.log(top5Coins);
+
+            let lista = document.getElementById("recommendations-list");
+            listas(lista, top5Coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+    recommended();
+    async function mostViewed() {
+        try {
+            const coins = await Currency.getMostViewed();
+            let history = [];
+
+            // Usamos Promise.all para manejar múltiples llamadas async
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
+
+            console.log(coins);
+            const top5Coins = history.slice(0, 5);
+            console.log(top5Coins);
+            let lista = document.getElementById("mostViewed-list");
+            listas(lista, top5Coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    mostViewed();
 
     async function highestVolume() {
         try {
@@ -163,10 +208,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 // Construir la fila de la tabla con los datos calculados
                 let row = `
                 <tr>
-                    <td class="text-end">${contador}</td>
+                    <td class="sticky-col start-0 text-end">${contador}</td>
                     <td class="sticky-col start-0 text-start" style="cursor:pointer;"><div onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'"><img src="${coin.currency.image}" height="24" alt="Icono de " ${coin.currency.name}> ${coin.currency.name} (${coin.currency.ticker.toUpperCase()})</div></td>
                     <td class="text-end">${coin.currentPrice.toLocaleString()}$</td>
-                    <td class="text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'}">${coin.priceChangePercentage24h.toLocaleString()}%</td>
+                    <td class="text-end fw-bold ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'}">${coin.priceChangePercentage24h.toLocaleString()}%</td>
                     <td class="text-end">${coin.totalVolume.toLocaleString()}$</td>
                     <td class="text-end">${coin.marketCap.toLocaleString()}$</td>
                 </tr>

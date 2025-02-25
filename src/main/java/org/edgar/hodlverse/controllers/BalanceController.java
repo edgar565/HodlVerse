@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/balances") // Ruta base para el controlador
+@RequestMapping("/balances")
 public class BalanceController {
 
     private final BalanceService balanceService;
@@ -18,26 +18,22 @@ public class BalanceController {
         this.balanceService = balanceService;
     }
 
-    // Obtener todos los balances
     @GetMapping
     public List<Balance> all() {
         return balanceService.findAll();
     }
 
-    // Crear un nuevo balance
     @PostMapping
     public Balance newBalance(@RequestBody Balance newBalance) {
         return balanceService.save(newBalance);
     }
 
-    // Obtener un balance específico por su ID
     @GetMapping("/{id}")
     public Balance findBalanceById(@PathVariable Long id) {
         return balanceService.findById(id)
                 .orElseThrow(() -> new NotFoundException("Balance con ID " + id + " no encontrado."));
     }
 
-    // Actualizar un balance existente
     @PutMapping("/{id}")
     public Balance replaceBalance(@RequestBody Balance newBalance, @PathVariable Long id) {
         return balanceService.findById(id)
@@ -53,24 +49,24 @@ public class BalanceController {
                 });
     }
 
-    // Eliminar un balance por su ID
     @DeleteMapping("/{id}")
     public void deleteBalance(@PathVariable Long id) {
         if (balanceService.findById(id).isEmpty()) {
-            throw new NotFoundException("Usuario con ID " + id + " no encontrado.");
+            throw new NotFoundException("Balance con ID " + id + " no encontrado.");
         }
         balanceService.deleteById(id);
     }
 
     @GetMapping("/currency/{currencyId}")
     public List<Balance> balancesByCurrency(@PathVariable Long currencyId) {
-        if (balanceService.findByCurrencyId(currencyId).isEmpty()) {
-            throw new NotFoundException("Divisa con ID " + currencyId + " no encontrado.");
-        }
         return balanceService.findByCurrencyId(currencyId);
     }
 
-    // Endpoint para obtener la suma de walletAmount
+    @GetMapping("/wallet/{walletId}")
+    public List<Balance> balancesByWallet(@PathVariable Long walletId) {
+        return balanceService.findByWalletId(walletId);
+    }
+
     @GetMapping("/total/{walletId}/{currencyId}")
     public BigDecimal getTotalWalletAmount(
             @PathVariable Long walletId,

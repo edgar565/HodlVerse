@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             let row = document.createElement("tr");
 
             row.innerHTML = `
-            <th scope="row">${index + 1}</th>
-            <td onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
+            <td class="sticky-col start-0 text-end">${index + 1}</td>
+            <td onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;" class="sticky-col start-0 text-start">
                 <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">
                 ${coin.currency.name} (${coin.currency.ticker.toUpperCase()})
             </td>

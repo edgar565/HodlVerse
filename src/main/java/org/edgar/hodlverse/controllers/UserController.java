@@ -42,9 +42,10 @@ public class UserController {
         // Devuelve la información del usuario
         return Map.of(
                 "id", user.getUserId(),
-                "name", user.getUsername(),
+                "name", user.getName(),
                 "email", user.getEmail(),
-                "picture", user.getPicture()
+                "picture", user.getPicture(),
+                "token", user.getToken()
         );
     }
 
@@ -61,10 +62,11 @@ public class UserController {
     public User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
         return userService.findById(id)
                 .map(user -> {
-                    user.setUsername(newUser.getUsername());
+                    user.setName(newUser.getName());
                     user.setEmail(newUser.getEmail());
                     user.setPassword(newUser.getPassword());
                     user.setRegistrationDate(newUser.getRegistrationDate());
+                    user.setToken(newUser.getToken());
                     return userService.save(user);
                 })
                 .orElseGet(() -> {

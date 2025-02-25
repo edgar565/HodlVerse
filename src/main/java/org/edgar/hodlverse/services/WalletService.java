@@ -87,4 +87,8 @@ public class WalletService {
                 .collect(Collectors.toList());
     }
 
+    public Optional<Wallet> getWalletByUserId(Long userId) {
+        return walletRepository.findByUserUserId(userId);
+    }
+
 }
