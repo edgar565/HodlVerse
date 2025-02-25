@@ -388,8 +388,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <td class="col-2 text-center">
                 <span class="badge ${badgeClass}">${transaction.transactionType}</span>
             </td>
-            <td class="col-3 text-end">${transaction.destinationUnitPrice.toFixed(2)}</td>
-            <td class="col-3 text-end">$${transaction.destinationTransactionAmount.toFixed(2)}</td>
+            <td class="col-3 text-end">${transaction.destinationTransactionAmount.toLocaleString()}</td>
+            <td class="col-3 text-end">$${transaction.destinationUnitPrice.toLocaleString()}</td>
         `;
 
             tableBody.appendChild(row);
@@ -428,8 +428,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <td class="col-2 text-center">
                 <span class="badge ${badgeClass}">${transaction.transactionType}</span>
             </td>
-            <td class="col-3 text-end">${transaction.destinationUnitPrice.toFixed(2)}</td>
-            <td class="col-3 text-end">$${transaction.destinationTransactionAmount.toFixed(2)}</td>
+            <td class="col-3 text-end">${transaction.destinationTransactionAmount.toLocaleString()}</td>
+            <td class="col-3 text-end">$${transaction.destinationUnitPrice.toLocaleString()}</td>
         `;
 
             tableBody.appendChild(row);
