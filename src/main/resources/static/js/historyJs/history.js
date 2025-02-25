@@ -375,7 +375,7 @@ class History {
         }
         try {
             const response = await $.ajax({
-                url: `/currency/${currencyId}/all`, // Endpoint para obtener la última entrada de History por currencyId
+                url: `/history/currency/${currencyId}/all`, // Endpoint para obtener la última entrada de History por currencyId
                 type: 'GET'
             });
             return response;

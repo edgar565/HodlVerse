@@ -186,22 +186,20 @@ class Wallet {
     }
 
     // Obtener el saldo total de una billetera de un usuario
-    static getWalletTotalBalance(userId, callback) {
+    static async getWalletTotalBalance(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
             return;
         }
-        $.ajax({
-            url: `/wallets/totalBalance/${userId}`,
-            type: 'GET',
-            success: (data) => {
-                console.log(`Saldo total para el usuario con ID ${userId}:`, data);
-                if (callback) callback(data);
-            },
-            error: (error) => {
-                console.error('Error al obtener el saldo total:', error);
-            }
-        });
+        try {
+            return await $.ajax({
+                url: `/wallets/totalBalance/${userId}`,
+                type: 'GET'
+            });
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
     }
 
     // *** NUEVA FUNCIÓN PARA OBTENER EL BALANCE HISTÓRICO DE UN USUARIO EN UN DÍA ESPECÍFICO ***

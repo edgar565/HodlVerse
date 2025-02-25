@@ -26,26 +26,40 @@ async function loadCryptoInfo(cryptoFinal) {
 }
 
 async function loadHistoryByCurrency(cryptoFinal) {
+    console.log(cryptoFinal);
+    if (!cryptoFinal) {
+        throw new Error("cryptoFinal is undefined or null");
+    }
     try {
-        const crypto = await History.getLatestHistoryByCurrency(cryptoFinal.currencyId);
-        return crypto;
+        const histories = await History.getLatestHistoryByCurrency(cryptoFinal.currencyId);
+        return histories;
     } catch (error) {
         console.error("Error fetching data from API:", error);
         return null;
     }
 }
 
-async function showTable() {
+async function showCharts(histories) {
+    console.log(histories);
 
+    // Gráfico de las últimas 24 horas (Precio)
+    let last24HoursPriceData = histories
+        .filter(history => {
+            const date = new Date(history.lastUpdated);
+            const now = new Date();
+            return Math.abs(now - date) <= 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+        })
+        .map(history => [new Date(history.lastUpdated).getTime(), history.currentPrice]);
 
-    let base = +new Date(1988, 9, 3);
-    let oneDay = 24 * 3600 * 1000;
-    let data = [[base, Math.random() * 300]];
-    for (let i = 1; i < 20000; i++) {
-        let now = new Date((base += oneDay));
-        data.push([+now, Math.round((Math.random() - 0.5) * 20 + data[i - 1][1])]);
-    }
-    option = {
+    let last24HoursVolumeData = histories
+        .filter(history => {
+            const date = new Date(history.lastUpdated);
+            const now = new Date();
+            return Math.abs(now - date) <= 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+        })
+        .map(history => [new Date(history.lastUpdated).getTime(), history.totalVolume]);
+
+    let last24HoursPriceOption = {
         tooltip: {
             trigger: 'axis',
             position: function (pt) {
@@ -54,13 +68,10 @@ async function showTable() {
         },
         title: {
             left: 'center',
-            text: 'Large Ara Chart'
+            text: 'Crypto Price Chart (Last 24 Hours)'
         },
         toolbox: {
             feature: {
-                dataZoom: {
-                    yAxisIndex: 'none'
-                },
                 restore: {},
                 saveAsImage: {}
             }
@@ -77,41 +88,203 @@ async function showTable() {
             {
                 type: 'inside',
                 start: 0,
-                end: 20
+                end: 100
             },
             {
                 start: 0,
-                end: 20
+                end: 100
             }
         ],
         series: [
             {
-                name: 'Fake Data',
+                name: 'Crypto Price',
                 type: 'line',
                 smooth: true,
                 symbol: 'none',
                 areaStyle: {},
-                data: data
+                data: last24HoursPriceData
             }
         ]
     };
+
+    let last24HoursVolumeOption = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'time',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: 'Volume',
+                type: 'bar',
+                barWidth: '60%',
+                data: last24HoursVolumeData.map(item => item[1])
+            }
+        ]
+    };
+
+    // Gráfico diario (Precio)
+    let dailyDataMap = new Map();
+    histories.forEach(history => {
+        let date = new Date(history.lastUpdated).toISOString().split('T')[0];
+        if (!dailyDataMap.has(date) || new Date(history.lastUpdated) > new Date(dailyDataMap.get(date)[0])) {
+            dailyDataMap.set(date, [new Date(history.lastUpdated).getTime(), history.currentPrice]);
+        }
+    });
+
+    let dailyPriceData = Array.from(dailyDataMap.values());
+
+    let dailyPriceOption = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: 'Crypto Price Chart (Daily)'
+        },
+        toolbox: {
+            feature: {
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'time',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 100
+            },
+            {
+                start: 0,
+                end: 100
+            }
+        ],
+        series: [
+            {
+                name: 'Crypto Price',
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+                areaStyle: {},
+                data: dailyPriceData
+            }
+        ]
+    };
+
+    // Gráfico diario (Volumen)
+    let dailyVolumeDataMap = new Map();
+    histories.forEach(history => {
+        let date = new Date(history.lastUpdated).toISOString().split('T')[0];
+        if (!dailyVolumeDataMap.has(date) || new Date(history.lastUpdated) > new Date(dailyVolumeDataMap.get(date)[0])) {
+            dailyVolumeDataMap.set(date, [new Date(history.lastUpdated).getTime(), history.totalVolume]);
+        }
+    });
+
+    let dailyVolumeData = Array.from(dailyVolumeDataMap.values());
+
+    let dailyVolumeOption = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: dailyVolumeData.map(item => new Date(item[0]).toISOString().split('T')[0]),
+            axisTick: {
+                alignWithLabel: true
+            }
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: 'Volume',
+                type: 'bar',
+                barWidth: '60%',
+                data: dailyVolumeData.map(item => item[1])
+            }
+        ]
+    };
+
+    // Inicializar los gráficos con ECharts
+    const last24HoursPriceChartDom = document.getElementById('last24HoursChart');
+    const dailyPriceChartDom = document.getElementById('dailyPriceChart');
+    const last24HoursVolumeChartDom = document.getElementById('volume-chart-value');
+    const dailyVolumeChartDom = document.getElementById('dailyChartVolume');
+
+    if (last24HoursPriceChartDom) {
+        const last24HoursPriceChart = echarts.init(last24HoursPriceChartDom);
+        last24HoursPriceChart.setOption(last24HoursPriceOption);
+    } else {
+        console.error("Element with id 'last24HoursChart' not found.");
+    }
+
+    if (dailyPriceChartDom) {
+        const dailyPriceChart = echarts.init(dailyPriceChartDom);
+        dailyPriceChart.setOption(dailyPriceOption);
+    } else {
+        console.error("Element with id 'dailyPriceChart' not found.");
+    }
+
+    if (last24HoursVolumeChartDom) {
+        const last24HoursVolumeChart = echarts.init(last24HoursVolumeChartDom);
+        last24HoursVolumeChart.setOption(last24HoursVolumeOption);
+    } else {
+        console.error("Element with id 'volume-chart-value' not found.");
+    }
+
+    if (dailyVolumeChartDom) {
+        const dailyVolumeChart = echarts.init(dailyVolumeChartDom);
+        dailyVolumeChart.setOption(dailyVolumeOption);
+    } else {
+        console.error("Element with id 'dailyChartVolume' not found.");
+    }
 }
 
-
 document.addEventListener('DOMContentLoaded', async function () {
-    // ================================
-    // OBTENER DATOS DE LA CRYPTO
-    // ================================
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const ticker = urlParams.get('ticker');
 
     let cryptoFinal = await fetchCryptoData(ticker);
     const crypto = await loadCryptoInfo(cryptoFinal);
+    let histories = await loadHistoryByCurrency(cryptoFinal);
+    showCharts(histories);
 
-    // ================================
-    // CARGAR DATOS DE LA CRYPTO
-    // ================================
     console.log(crypto);
     document.getElementById('icon').src = crypto.currency.image;
     document.getElementById('icon').alt = "Icono de " + crypto.currency.name;
@@ -131,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("change-24h-percentage").innerText = crypto.priceChangePercentage24h + "%";
     document.getElementById("high-24").innerText = crypto.high24h.toLocaleString() + "$";
     document.getElementById("low-24").innerText = crypto.low24h.toLocaleString() + "$";
-    document.getElementById("price-change").classList.add(crypto.priceChangePercentage24h > 0 ? "text-success" : "text-danger", "price-change")
+    document.getElementById("price-change").classList.add(crypto.priceChangePercentage24h > 0 ? "text-success" : "text-danger", "price-change");
     document.getElementById("price-change").innerText = crypto.priceChangePercentage24h > 0 ? "▲ " + crypto.priceChangePercentage24h.toFixed(2) + "%" : "▼ " + crypto.priceChangePercentage24h.toFixed(2) + "%";
 
     async function recommended() {
@@ -139,7 +312,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             const coins = await Currency.getRecommendations();
             let history = [];
 
-            // Usamos Promise.all para manejar múltiples llamadas async
             history = await Promise.all(coins.map(async (coin) => {
                 return await History.getLatestHistoryByCurrencyId(coin.currencyId);
             }));
@@ -155,39 +327,31 @@ document.addEventListener('DOMContentLoaded', async function () {
     const cryptoData = await recommended();
     console.log(cryptoData);
 
-    // Seleccionamos el contenedor donde se insertarán las tarjetas
     const container = document.getElementById("cryptoContainer");
 
-    // Iteramos sobre cada elemento del arreglo para generar las tarjetas
     cryptoData.forEach(item => {
-        // Creamos un div que contendrá cada tarjeta
         const colDiv = document.createElement("div");
         colDiv.classList.add("col");
 
-        // Generamos el HTML interno usando template literals
         colDiv.innerHTML = `
-    <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
-        <div class="card-body d-flex flex-column justify-content-center text-center">
-            <h5 class="fw-bold">${item.currency.name}</h5>
-            <div class="d-flex align-items-center me-3 text-center justify-content-center">
-                <img src="${item.currency.image}" alt="Logo de criptomoneda ${item.currency.name}" class="img-fluid me-3" style="max-height: 40px;">
-                <h4 class="fw-bold text-dark">${item.currentPrice}</h4>
+            <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h5 class="fw-bold">${item.currency.name}</h5>
+                    <div class="d-flex align-items-center me-3 text-center justify-content-center">
+                        <img src="${item.currency.image}" alt="Logo de criptomoneda ${item.currency.name}" class="img-fluid me-3" style="max-height: 40px;">
+                        <h4 class="fw-bold text-dark">${item.currentPrice}</h4>
+                    </div>
+                    <div class="text-center ${item.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">
+                        ${item.priceChangePercentage24h.toLocaleString()}%
+                    </div>
+                </div>
+                <a href="infoCrypto.html?ticker=${item.currency.ticker}" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
             </div>
-            <div class="text-center ${item.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">
-                ${item.priceChangePercentage24h.toLocaleString()}%
-            </div>
-        </div>
-        <a href="infoCrypto.html?ticker=${item.currency.ticker}" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
-    </div>
-`;
-        // Insertamos la tarjeta en el contenedor
+        `;
         container.appendChild(colDiv);
     });
-
-    showTable();
 });
 
-/*  BUY/SELL CRYPTO EVENT */
 let actionType = '';
 const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
 const buyModal = new bootstrap.Modal(document.getElementById('buyModal'));
@@ -209,10 +373,10 @@ async function checkUser(actionType) {
             const userId = await User.getUserId();
             console.log(userId);
             user = await User.getUserById(userId);
-            return userId
+            return userId;
         } catch (error) {
             console.error('❌ Error al obtener el usuario:', error);
-            return null; // Devuelve un array vacío en caso de error
+            return null;
         }
     }
 
@@ -231,7 +395,6 @@ async function checkUser(actionType) {
             }, 300);
         });
 
-        // Function to update the estimated total based on the input amount and current price
         function updateTotal(inputId, outputId) {
             const amount = parseFloat(document.getElementById(inputId).value) || 0;
             const currentPrice = parseFloat(document.getElementById('currentPriceBuy').innerText.replace('$', '')) || 0;
@@ -248,19 +411,15 @@ async function checkUser(actionType) {
         });
 
         document.getElementById('confirm-buy').addEventListener('click', function () {
-            // Aquí iría la lógica real de compra
             alert('Purchase confirmed!');
-
             buyModal.hide();
         });
 
         document.getElementById('confirm-sell').addEventListener('click', function () {
-            // Aquí iría la lógica real de venta
             alert('Sale confirmed!');
             sellModal.hide();
         });
     }
-
 }
 
 async function confirmBuy() {
@@ -284,212 +443,23 @@ async function confirmBuy() {
     }
 
     let user = await getUser();
-    // Example of how to construct the transaction data:
     const transactionData = {
-        transactionType: 'buy', // Can be "buy", "sell" or "exchange"
-        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
+        transactionType: 'buy',
+        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0,
         destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
         originUnitPrice: 1,
         destinationUnitPrice: crypto.currentPrice,
-        transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
-        user: user, // Use the already validated user object
+        transactionDate: new Date().toISOString().split('T')[0],
+        user: user,
         originCurrency: {
-            currencyId: 3 // ID of the origin currency
+            currencyId: 3
         },
         destinationCurrency: {
-            currencyId: cryptoFinal.currencyId // ID of the destination currency
+            currencyId: cryptoFinal.currencyId
         }
     };
 
-    // Ensure transactionDate is a Date instance
     transactionData.transactionDate = new Date(transactionData.transactionDate);
-
-    // Call createTransaction without re-validating the user
     await Transaction.createTransaction(transactionData);
-
-    // Handle the result if necessary
     console.log("Transacción creada correctamente.");
 }
-
-//     // ================================
-//     // GRÁFICO DE EVOLUCIÓN DE PRECIOS
-//     // ================================
-//
-//     async function loadHistory() {
-//         try {
-//             const history = await History.loadHistories();
-//             return history;
-//         } catch (error) {
-//             console.error("Error fetching data from API:", error);
-//             return null;
-//         }
-//     }
-//
-//     const histories = await loadHistory();
-//     console.log(histories);
-//
-//
-//     if (!histories) {
-//         throw new Error("No se pudieron cargar los datos de historial.");
-//     }
-//
-//     function loadPriceLabels() {
-//         let priceLabels = [];
-//         for (const history of histories) {
-//             if (crypto.currencyId === history.currency.currencyId) {
-//                 priceLabels.push(history.lastUpdated)
-//             }
-//         }
-//         return priceLabels;
-//     }
-//     let priceLabels = await loadPriceLabels();
-//
-//
-//     // Cargar datos para el gráfico
-//     function loadInfo() {
-//         let prices = [];
-//         for (const history of histories) {
-//             if (history.currency.currencyId === crypto.currencyId) {
-//                 // Convertimos la fecha en timestamp para ECharts
-//                 prices.push(history.currentPrice);
-//             }
-//         }
-//         return prices;
-//     }
-//
-//     let prices = await loadInfo();
-//     console.log(priceLabels);
-//     console.log(prices);
-//
-//     // Configurar gráfico con ECharts
-//     const chartDom = document.getElementById('crypto-chart');
-//     if (!chartDom) {
-//         console.error("No se encontró el elemento #crypto-chart");
-//         return;
-//     }
-//
-//     const myChart = echarts.init(chartDom);
-//
-//     // Configurar opciones de ECharts
-//     const option = {
-//         tooltip: {
-//             trigger: 'axis',
-//             backgroundColor: 'rgba(255,255,255,0.9)',
-//             borderColor: '#ddd',
-//             borderWidth: 1,
-//             textStyle: {color: '#000'},
-//             formatter: function (params) {
-//                 let date = new Date(params[0].data[0]).toLocaleDateString();
-//                 let price = params[0].data[1].toLocaleString();
-//                 return `<strong>Date:</strong> ${date}<br><strong>Price:</strong> $${price}`;
-//             }
-//         },
-//         title: {
-//             left: 'center',
-//             text: 'Crypto Price Evolution',
-//             textStyle: {color: 'rgb(6, 20, 40)'}
-//         },
-//         toolbox: {
-//             feature: {
-//                 restore: {},
-//                 saveAsImage: {}
-//             }
-//         },
-//         xAxis: {
-//             type: 'time',
-//             boundaryGap: false,
-//             axisLabel: {color: 'rgb(6, 20, 40)'}
-//         },
-//         yAxis: {
-//             type: 'value',
-//             boundaryGap: [0, '100%'],
-//             axisLabel: {
-//                 formatter: function (value) {
-//                     return `${value.toLocaleString()}$`;
-//                 },
-//                 color: 'rgb(6, 20, 40)'
-//             }
-//         },
-//         dataZoom: [
-//             {type: 'inside', start: 0, end: 20},
-//             {start: 0, end: 20}
-//         ],
-//         series: [
-//             {
-//                 name: 'Crypto Price ($)',
-//                 type: 'line',
-//                 smooth: true,
-//                 symbol: 'none',
-//                 areaStyle: {color: 'rgba(6, 20, 40, 0.2)'},
-//                 lineStyle: {color: 'rgb(6, 20, 40)', width: 2},
-//                 itemStyle: {color: 'rgb(6, 20, 40)'},
-//                 data: priceLabels.map((time, index) => [time, prices[index]])
-//             }
-//         ]
-//     };
-//
-//     // Aplicar opciones al gráfico
-//     myChart.setOption(option);
-//     window.addEventListener('resize', () => myChart.resize());
-//
-// // ================================
-// // GRÁFICO DE EVOLUCIÓN DE VOLUMEN
-// // ================================
-//
-// // Obtenemos el contexto 2D del canvas para el gráfico de volumen.
-//     const ctxVolume = document.getElementById('volume-chart-value').getContext('2d');
-// // Usamos las mismas etiquetas (meses) para el eje X.
-//     const volumeLabels = priceLabels;
-// // Datos de volumen correspondientes a cada mes.
-//     const volumes = [50000, 55000, 60000, 65000, 70000, 75000, 80000, 75000, 85000];
-//
-// // Creamos el gráfico de barras para el volumen.
-//     new Chart(ctxVolume, {
-//         type: 'bar', // Tipo de gráfico: 'bar' para barras.
-//         data: {
-//             labels: volumeLabels,
-//             datasets: [{
-//                 label: crypto.currency.name + 'Volume',                        // Etiqueta para la leyenda.
-//                 data: volumes,                          // Datos del volumen.
-//                 backgroundColor: 'rgba(6, 20, 40, 0.7)',  // Color de las barras.
-//                 borderColor: 'rgb(6, 20, 40)',            // Color del borde de las barras.
-//                 borderWidth: 1                          // Grosor del borde.
-//             }]
-//         },
-//         options: {
-//             responsive: true,
-//             maintainAspectRatio: false,
-//             scales: {
-//                 x: {
-//                     title: {display: true, text: 'Months'},
-//                     ticks: {
-//                         maxRotation: 45,
-//                         minRotation: 30,
-//                         autoSkip: true,
-//                         maxTicksLimit: 8
-//                     }
-//                 },
-//                 y: {
-//                     title: {display: true, text: 'Volume'},
-//                     beginAtZero: true,                       // El eje Y empieza en 0.
-//                     ticks: {
-//                         callback: function (value) {
-//                             return value.toLocaleString();       // Formatea los números para mejor legibilidad.
-//                         }
-//                     }
-//                 }
-//             },
-//             plugins: {
-//                 tooltip: {
-//                     enabled: true,
-//                     backgroundColor: 'rgba(255,255,255,0.9)',
-//                     titleColor: '#000',
-//                     bodyColor: '#000',
-//                     borderColor: '#ddd',
-//                     borderWidth: 1
-//                     // En este gráfico de volumen, no se han personalizado los callbacks, pero se pueden agregar de manera similar.
-//                 }
-//             }
-//         }
-//     });
-//

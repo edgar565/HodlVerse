@@ -16,8 +16,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
 </head>
 <body>
 <header>
@@ -416,17 +414,23 @@
                         <div class="tab-pane fade show active" id="price-chart" role="tabpanel"
                              aria-labelledby="price-tab">
                             <div class="chart-wrapper">
-                                <div id="crypto-chart" style="width: 100%; height: 100%"></div>
+                                <div id="last24HoursChart" style="width: 100%; height: 100%"></div>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="volume-chart" role="tabpanel" aria-labelledby="volume-tab">
                             <div class="chart-wrapper">
-                                <canvas id="volume-chart-value"></canvas>
+                                <div id="volume-chart-value" style="width: 900px; height: 400px"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-12" id="dailyPriceChart" style="width: 100%; height: 400px"></div>
+        </div>
+        <div class="row">
+            <div class="col-12" id="dailyChartVolume" style="width: 100%; height: 400px"></div>
         </div>
 
         <!-- MORE CRYPTO SECTION -->

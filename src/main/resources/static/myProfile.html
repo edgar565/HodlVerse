@@ -94,10 +94,13 @@
                            data-bs-toggle="dropdown"
                            aria-expanded="false"><i class="fa-solid fa-chart-line"></i>Highlights</a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending Coins</a></li>
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending
+                                Coins</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a>
+                            </li>
                             <li><a class="dropdown-item" href="rankings.html?nameRanking=topLosers">Top Losers</a></li>
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest Volume</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest
+                                Volume</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -149,10 +152,14 @@
                             </button>
                             <div class="collapse" id="dashboard-collapse">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
-                                    <li><a href="rankings.html?nameRanking=topWinners"><i class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
-                                    <li><a href="rankings.html?nameRanking=topLosers"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
-                                    <li><a href="rankings.html?nameRanking=highestVolume"><i class="fa-solid fa-star"></i> Highest Volume</a></li>
+                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i
+                                            class="fa-solid fa-fire"></i> Trending Coins</a></li>
+                                    <li><a href="rankings.html?nameRanking=topWinners"><i
+                                            class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
+                                    <li><a href="rankings.html?nameRanking=topLosers"><i
+                                            class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
+                                    <li><a href="rankings.html?nameRanking=highestVolume"><i
+                                            class="fa-solid fa-star"></i> Highest Volume</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -240,7 +247,7 @@
         <!-- WELCOME MESSAGE -->
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
-                <h1>Welcome, <span class="text-oro">HodlStakers</span></h1>
+                <h1>Welcome, <span class="text-oro" id="displayName">HodlStakers</span></h1>
                 <button id="logout-btn" class="logout-button">Log Out</button>
 
             </div>
@@ -260,7 +267,7 @@
                                 <i class="fs-4 fa-solid fa-circle-user me-3"></i>
                                 <div>
                                     <p class="mb-0 fw-bold">Username:</p>
-                                    <p class="text-muted small mb-0">HodlStakers</p>
+                                    <p class="text-muted small mb-0" id="username">HodlStakers</p>
                                 </div>
                             </div>
                             <button class="btn btn-sm btn-azuloscuro text-light" data-bs-toggle="modal"
@@ -274,7 +281,7 @@
                                 <i class="fs-4 fa-solid fa-envelope me-3"></i>
                                 <div>
                                     <p class="mb-0 fw-bold">Email:</p>
-                                    <p class="text-muted small mb-0">hodlstakers@example.com</p>
+                                    <p class="text-muted small mb-0" id="email"></p>
                                 </div>
                             </div>
                             <button class="btn btn-sm btn-azuloscuro text-light" data-bs-toggle="modal"
@@ -318,7 +325,11 @@
                         <div class="d-flex align-items-center ms-auto">
                             <div class="text-end me-3">
                                 <h5 class="text-uppercase text-muted mb-1">HodlCoins</h5>
-                                <p class="fs-2 text-dark fw-bold mb-0" id="remaining-tokens">10<i class="fa-solid fa-circle-plus fs-4 ms-2" style="color: var(--azuloscuro)" data-bs-toggle="modal" data-bs-target="#buyTokensModal"></i></p>
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <p class="fs-2 text-dark fw-bold mb-0" id="remaining-tokens"></p>
+                                    <i class="fa-solid fa-circle-plus fs-4 ms-2" style="color: var(--azuloscuro)"
+                                       data-bs-toggle="modal" data-bs-target="#buyTokensModal"></i>
+                                </div>
                             </div>
                             <div class="token-icon me-3">
                                 <img src="images/favicon.png" alt="Hodlverse logo">
@@ -521,7 +532,9 @@
 <!-- ===================== -->
 <!-- LINKS & SCRIPTS -->
 <!-- ===================== -->
-<script src="js/plantilla.js"></script>
+<script src="/js/userJs/user.js"></script>
+<script src="/js/walletJs/wallet.js"></script>
+<script src="/js/gameJs/game.js"></script>
 <script src="/js/historyJs/history.js"></script>
 <script src="/js/loadGeneral.js"></script>
 <script src="js/myProfile.js"></script>

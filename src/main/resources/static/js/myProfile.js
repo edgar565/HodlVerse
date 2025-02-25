@@ -1,46 +1,75 @@
-document.addEventListener("DOMContentLoaded", function () {
-
-
-
-});
-
-document.getElementById("logout-btn").addEventListener("click", function () {
-    fetch("/logout", {
-        method: "POST",
-        headers: {
-            "X-CSRF-TOKEN": getCsrfToken() // Agregar el token CSRF
-        },
-        credentials: "same-origin"
-    }).then(response => {
-        if (response.ok) {
-            window.location.href = "/index.html";
-        } else {
-            alert("Error al cerrar sesión");
-        }
-    }).catch(error => console.error("Error:", error));
-});
-
-// Función para obtener el token CSRF del HTML (Spring Security lo genera automáticamente)
-function getCsrfToken() {
-    let csrfMeta = document.querySelector('meta[name="_csrf"]');
-    return csrfMeta ? csrfMeta.content : "";
+async function getUser() {
+    try {
+        const userId = await User.getUserId();
+        user = await User.getUserById(userId);
+        return user
+    } catch (error) {
+        console.error('❌ Error al obtener el usuario:', error);
+        return null; // Devuelve un array vacío en caso de error
+    }
 }
 
-// ================================
-// ANIMATION TOTAL BALANCE
-// ================================
-let balance = 0;
-let totalBalance = 1200; // Valance value
-const totalBalanceElement = document.getElementById('total-balance');
-function animateBalance() {
-    let step = totalBalance / 100;
-    let interval = setInterval(function () {
-        if (balance < totalBalance) {
-            balance += step;
-            totalBalanceElement.textContent = `$${balance.toFixed(2)}`;
-        } else {
-            clearInterval(interval);
-        }
-    }, 20);
+async function getTotalBalance(userId) {
+    try {
+        console.log(userId);
+        const totalBalance = await Wallet.getWalletTotalBalance(userId);
+        return totalBalance
+    } catch (error) {
+        console.error('❌ Error al obtener el usuario:', error);
+        return null; // Devuelve un array vacío en caso de error
+    }
 }
-setTimeout(animateBalance);
+
+document.addEventListener("DOMContentLoaded", async function () {
+    let user = await getUser();
+    console.log(user)
+
+    document.getElementById("username").textContent = user.name;
+    document.getElementById("displayName").textContent = user.name;
+    document.getElementById("newDisplayName").placeholder = user.name;
+    document.getElementById("newEmail").placeholder = user.email;
+    document.getElementById("email").textContent = user.email;
+    document.getElementById("remaining-tokens").textContent = user.token;
+
+    // ================================
+    // ANIMATION TOTAL BALANCE
+    // ================================
+
+    let balance = 0;
+    console.log(user.userId);
+    let totalBalance = await getTotalBalance(user.userId);
+    const totalBalanceElement = document.getElementById('total-balance');
+    function animateBalance() {
+        let step = totalBalance / 100;
+        let interval = setInterval(function () {
+            if (balance < totalBalance) {
+                balance += step;
+                totalBalanceElement.textContent = balance.toFixed(2) + "$";
+            } else {
+                clearInterval(interval);
+            }
+        }, 20);
+    }
+
+    setTimeout(animateBalance);
+});
+
+async function updateUser(user) {
+    try {
+        const userId = await User.updateUser(user.userId, user.name, user.email, user.password, user.token, user.registrationDate, user.picture);
+    } catch (error) {
+        console.error('❌ Error al obtener el usuario:', error);
+        return null; // Devuelve un array vacío en caso de error
+    }
+}
+
+
+
+async function changeName(){
+    let user = await getUser();
+    let newName = document.getElementById("newDisplayName").value;
+    let updateUser = new User(user.userId, newName, user.email, user.password, user.token, user.registrationDate, user.picture);
+    updateUser(updateUser);
+
+
+}
