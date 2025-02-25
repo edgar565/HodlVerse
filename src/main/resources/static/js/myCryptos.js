@@ -155,9 +155,9 @@ async function fillCryptoTable() {
 
             let row = document.createElement("tr");
             row.innerHTML = `
-                <td class="d-flex align-items-center gap-2"><img src="${currency.image}" alt="Icon de ${currency.name}" height="24">${currency.name}</td>
-                <td>${quantity}</td>
-                <td>$${currentPrice.toLocaleString()}</td>
+                <td class="d-flex align-items-center gap-2 table-hover crypto-logo"><img src="${currency.image}" alt="Icon de ${currency.name}" height="40">${currency.name}</td>
+                <td class="text-end table-hover">${quantity}</td>
+                <td class="text-end table-hover">$${currentPrice.toLocaleString()}</td>
             `;
             tableBody.appendChild(row);
         });
@@ -167,3 +167,24 @@ async function fillCryptoTable() {
         console.error("❌ Error al llenar la tabla:", error);
     }
 }
+
+// ================================
+// ANIMATION ARROW SHOW MORE INFO
+// ================================
+
+// Cambiar la dirección de la flecha cuando se haga clic en el botón "More Info"
+const collapseButton = document.querySelector('[data-bs-toggle="collapse"]');
+const toggleIcon = document.getElementById('toggleIcon');
+
+collapseButton.addEventListener('click', function() {
+    // Comprobar si el contenido está abierto o cerrado y cambiar la flecha
+    const isExpanded = collapseButton.getAttribute('aria-expanded') === 'true';
+    if (isExpanded) {
+        toggleIcon.classList.remove('fa-chevron-right'); // Flecha hacia arriba
+        toggleIcon.classList.add('fa-chevron-down'); // Flecha hacia abajo
+    } else {
+        toggleIcon.classList.remove('fa-chevron-down'); // Flecha hacia abajo
+        toggleIcon.classList.add('fa-chevron-right'); // Flecha hacia arriba
+    }
+});
+

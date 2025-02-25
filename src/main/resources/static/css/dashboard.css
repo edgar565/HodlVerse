@@ -1,20 +1,19 @@
 .img-container {
-    margin-left: 60px; /* Se asegura de que el contenedor se ubique lo más a la derecha posible */
+    margin-left: 60px;
     display: flex;
     justify-content: flex-end;
     margin-top: 50px;
 }
 
-/* Convertir el contenedor izquierdo en columna para que los elementos se apilen */
 .left-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-/* Opcional: separar la parte de los valores para que quede más abajo */
+
 .coin-amount {
-    margin-top: 1rem; /* Ajusta este valor según lo deseado */
+    margin-top: 1rem;
 }
 
 #chart-container {
@@ -123,7 +122,7 @@
 #gameCarousel {
     position: relative;
     width: 100%;
-    margin-top: auto; /* Evita que suba */
+    margin-top: auto;
 }
 
 
@@ -198,7 +197,7 @@
         margin-bottom: 10px;
     }
     #gameCarousel {
-        margin-top: 40px !important; /* Fijar espacio para que no suba */
+        margin-top: 40px !important;
     }
 }
 
@@ -228,7 +227,7 @@
         padding: 8px 12px;
     }
     #gameCarousel {
-        margin-top: 50px !important; /* Fijar espacio para que no suba */
+        margin-top: 50px !important;
     }
 }
 
@@ -266,7 +265,7 @@
         font-size: 13px;
     }
     #gameCarousel {
-        margin-top: 65px !important; /* Fijar espacio para que no suba */
+        margin-top: 65px !important;
     }
 }
 
@@ -305,7 +304,7 @@
         font-size: 12px;
     }
     #gameCarousel {
-        margin-top: 80px !important; /* Fijar espacio para que no suba */
+        margin-top: 80px !important;
     }
 }
 
@@ -334,21 +333,26 @@
     background-color: var(--oro);
     color: white;
 }
+.modal-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 
 
 /* -------------------- BADGES -------------------- */
 
 .badge-buy {
-    background-color: #28a745; /* Verde */
+    background-color: #28a745;
     color: white;
 }
 
 .badge-sell {
-    background-color: #dc3545; /* Rojo */
+    background-color: #dc3545;
     color: white;
 }
 
 .badge-exchange {
-    background-color: var(--oro); /* Naranja */
+    background-color: var(--oro);
     color: white;
 }

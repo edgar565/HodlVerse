@@ -31,7 +31,7 @@
 <body>
 <main>
     <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center d-flex align-items-center justify-content-center"
-         style="min-height: 96vh;">
+         style="min-height: 97vh;">
         <!-- DYNAMIC BACKGROUND -->
         <div class="background">
             <span></span>
@@ -97,113 +97,115 @@
                 Play Now <i class="fa-solid fa-angle-right ms-3"></i>
             </button>
         </div>
-        <!-- Modal Sign Up -->
-        <div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalSignin"
-             aria-labelledby="modalSignin">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content rounded-4 shadow">
-                    <div class="modal-header p-5 pb-4 border-bottom-0">
-                        <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-5 pt-0">
-                        <form class="formRegLog" onsubmit="registerUser(event)">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control rounded-3" id="floatingNameSignup"
-                                       placeholder="Name" required>
-                                <label for="floatingNameSignup">Username</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control rounded-3" id="floatingInput"
-                                       placeholder="name@example.com" required>
-                                <label for="floatingInput">Email address</label>
-                                <p class="text-danger text-start error" id="errorMessageSignup"></p>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control rounded-3" id="floatingPassword"
-                                       placeholder="Password" required>
-                                <label for="floatingPassword">Password</label>
-                                <p class="text-danger text-start error" id="errorMessagePasswordSignup"></p>
-                            </div>
-                            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign" type="submit">Sign up</button>
-                            <small class="text-body-secondary d-flex justify-content-center">By clicking Sign up,
-                                you agree to the terms of use.</small>
-                            <hr class="my-4">
-                            <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
-                            <a href="/oauth2/authorization/google">
-                                <button class="w-100 py-2 mb-2 btn rounded-3 btn-sign" type="button">
-                                    <i class="fa-brands fa-google"></i> Sign up with Google
-                                </button>
-                            </a>
-                            <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="submit">
-                                <i class="fa-brands fa-apple"></i>
-                                Sign up with Apple
-                            </button>
-                            <div class="d-flex justify-content-center gap-2 mt-4">
-                                <p class="d-flex justify-content-center" href="#">Already have an account?</p>
-                                <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalLogin">Log
-                                    in</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal Log In -->
-        <div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalLogin"
-             aria-labelledby="modalSignin">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content rounded-4 shadow">
-                    <div class="modal-header p-5 pb-4 border-bottom-0">
-                        <h1 class="fw-bold mb-0 fs-2">Log in</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-5 pt-0">
-                        <form class="formRegLog" onsubmit="loginUser(event)">
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control rounded-3" id="floatingInputLogin"
-                                       placeholder="name@example.com" required>
-                                <label for="floatingInput">Email address</label>
-                                <p class="text-danger error" id="errorMessageLogin"></p>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control rounded-3" id="floatingPasswordLogin"
-                                       placeholder="Password" required>
-                                <label for="floatingPassword">Password</label>
-                                <p class="text-danger error" id="errorMessagePasswordLogin"></p>
-                            </div>
-                            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign"
-                                    onclick="window.location.href='dashboard.html'" type="button">Log in
-                            </button>
-                            <hr class="my-4">
-                            <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
-                            <a href="/oauth2/authorization/google">
-                                <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="button">
-                                    <i class="fa-brands fa-google"></i> Log in with Google
-                                </button>
-                            </a>
-                            <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="submit">
-                                <i class="fa-brands fa-apple"></i>
-                                Log in with Apple
-                            </button>
-                            <div class="d-flex justify-content-center gap-2 mt-4">
-                                <p class="d-flex justify-content-center" href="#">Don't have an account?</p>
-                                <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalSignin">Sign
-                                    up</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-    <div class="video">
+    <!-- Video Container -->
+    <div class="video-container mb-5">
         <video id="video" controls>
             <source src="videos/invideo-ai-1080%20Crypto%20Craze_%20Charts,%20Tickers%20&%20Transact%202025-02-24.mp4" type="video/mp4">
             <track kind="subtitles" src="videos/subtitulos/invideo-ai-1080%20Crypto%20Craze_%20Charts,%20Tickers%20&%20Transact%202025-02-24-VEED.mp4.vtt" srclang="en" label="English">
         </video>
     </div>
 </main>
+<!-- Modal Sign Up -->
+<div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalSignin"
+     aria-labelledby="modalSignin">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form class="formRegLog" onsubmit="registerUser(event)">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="floatingNameSignup"
+                               placeholder="Name" required>
+                        <label for="floatingNameSignup">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control rounded-3" id="floatingInput"
+                               placeholder="name@example.com" required>
+                        <label for="floatingInput">Email address</label>
+                        <p class="text-danger text-start error" id="errorMessageSignup"></p>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control rounded-3" id="floatingPassword"
+                               placeholder="Password" required>
+                        <label for="floatingPassword">Password</label>
+                        <p class="text-danger text-start error" id="errorMessagePasswordSignup"></p>
+                    </div>
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign" type="submit">Sign up</button>
+                    <small class="text-body-secondary d-flex justify-content-center">By clicking Sign up,
+                        you agree to the terms of use.</small>
+                    <hr class="my-4">
+                    <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
+                    <a href="/oauth2/authorization/google">
+                        <button class="w-100 py-2 mb-2 btn rounded-3 btn-sign" type="button">
+                            <i class="fa-brands fa-google"></i> Sign up with Google
+                        </button>
+                    </a>
+                    <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="submit">
+                        <i class="fa-brands fa-apple"></i>
+                        Sign up with Apple
+                    </button>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <p class="d-flex justify-content-center" href="#">Already have an account?</p>
+                        <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalLogin">Log
+                            in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Log In -->
+<div class="modal modal-sheet fade" tabindex="-1" role="dialog" id="modalLogin"
+     aria-labelledby="modalSignin">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Log in</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form class="formRegLog" onsubmit="loginUser(event)">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control rounded-3" id="floatingInputLogin"
+                               placeholder="name@example.com" required>
+                        <label for="floatingInput">Email address</label>
+                        <p class="text-danger error" id="errorMessageLogin"></p>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control rounded-3" id="floatingPasswordLogin"
+                               placeholder="Password" required>
+                        <label for="floatingPassword">Password</label>
+                        <p class="text-danger error" id="errorMessagePasswordLogin"></p>
+                    </div>
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-sign"
+                            onclick="window.location.href='dashboard.html'" type="button">Log in
+                    </button>
+                    <hr class="my-4">
+                    <h2 class="fs-5 fw-bold mb-3 d-flex justify-content-center">Or use a third-party</h2>
+                    <a href="/oauth2/authorization/google">
+                        <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="button">
+                            <i class="fa-brands fa-google"></i> Log in with Google
+                        </button>
+                    </a>
+                    <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="submit">
+                        <i class="fa-brands fa-apple"></i>
+                        Log in with Apple
+                    </button>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <p class="d-flex justify-content-center" href="#">Don't have an account?</p>
+                        <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalSignin">Sign
+                            up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 <!-- ===================== -->
 <!-- LINKS TO SCRIPTS -->
 <!-- ===================== -->
