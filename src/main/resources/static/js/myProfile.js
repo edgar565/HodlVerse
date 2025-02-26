@@ -65,6 +65,17 @@ async function getTransactions(userId) {
     }
 }
 
+async function getWallet(userId) {
+    try {
+        console.log(userId);
+        const totalBalance = await Wallet.getWalletByUserId(userId);
+        return totalBalance
+    } catch (error) {
+        console.error('❌ Error al obtener el usuario:', error);
+        return null; // Devuelve un array vacío en caso de error
+    }
+}
+
 async function updateUser(user) {
     try {
         const userId = await User.updateUser(user);
@@ -78,26 +89,47 @@ async function updateUser(user) {
 async function changeName(event){
     event.preventDefault();
     let user = await getUser();
-    let transactions = await getTransactions(user.userId);
+    let transactions = await Transaction.getTransactionsByUserId(user.userId);
+    console.log(transactions)
+    let games = await Game.getGames(user.userId);
+    console.log(games)
     let newName = document.getElementById("newDisplayName").value;
-    let newUser = new User(user.userId, newName, user.email, user.password, user.registrationDate, user.picture, user.wallet, transactions, );
+    let newUser = new User(user.userId, newName, user.email, user.password, user.registrationDate, user.picture, user.wallet, transactions, games, user.token);
+    console.log(newUser)
     let updatedUser = await updateUser(newUser);
+    console.log(updatedUser)
+    closeModal("editDisplayNameModal");
 }
 
 async function changeEmail(event){
     event.preventDefault();
     let user = await getUser();
     let transactions = await getTransactions(user.userId);
+    let games = await Game.getGames(user.userId);
     let newEmail = document.getElementById("newDisplayName").value;
-    let newUser = new User(user.userId, user.name, newEmail, user.password, user.registrationDate, user.picture, user.wallet, transactions);
+    let newUser = new User(user.userId, user.name, newEmail, user.password, user.registrationDate, user.picture, user.wallet, transactions, games, user.token);
     let updatedEmail = await updateUser(newUser);
+    console.log(updatedEmail)
+    closeModal("editEmailModal");
 }
 
 async function changePassword(event){
     event.preventDefault();
     let user = await getUser();
     let transactions = await getTransactions(user.userId);
+    let games = await Game.getGames(user.userId);
     let newPassword = document.getElementById("newDisplayName").value;
-    let newUser = new User(user.userId, user.name, user.email, newPassword, user.registrationDate, user.picture, user.wallet, transactions);
+    let newUser = new User(user.userId, user.name, user.email, newPassword, user.registrationDate, user.picture, user.wallet, transactions, games, user.token);
     let updatedPassword = await updateUser(newUser);
+    console.log(updatedPassword)
+    closeModal("editPasswordModal");
+}
+
+function closeModal(idModal){
+    // Obtener el elemento del modal
+    const editDisplayModalEl = document.getElementById(idModal);
+// Crear o recuperar la instancia del modal
+    const editDisplayModal = bootstrap.Modal.getInstance(editDisplayModalEl) || new bootstrap.Modal(editDisplayModalEl);
+// Cerrar el modal
+    editDisplayModal.hide();
 }

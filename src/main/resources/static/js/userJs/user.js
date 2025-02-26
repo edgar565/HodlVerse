@@ -6,9 +6,9 @@ class User {
         this.password = password;
         this.registrationDate = new Date(registrationDate);
         this.picture = picture;
-        this.wallet = wallet instanceof Wallet ? wallet : new Wallet();
-        this.transactions = Array.isArray(transactions) ? transactions.map(t => new Transaction(t)) : [];
-        this.game = game instanceof Game ? game : null;
+        this.wallet = wallet;
+        this.transactions = transactions;
+        this.game = game;
         this.token = token;
     }
 
@@ -148,7 +148,7 @@ class User {
         }
 
         try {
-            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate.toISOString(), picture: user.picture };
+            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate.toISOString(), picture: user.picture, wallet: user.wallet, transactions: user.transactions, games: user.games, token: user.token};
 
             // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
             const data = await $.ajax({

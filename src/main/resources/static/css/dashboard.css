@@ -335,6 +335,11 @@
     color: white;
 }
 
+.modal-body{
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 
 /* -------------------- BADGES -------------------- */
 
