@@ -15,7 +15,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Permitir el acceso a todos los endpoints sin autenticación
+                        .requestMatchers("/").permitAll()// Permitir el acceso solo a usuarios autenticados para /transactions
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/dashboard.html", false)
