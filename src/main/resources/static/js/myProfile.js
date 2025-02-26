@@ -94,7 +94,7 @@ async function changeName(event){
     let games = await Game.getGames(user.userId);
     console.log(games)
     let newName = document.getElementById("newDisplayName").value;
-    let newUser = new User(user.userId, newName, user.email, user.password, user.registrationDate, user.picture, user.wallet, transactions, games, user.token);
+    let newUser = new User(user.userId, newName, user.email, user.password, user.registrationDate, user.picture, user.wallet, user.token);
     console.log(newUser)
     let updatedUser = await updateUser(newUser);
     console.log(updatedUser)

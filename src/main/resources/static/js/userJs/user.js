@@ -1,5 +1,5 @@
 class User {
-    constructor(userId, name, email, password, registrationDate, picture, wallet, transactions, game, token) {
+    constructor(userId, name, email, password, registrationDate, picture, wallet, token) {
         this.userId = Number(userId);
         this.name = name;
         this.email = email;
@@ -7,8 +7,6 @@ class User {
         this.registrationDate = new Date(registrationDate);
         this.picture = picture;
         this.wallet = wallet;
-        this.transactions = transactions;
-        this.game = game;
         this.token = token;
     }
 
@@ -108,7 +106,7 @@ class User {
     }
 
     // ➕ Crear un nuevo usuario en la API
-    static async createUser(name, email, password) {
+    static async createUser(name, email, password, wallet) {
         try {
             // Crear el objeto del nuevo usuario
             let newUser = {
@@ -117,9 +115,7 @@ class User {
                 password,
                 registrationDate: new Date().toISOString(),
                 picture: " ",
-                wallet: null,
-                transactions: [],
-                game: null,
+                wallet: wallet,
                 token: 2
             };
 
@@ -148,7 +144,7 @@ class User {
         }
 
         try {
-            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate.toISOString(), picture: user.picture, wallet: user.wallet, transactions: user.transactions, games: user.games, token: user.token};
+            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate.toISOString(), picture: user.picture, wallet: user.wallet, token: user.token};
 
             // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
             const data = await $.ajax({
