@@ -155,12 +155,21 @@ async function fillCryptoTable() {
 
             let row = document.createElement("tr");
             row.innerHTML = `
-                <td class="d-flex align-items-center gap-2 table-hover crypto-logo"><img src="${currency.image}" alt="Icon de ${currency.name}" height="40">${currency.name}</td>
-                <td class="text-end table-hover">${quantity}</td>
-                <td class="text-end table-hover">$${currentPrice.toLocaleString()}</td>
-            `;
+  <td class="d-flex gap-2 align-items-center align-middle">
+    <img src="${currency.image}" alt="Icono de ${currency.name}" height="35">
+    <span class="fw-bold">${currency.name}</span>
+  </td>
+  <td class="text-end align-middle">
+    <span class="text-dark">${quantity.toFixed(2)}</span>
+  </td>
+  <td class="text-end align-middle">
+    <span class="text-dark">$${currentPrice.toLocaleString()}</span>
+  </td>
+`;
+
             tableBody.appendChild(row);
         });
+
 
         console.log("✅ Tabla actualizada con éxito.");
     } catch (error) {

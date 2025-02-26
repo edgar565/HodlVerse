@@ -173,49 +173,6 @@
                     </ul>
                 </div>
             </div>
-            <!-- MODAL CONFIGURATION -->
-            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <i class="fa-solid fa-language"></i>
-                                <label for="languageSelect" class="form-label">Language</label>
-                                <select class="form-select" id="languageSelect">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <i class="fa-solid fa-money-bill"></i>
-                                <label for="currencySelect" class="form-label">Currency</label>
-                                <select class="form-select" id="currencySelect">
-                                    <option value="usd">USD</option>
-                                    <option value="eur">EUR</option>
-                                    <option value="gbp">GBP</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-moon"></i>
-                                <label for="darkModeSwitch">Dark Mode</label>
-                                <div class="form-check form-switch ms-auto">
-                                    <input class="form-check-input dark-mode-toggle" type="checkbox"
-                                           id="darkModeSwitch">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 </header>
@@ -244,9 +201,9 @@
                                 <p id="timeRemaining" class="text-muted"></p>
                             </div>
                             <div class="d-flex justify-content-center align-items-center">
-                                <button id="prevMonth" class="btn btn-secondary">Previous Month</button>
+                                <i id="prevMonth" class="fa-solid fa-chevron-left ms-2"></i>
                                 <div id="calendar"></div>
-                                <button id="nextMonth" class="btn btn-secondary">Next Month</button>
+                                <i id="nextMonth" class="fa-solid fa-chevron-right ms-2"></i>
                             </div>
                         </div>
                     </div>
@@ -305,14 +262,17 @@
             </div>
         </div>
         <div class="row gx-4 mb-3">
+            <!-- CRYPTOS TABLE (Vista resumida) -->
             <div class="col-lg-6 col-12 border-2 border-gray-200 rounded cryptos">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <div class="d-flex align-items-center gap-1 mb-3">
-                            <h4 class="m-0 text fw-bold">Your Cryptos</h4>
+                        <div class="d-flex align-items-center gap-1 mb-3 p-2">
+                            <h4 class="m-0 text">Your Cryptos</h4>
                         </div>
-                        <!-- Contenedor donde se inyectarán las cards desde JS -->
-                        <div id="cryptosContainer" class="d-flex align-items-center gap-4 p-2 mb-1"></div>
+                        <!-- Contenedor tipo carousel -->
+                        <div id="cryptosContainerWrapper" class="overflow-hidden position-relative">
+                            <div id="cryptosContainer" class="d-flex align-items-center gap-3 p-2 mb-1 overflow-auto"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -321,35 +281,78 @@
             <div class="col-6 border-2 border-gray-200 rounded highlightsMenu">
                 <div class="card shadow-sm">
                     <div class="card-body pb-1">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1 p-2">
                             <div class="d-flex align-items-center gap-1">
-                                <h4 class="m-0 fw-bold">Transactions</h4>
+                                <h4 class="m-0 ">Transactions</h4>
                             </div>
                             <div class="d-flex align-items-center">
                                 <a href="#" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#transactionsModal">View more</a>
                                 <i class="fa-solid fa-angle-right fa-xs"></i>
                             </div>
                         </div>
-                        <!-- Tabla resumida con efecto stripe y hover -->
-                        <table class="table table-striped table-hover">
-                            <thead class="fw-bold text-muted border-bottom pb-2 extra-small-text">
-                            <tr>
-                                <th class="col-4">Coin</th>
-                                <th class="col-2 text-center">Type</th>
-                                <th class="col-2 text-end">Amount</th>
-                                <th class="col-3 text-end">Price</th>
-                            </tr>
-                            </thead>
-                            <tbody id="transactionTableBody">
-                            </tbody>
-                        </table>
+                        <div class="p-3">
+                            <table class="table table-hover">
+                                <thead class="fw-semibold text-muted border-bottom pb-2 extra-small-text">
+                                <tr>
+                                    <th class="col-4">Coin</th>
+                                    <th class="col-2 text-center">Type</th>
+                                    <th class="col-2 text-end">Amount</th>
+                                    <th class="col-3 text-end">Price</th>
+                                </tr>
+                                </thead>
+                                <tbody id="transactionTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
+<!-- MODAL CONFIGURATION -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <i class="fa-solid fa-language"></i>
+                    <label for="languageSelect" class="form-label">Language</label>
+                    <select class="form-select" id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
 
+                <div class="mb-3">
+                    <i class="fa-solid fa-money-bill"></i>
+                    <label for="currencySelect" class="form-label">Currency</label>
+                    <select class="form-select" id="currencySelect">
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                        <option value="gbp">GBP</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <i class="fa-solid fa-moon"></i>
+                    <label for="darkModeSwitch">Dark Mode</label>
+                    <div class="form-check form-switch ms-auto">
+                        <input class="form-check-input dark-mode-toggle" type="checkbox"
+                               id="darkModeSwitch">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal para ver todas las transacciones -->
 <div class="modal fade" id="transactionsModal" tabindex="-1" aria-labelledby="transactionsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -359,17 +362,19 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table table-striped table-hover">
-                    <thead class="fw-bold text-muted border-bottom pb-2 extra-small-text">
-                    <tr>
-                        <th class="col-4">Coin</th>
-                        <th class="col-2 text-center">Type</th>
-                        <th class="col-2 text-end">Amount</th>
-                        <th class="col-3 text-end">Price</th>
-                    </tr>
-                    </thead>
-                    <tbody id="transactionTableBodyFull" class="modal-body"></tbody>
-                </table>
+                <div class="p-3">
+                    <table class="table table-hover">
+                        <thead class="fw-bold text-muted border-bottom pb-2 extra-small-text">
+                        <tr>
+                            <th class="col-4">Coin</th>
+                            <th class="col-2 text-center">Type</th>
+                            <th class="col-2 text-end">Amount</th>
+                            <th class="col-3 text-end">Price</th>
+                        </tr>
+                        </thead>
+                        <tbody id="transactionTableBodyFull"></tbody>
+                    </table>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-transaction-modal" data-bs-dismiss="modal">Close</button>

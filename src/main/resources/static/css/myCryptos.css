@@ -5,14 +5,7 @@ table {
 .more-info-card{
     width: 600px;
 }
-th, td {
-    padding: 8px 12px;
-    text-align: left;
-}
 
-.table-hover tr:hover {
-    background-color: rgba(175, 175, 175, 0.24);
-}
 
 #toggleIcon{
     color: var(--azuloscuro);
@@ -40,6 +33,22 @@ th, td {
         margin-bottom: 1rem;
     }
 }
+.text-dark {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 400; /* Normal */
+}
+
+.d-flex {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
+.align-middle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+
 
 
 

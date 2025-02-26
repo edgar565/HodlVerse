@@ -338,6 +338,50 @@
     overflow-y: auto;
 }
 
+#cryptosContainer {
+    white-space: nowrap; /* Evita el salto de línea entre elementos */
+    overflow-x: auto; /* Permite desplazamiento horizontal */
+    scroll-snap-type: x mandatory; /* Suaviza el scroll */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px; /* Espacio extra para evitar cortes */
+}
+
+.crypto {
+    flex: 0 0 220px; /* Ancho fijo para cada card */
+    height: 150px; /* Altura fija */
+    scroll-snap-align: start; /* Asegura el alineado correcto en el scroll */
+}
+.card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400; /* Normal */
+    color: #061428; /* Dark Blue */
+}
+
+.text-muted {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #6c757d; /* Soft Grey */
+}
+
+.card-body {
+    line-height: 1.5;
+}
+.text-dark {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 400; /* Normal */
+}
+
+.badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+}
+
+.col-4, .col-3, .col-2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
 
 
 /* -------------------- BADGES -------------------- */

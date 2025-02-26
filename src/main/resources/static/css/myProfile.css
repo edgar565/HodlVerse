@@ -83,6 +83,20 @@ h1 span {
     transform: scale(1.05);
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
 }
+.card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 400; /* Normal */
+    color: #061428; /* Dark Blue */
+}
+
+.card-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 300; /* Light */
+    color: #6c757d; /* Grey */
+    line-height: 1.6;
+}
 
 /* ---- RESPONSIVE MEDIA QUERYS ---- */
 @media (max-width: 1462px) {

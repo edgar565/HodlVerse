@@ -206,36 +206,24 @@
 
             <!-- Columna derecha: Lista de criptomonedas -->
             <div class="col-12 col-md-6 d-flex align-items-center">
-                <div class="w-100">
-                    <div class="card more-info-card w-100 p-3">
-                        <div class="gap-1 mb-1 d-flex justify-content-between p-2">
-                            <h4 class="m-0">More Info</h4>
-                            <button class="btn btn-link d-flex align-items-center" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#moreInfo" aria-expanded="true"
-                                    aria-controls="moreInfo">
-                                <span class="ms-2">
-                                    <i class="fa-solid fa-chevron-down" id="toggleIcon"></i> <!-- Cambié el icono para que se vea expandido -->
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Aquí agregamos la clase 'show' para que esté expandida por defecto -->
-                        <div class="collapse show" id="moreInfo">
-                            <table class="mt-2 w-100">
-                                <thead class="fw-semibold border-bottom pb-2 extra-small-text">
-                                <tr>
-                                    <th>Coin</th>
-                                    <th class="text-end">Quantity</th>
-                                    <th class="text-end">Current Price</th>
-                                </tr>
-                                </thead>
-                                <tbody id="cryptoHoldingsTable" class="table table-hover"></tbody>
-                            </table>
-                        </div>
+                <div class="card more-info-card w-100 p-3">
+                    <div class="gap-1 mb-1 d-flex justify-content-between p-2">
+                        <h4 class="m-0">More Info</h4>
+                    </div>
+                    <div class="collapse show card-body pb-1">
+                        <table class="table table-hover">
+                            <thead class=" text-muted border-bottom pb-2 extra-small-text">
+                            <tr>
+                                <th>Coin</th>
+                                <th class="text-end">Quantity</th>
+                                <th class="text-end">Current Price</th>
+                            </tr>
+                            </thead>
+                            <tbody id="cryptoHoldingsTable"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </main>

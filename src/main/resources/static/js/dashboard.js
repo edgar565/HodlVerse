@@ -381,16 +381,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             row.innerHTML = `
-            <td class="col-4">
-                <img src="${transaction.destinationCurrency.image}" alt="Logo de ${transaction.destinationCurrency.name}" height="24">
-                ${transaction.destinationCurrency.name}
-            </td>
-            <td class="col-2 text-center">
-                <span class="badge ${badgeClass}">${transaction.transactionType}</span>
-            </td>
-            <td class="col-3 text-end">${transaction.destinationTransactionAmount.toLocaleString()}</td>
-            <td class="col-3 text-end">$${transaction.destinationUnitPrice.toLocaleString()}</td>
-        `;
+                <td class="col-4">
+                    <img src="${transaction.destinationCurrency.image}" alt="Logo de ${transaction.destinationCurrency.name}" height="24">
+                        <span class="fw-bold">${transaction.destinationCurrency.name}</span>
+                </td>
+                <td class="col-2 text-center">
+                    <span class="badge ${badgeClass}">${transaction.transactionType}</span>
+                </td>
+                <td class="col-3 text-end">
+                     <span class="text-dark">${transaction.destinationTransactionAmount.toLocaleString()}</span>
+                </td>
+                <td class="col-3 text-end">
+                     <span class="text-dark">$${transaction.destinationUnitPrice.toLocaleString()}</span>
+                </td>
+            `;
+
 
             tableBody.appendChild(row);
         });
@@ -421,16 +426,20 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             row.innerHTML = `
-            <td class="col-4">
-                <img src="${transaction.destinationCurrency.image}" alt="Logo de ${transaction.destinationCurrency.name}" height="24">
-                ${transaction.destinationCurrency.name}
-            </td>
-            <td class="col-2 text-center">
-                <span class="badge ${badgeClass}">${transaction.transactionType}</span>
-            </td>
-            <td class="col-3 text-end">${transaction.destinationTransactionAmount.toLocaleString()}</td>
-            <td class="col-3 text-end">$${transaction.destinationUnitPrice.toLocaleString()}</td>
-        `;
+                <td class="col-4">
+                    <img src="${transaction.destinationCurrency.image}" alt="Logo de ${transaction.destinationCurrency.name}" height="24">
+                        <span class="fw-bold">${transaction.destinationCurrency.name}</span>
+                </td>
+                <td class="col-2 text-center">
+                    <span class="badge ${badgeClass}">${transaction.transactionType}</span>
+                </td>
+                <td class="col-3 text-end">
+                     <span class="text-dark">${transaction.destinationTransactionAmount.toLocaleString()}</span>
+                </td>
+                <td class="col-3 text-end">
+                     <span class="text-dark">$${transaction.destinationUnitPrice.toLocaleString()}</span>
+                </td>
+            `;
 
             tableBody.appendChild(row);
         });
@@ -502,7 +511,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-
     let value = await getValueFinal();
     console.log(value);
 
@@ -538,31 +546,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("cryptosContainer");
 
     let contador = 0;
+
     // Genera y añade una card para cada crypto
+    function formatNumber(num) {
+        if (num >= 1e9) return (num / 1e9).toFixed(2) + "B";
+        if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
+        if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
+        return num.toFixed(2);
+    }
+
     cryptos.forEach(crypto => {
         const card = document.createElement("div");
         card.classList.add("card", "crypto", "shadow-sm", "mb-2");
+
         let amount = totalValue[contador];
         let final = valueFinal[contador];
-        console.log(amount);
+
         card.innerHTML = `
-      <div class="card-body d-flex align-items-center justify-content-between">
-        <div>
-          <div class="mb-2">
-            <h5 class="text">${crypto.name}</h5>
-            <h5 class="text">${final.toFixed(2)}</h5>
-            <div class="d-flex align-items-center gap-2">
-              <h6 class="text-muted">${crypto.ticker}</h6>
-              <h6 class="text-muted">${amount}</h6>
-            </div>
-          </div>
-        </div>
-        <div class="img-container">
-          <img src="${crypto.image}" alt="${crypto.name}" height="55">
-        </div>
+  <div class="card-body d-flex align-items-center justify-content-between">
+    <!-- Columna izquierda: Texto -->
+    <div>
+      <h5 class="card-title fw-bold">${crypto.name}</h5>
+      <h5 class="card-title text-dark">${formatNumber(final)}</h5>
+      <div class="d-flex align-items-center gap-2">
+        <h6 class="text-muted fs-6">${crypto.ticker}</h6>
+        <h6 class="text-muted fs-6">${formatNumber(amount)}</h6>
       </div>
-    `;
+    </div>
+    <img src="${crypto.image}" alt="${crypto.name}" height="55" class="ms-3">
+  </div>
+`;
+
         container.appendChild(card);
         contador++;
     });
+
+
 });
