@@ -45,4 +45,9 @@ public class GameService {
     public Optional<Game> getLastFinishedGameByUserId(Long userId) {
         return gameRepository.findLastFinishedGameByUserId(userId);
     }
+
+    // Obtener todos los juegos de un usuario por su ID
+    public List<Game> getAllGamesByUserId(Long userId) {
+        return gameRepository.findAllGamesByUserId(userId);
+    }
 }
