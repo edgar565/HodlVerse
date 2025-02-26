@@ -5,7 +5,6 @@ on:
     branches:
       - master                              # Solo se ejecuta si el push es en la rama main.
 
-
 jobs:
   build-and-deploy:                       # Define el trabajo llamado build-and-deploy.
     runs-on: ubuntu-latest                # El trabajo se ejecuta en Ubuntu.
@@ -21,7 +20,6 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
-
 
       # 3⃣ Construir la aplicación usando Maven.
       - name: Build with Maven
@@ -40,7 +38,6 @@ jobs:
           source: target/HodlVerse-0.0.1-SNAPSHOT.war
           target: /home/ubuntu/
           strip_components: 1
-
 
       # 5️⃣ Configurar variables de entorno y desplegar la aplicación en Tomcat.
       - name: Configure environment variables and deploy
@@ -61,29 +58,12 @@ jobs:
             # 3️⃣ Mover el archivo .war a la carpeta de despliegue de Tomcat.
             sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
 
-            # 4️⃣ Cambiar el propietario y permisos del archivo para que Tomcat pueda acceder.
-            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
-            sudo chmod 755 /var/lib/tomcat10/webapps/ROOT.war
+            # 4️⃣ Extraer el contenido del archivo .war en el directorio de despliegue de Tomcat.
+            sudo unzip -o /var/lib/tomcat10/webapps/ROOT.war -d /var/lib/tomcat10/webapps/ROOT/
 
-            # 5️⃣ Reiniciar el servicio Tomcat para cargar el nuevo archivo .war.
-            sudo systemctl restart tomcat10
+            # 5️⃣ Cambiar el propietario y permisos del archivo para que Tomcat pueda acceder.
+            sudo chown -R tomcat:tomcat /var/lib/tomcat10/webapps/ROOT/
+            sudo chmod -R 755 /var/lib/tomcat10/webapps/ROOT/
 
-      # 5⃣ Configurar variables de entorno y desplegar la aplicación en Tomcat.
-      - name: Configure environment variables and deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script: |
-            # 3⃣ Mover el archivo .war a la carpeta de despliegue de Tomcat.
-            sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
-
-
-            # 4⃣ Cambiar el propietario y permisos del archivo para que Tomcat pueda acceder.
-            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
-            sudo chmod 755 /var/lib/tomcat10/webapps/ROOT.war
-
-
-            # 5⃣ Reiniciar el servicio Tomcat para cargar el nuevo archivo .war.
+            # 6️⃣ Reiniciar el servicio Tomcat para cargar el nuevo archivo .war.
             sudo systemctl restart tomcat10
