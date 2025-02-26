@@ -135,7 +135,9 @@ public class CurrencyService {
     public List<Currency> findAllByIds(List<Long> ids) {
         return currencyRepository.findAllById(ids);
     }
-
+    public Optional<Currency> findByTicker(String ticker) {
+        return currencyRepository.findByTicker(ticker);
+    }
 
 }
 

@@ -276,6 +276,9 @@ async function showCharts(histories) {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
+    // ================================
+    // OBTENER DATOS DE LA CRYPTO
+    // ================================
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const ticker = urlParams.get('ticker');
@@ -285,6 +288,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     let histories = await loadHistoryByCurrency(cryptoFinal);
     showCharts(histories);
 
+    // ================================
+    // CARGAR DATOS DE LA CRYPTO
+    // ================================
     console.log(crypto);
     document.getElementById('icon').src = crypto.currency.image;
     document.getElementById('icon').alt = "Icono de " + crypto.currency.name;
@@ -352,6 +358,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 });
 
+/*  BUY/SELL CRYPTO EVENT */
 let actionType = '';
 const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
 const buyModal = new bootstrap.Modal(document.getElementById('buyModal'));
@@ -394,7 +401,7 @@ async function checkUser(actionType) {
                 }
             }, 300);
         });
-
+        // Function to update the estimated total based on the input amount and current price
         function updateTotal(inputId, outputId) {
             const amount = parseFloat(document.getElementById(inputId).value) || 0;
             const currentPrice = parseFloat(document.getElementById('currentPriceBuy').innerText.replace('$', '')) || 0;
@@ -421,7 +428,6 @@ async function checkUser(actionType) {
         });
     }
 }
-
 async function confirmBuy() {
     const query = window.location.search;
     const urlParams = new URLSearchParams(query);
@@ -442,24 +448,63 @@ async function confirmBuy() {
         }
     }
 
+    let usd = await Currency.getCurrencyByTicker("usdt");
+    let usdHistory = await History.getLatestHistoryByCurrencyId(usd.currencyId);
     let user = await getUser();
-    const transactionData = {
-        transactionType: 'buy',
-        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0,
-        destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
-        originUnitPrice: 1,
-        destinationUnitPrice: crypto.currentPrice,
-        transactionDate: new Date().toISOString().split('T')[0],
-        user: user,
-        originCurrency: {
-            currencyId: 3
-        },
-        destinationCurrency: {
-            currencyId: cryptoFinal.currencyId
-        }
-    };
+    console.log("actionType", actionType);
+    // Example of how to construct the transaction data:
+    if (actionType === "buy") {
+        console.log("crypto current price", crypto.currentPrice, "buy-amount", parseFloat(document.getElementById("buy-amount").value));
+        const transactionData = {
+            transactionType: actionType, // Can be "buy", "sell" or "exchange"
+            //para saber la cantidad de origen (usds) multiplico la cantidad de monedas que quiero comprar por el precio de la moneda para sacar la cantidad de usds que necesitaré.
+            originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
+            destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
+            originUnitPrice: usdHistory.currentPrice,
+            destinationUnitPrice: crypto.currentPrice,
+            transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
+            user: user, // Use the already validated user object
+            originCurrency: {
+                currencyId: usd.currencyId // ID of the origin currency
+            },
+            destinationCurrency: {
+                currencyId: cryptoFinal.currencyId // ID of the destination currency
+            }
+        };
 
-    transactionData.transactionDate = new Date(transactionData.transactionDate);
-    await Transaction.createTransaction(transactionData);
-    console.log("Transacción creada correctamente.");
+        // Ensure transactionDate is a Date instance
+        transactionData.transactionDate = new Date(transactionData.transactionDate);
+
+        // Call createTransaction without re-validating the user
+        await Transaction.createTransaction(transactionData);
+
+        // Handle the result if necessary
+        console.log("Transacción creada correctamente.");
+    } if (actionType === "sell") {
+        console.log("crypto current price", crypto.currentPrice, "sell-amount", parseFloat(document.getElementById("sell-amount").value));
+        const transactionData = {
+            transactionType: actionType, // Can be "buy", "sell" or "exchange"
+            originTransactionAmount: parseFloat(document.getElementById("sell-amount").value) || 0 , // Use string to avoid precision issues in BigDecimal
+            destinationTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("sell-amount").value) || 0,
+            originUnitPrice: crypto.currentPrice,
+            destinationUnitPrice: usdHistory.currentPrice,
+            transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
+            user: user, // Use the already validated user object
+            originCurrency: {
+                currencyId: cryptoFinal.currencyId // ID of the origin currency
+            },
+            destinationCurrency: {
+                currencyId: usd.currencyId // ID of the destination currency
+            }
+        };
+
+        // Ensure transactionDate is a Date instance
+        transactionData.transactionDate = new Date(transactionData.transactionDate);
+
+        // Call createTransaction without re-validating the user
+        await Transaction.createTransaction(transactionData);
+
+        // Handle the result if necessary
+        console.log("Transacción creada correctamente.");
+    }
 }
