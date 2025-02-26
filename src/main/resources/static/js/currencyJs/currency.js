@@ -37,6 +37,18 @@ class Currency {
         }
     }
 
+    static async getCurrencyByTicker(ticker) {
+        try {
+            return await $.ajax({
+                url: `/currencies/ticker/${ticker}`,
+                type: 'GET'
+            });
+        } catch (error) {
+            console.error(`Error al obtener la moneda con ticker ${ticker}:`, error);
+            return null;
+        }
+    }
+
     // Lista donde se almacenan todas las monedas
     static currencies = [];
 

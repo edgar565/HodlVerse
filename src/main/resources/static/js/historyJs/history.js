@@ -353,6 +353,7 @@ class History {
     }
     // 🔄 Obtener la última entrada de historial por currencyId
     static async getLatestHistoryByCurrencyId(currencyId) {
+        console.log("currencyId", currencyId);
         if (typeof currencyId !== 'number' || isNaN(currencyId)) {
             console.error('El ID de la moneda debe ser un número válido.');
             return;
