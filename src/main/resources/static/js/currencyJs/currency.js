@@ -1,7 +1,5 @@
 class Currency {
     constructor(currencyId, name, ticker, image) {
-        // Validar los datos antes de inicializar el objeto
-        Currency.validateCurrencyData({ currencyId, name, ticker, image });
         this.currencyId = currencyId;
         this.name = name;
         this.ticker = ticker;
@@ -148,6 +146,34 @@ class Currency {
                 console.error('Error al eliminar la moneda:', error);
             }
         });
+    }
+
+    // 🔊 Obtener las monedas recomendadas
+    static async getRecommendations() {
+        try {
+            const response = await $.ajax({
+                url: '/currencies/random',
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
+    }
+
+    // 🔊 Obtener las monedas mas vistas
+    static async getMostViewed() {
+        try {
+            const response = await $.ajax({
+                url: '/currencies/random',
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
     }
 }
 

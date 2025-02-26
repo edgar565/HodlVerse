@@ -87,4 +87,16 @@ public class GameController {
 
         return ResponseEntity.ok(lastFinishedGame.get());
     }
+
+    // Endpoint para obtener todos los juegos de un usuario por su ID
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Game>> getAllGamesByUserId(@PathVariable Long userId) {
+        List<Game> games = gameService.getAllGamesByUserId(userId);
+
+        if (games.isEmpty()) {
+            throw new NotFoundException("No se encontraron juegos para el usuario con ID " + userId + ".");
+        }
+
+        return ResponseEntity.ok(games);
+    }
 }

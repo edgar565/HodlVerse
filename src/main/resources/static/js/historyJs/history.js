@@ -1,23 +1,5 @@
 class History {
     constructor(historyId, currentPrice, marketCap, marketCapRank, totalVolume, high24h, low24h, priceChange24h, priceChangePercentage24h, marketCapChange24h, marketCapChangePercentage24h, totalSupply, lastUpdated, currency) {
-        // Validar los datos antes de inicializar el objeto
-        History.validateHistoryData({
-            historyId,
-            currentPrice,
-            marketCap,
-            marketCapRank,
-            totalVolume,
-            high24h,
-            low24h,
-            priceChange24h,
-            priceChangePercentage24h,
-            marketCapChange24h,
-            marketCapChangePercentage24h,
-            totalSupply,
-            lastUpdated,
-            currency
-        });
-
         this.historyId = historyId;
         this.currentPrice = currentPrice;
         this.marketCap = marketCap;
@@ -110,82 +92,35 @@ class History {
     static histories = [];
 
     // 🔄 Cargar todas las entradas del historial desde la API
-    static loadHistories(callback) {
-        $.ajax({
-            url: '/history',
-            type: 'GET',
-            success: (data) => {
-                History.histories = data.map(h => {
-                    try {
-                        History.validateHistoryData(h);
-                        return new History(
-                            h.historyId,
-                            h.currentPrice,
-                            h.marketCap,
-                            h.marketCapRank,
-                            h.totalVolume,
-                            h.high24h,
-                            h.low24h,
-                            h.priceChange24h,
-                            h.priceChangePercentage24h,
-                            h.marketCapChange24h,
-                            h.marketCapChangePercentage24h,
-                            h.totalSupply,
-                            new Date(h.lastUpdated),
-                            new Currency(h.currency)
-                        );
-                    } catch (error) {
-                        console.warn(`Entrada de historial omitida debido a datos inválidos:`, h, error.message);
-                        return null;
-                    }
-                }).filter(h => h !== null); // Filtrar entradas nulas
-                console.log('Historial actualizado:', History.histories);
-                if (callback) callback(History.histories);
-            },
-            error: (error) => {
-                console.error('Error al obtener el historial:', error);
-            }
-        });
+    static async loadHistories() {
+        try {
+            const response = await $.ajax({
+                url: '/history',
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null;
+        }
     }
 
     // 🔍 Obtener una entrada de historial por su ID desde la API
-    static getHistoryById(historyId, callback) {
+    static async getHistoryById(historyId) {
         if (typeof historyId !== 'number' || isNaN(historyId)) {
             console.error('El ID de la entrada de historial debe ser un número válido.');
             return;
         }
-        $.ajax({
-            url: `/history/${historyId}`,
-            type: 'GET',
-            success: (data) => {
-                try {
-                    History.validateHistoryData(data);
-                    let history = new History(
-                        data.historyId,
-                        data.currentPrice,
-                        data.marketCap,
-                        data.marketCapRank,
-                        data.totalVolume,
-                        data.high24h,
-                        data.low24h,
-                        data.priceChange24h,
-                        data.priceChangePercentage24h,
-                        data.marketCapChange24h,
-                        data.marketCapChangePercentage24h,
-                        data.totalSupply,
-                        new Date(data.lastUpdated),
-                        new Currency(data.currency)
-                    );
-                    console.log(`Entrada de historial obtenida:`, history);
-                    if (callback) callback(history);
-                } catch (error) {
-                    console.error(`Error al validar la entrada de historial con ID ${historyId}:`, error.message);
-                }
-            },
-            error: (error) => {
-                console.error(`Error al obtener la entrada de historial con ID ${historyId}:`, error);
-            }
-        });
+        try {
+            const response = await $.ajax({
+                url: `/history/${historyId}`,
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null;
+        }
     }
 
     // ➕ Crear una nueva entrada de historial en la API
@@ -407,7 +342,7 @@ class History {
     static async getHighestVolume() {
         try {
             const response = await $.ajax({
-                url: '/highest-volume',
+                url: '/history/highest-volume',
                 type: 'GET'
             });
             return response;
@@ -425,6 +360,22 @@ class History {
         try {
             const response = await $.ajax({
                 url: `/history/latest/${currencyId}`, // Endpoint para obtener la última entrada de History por currencyId
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
+    }
+    static async getLatestHistoryByCurrency(currencyId) {
+        if (typeof currencyId !== 'number' || isNaN(currencyId)) {
+            console.error('El ID de la moneda debe ser un número válido.');
+            return;
+        }
+        try {
+            const response = await $.ajax({
+                url: `/history/currency/${currencyId}/all`, // Endpoint para obtener la última entrada de History por currencyId
                 type: 'GET'
             });
             return response;

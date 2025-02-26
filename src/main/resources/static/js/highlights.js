@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const toggleSwitch = document.getElementById("toggleRankingSwitch");
 
     if (!toggleSwitch) {
@@ -15,27 +15,34 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        rankingSection.classList.toggle("hidden");
-        this.nextElementSibling.textContent = this.checked ? "Show Rankings" : "Hide Rankings";
+        // Si el switch está activado, se muestra la sección; si no, se oculta.
+        if (this.checked) {
+            rankingSection.classList.remove("d-none");
+            this.nextElementSibling.textContent = "Hide Rankings";
+        } else {
+            rankingSection.classList.add("d-none");
+            this.nextElementSibling.textContent = "Show Rankings";
+        }
     });
-    function listas (lista, value){
+
+    function listas(lista, value) {
         lista.innerHTML = "";
         value.forEach(coin => {
             let li = document.createElement("li");
             li.classList.add("row", "py-1", "mt-2", "mb-2", "card-item");
             li.innerHTML = `
-                <div class="col-6" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'">
+                <div class="col-6" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
                     <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">${coin.currency.name}
                 </div>
-                <div class="col-4 text-end">$${coin.currentPrice}</div>
-                <div class="col-2 text-end text-danger fw-bold">-5.1%</div>
+                <div class="col-3 text-end">${coin.currentPrice.toLocaleString()}$</div>
+                <div class="col-3 text-end ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">${coin.priceChangePercentage24h.toLocaleString()}%</div>
                 `;
             lista.appendChild(li);
         });
     }
 
-    async function trendingCoins(){
-        try{
+    async function trendingCoins() {
+        try {
             const coins = await History.getTrendingCoins();
             const top5Coins = coins.slice(0, 5);
             console.log(top5Coins);
@@ -45,10 +52,11 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(error);
         }
     }
+
     trendingCoins();
 
-    async function topLosers(){
-        try{
+    async function topLosers() {
+        try {
             const coins = await History.getTopLosers();
             const top5Coins = coins.slice(0, 5);
             console.log(top5Coins);
@@ -58,10 +66,11 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(error);
         }
     }
+
     topLosers();
 
-    async function topWinners(){
-        try{
+    async function topWinners() {
+        try {
             const coins = await History.getTopWinners();
             const top5Coins = coins.slice(0, 5);
             console.log(top5Coins);
@@ -71,125 +80,164 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(error);
         }
     }
+
     topWinners();
 
-    async function highestVolume(){
-        try{
-            const coins = await History.getHighestVolume();
-            const top5Coins = coins.slice(0, 5);
+    async function recommended() {
+        try {
+            const coins = await Currency.getRecommendations();
+            let history = [];
+
+            // Usamos Promise.all para manejar múltiples llamadas async
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
+
+            console.log(coins);
+            const top5Coins = history.slice(0, 5);
             console.log(top5Coins);
-            let lista = document.getElementById("highest-volume-list");
+
+            let lista = document.getElementById("recommendations-list");
             listas(lista, top5Coins);
         } catch (error) {
             console.error(error);
         }
     }
+
+
+    recommended();
+    async function mostViewed() {
+        try {
+            const coins = await Currency.getMostViewed();
+            let history = [];
+
+            // Usamos Promise.all para manejar múltiples llamadas async
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
+
+            console.log(coins);
+            const top5Coins = history.slice(0, 5);
+            console.log(top5Coins);
+            let lista = document.getElementById("mostViewed-list");
+            listas(lista, top5Coins);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    mostViewed();
+
+    async function highestVolume() {
+        try {
+            const coins = await History.getHighestVolume();
+            const top5Coins = coins.slice(0, 5); // Tomar solo las 5 con mayor volumen
+            console.log(top5Coins);
+
+            let lista = document.getElementById("highest-volume-list");
+            lista.innerHTML = ""; // Limpiar la lista antes de agregar nuevos elementos
+
+            top5Coins.forEach(coin => {
+                let li = document.createElement("li");
+                li.classList.add("row", "py-1", "mt-2", "mb-2", "card-item");
+
+                li.innerHTML = `
+                <div class="col-6 d-flex align-items-center" onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'" style="cursor:pointer;">
+                    <img src="${coin.currency.image}" alt="Logo de ${coin.currency.name}" height="24" class="me-2">
+                    <span>${coin.currency.name} (${coin.currency.ticker.toUpperCase()})</span>
+                </div>
+                <div class="col-6 text-end fw-bold">
+                    ${coin.totalVolume.toLocaleString()}$
+                </div>
+            `;
+
+                lista.appendChild(li);
+            });
+
+        } catch (error) {
+            console.error("Error al obtener las criptomonedas con mayor volumen:", error);
+        }
+    }
+
     highestVolume();
 
-});
-
-    // Event handling
-    function addListeners() {
-        if(!('ontouchstart' in window)) {
-            window.addEventListener('mousemove', mouseMove);
-        }
-        window.addEventListener('scroll', scrollCheck);
-        window.addEventListener('resize', resize);
-    }
-
-    function mouseMove(e) {
-        target.x = e.clientX || (e.touches && e.touches[0].clientX);
-        target.y = e.clientY || (e.touches && e.touches[0].clientY);
-    }
 
 
-    function scrollCheck() {
-        if(document.body.scrollTop > height) animateHeader = false;
-        else animateHeader = true;
-    }
+    // ================================
+    // TABLA DE CRIPTOMONEDAS
+    // ================================
 
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        largeHeader.style.height = height+'px';
-        canvas.width = width;
-        canvas.height = height;
-    }
-
-    // animation
-    function initAnimation() {
-        animate();
-        for(let i in points) {
-            shiftPoint(points[i]);
+    async function fetchCryptoData() {
+        try {
+            const cryptos = await Currency.loadCurrencies();
+            console.log(cryptos);
+            return cryptos;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return null;
         }
     }
 
-    function animate() {
-        if(animateHeader) {
-            ctx.clearRect(0,0,width,height);
-            for(let i in points) {
-                // detect points in range
-                if(Math.abs(getDistance(target, points[i])) < 4000) {
-                    points[i].active = 0.3;
-                    points[i].circle.active = 0.6;
-                } else if(Math.abs(getDistance(target, points[i])) < 20000) {
-                    points[i].active = 0.1;
-                    points[i].circle.active = 0.3;
-                } else if(Math.abs(getDistance(target, points[i])) < 40000) {
-                    points[i].active = 0.02;
-                    points[i].circle.active = 0.1;
-                } else {
-                    points[i].active = 0;
-                    points[i].circle.active = 0;
-                }
+    const cryptos = await fetchCryptoData();
 
-                drawLines(points[i]);
-                points[i].circle.draw();
+    async function fechtCryptoHistory() {
+        try {
+            let history = [];
+            for (const crypto of cryptos) {
+                history.push(await History.getLatestHistoryByCurrencyId(crypto.currencyId));
             }
-        }
-        requestAnimationFrame(animate);
-    }
-
-    function shiftPoint(p) {
-        TweenLite.to(p, 1+1*Math.random(), {x:p.originX-50+Math.random()*100,
-            y: p.originY-50+Math.random()*100, ease:Circ.easeInOut,
-            onComplete: function() {
-                shiftPoint(p);
-            }});
-    }
-
-    // Canvas manipulation
-    function drawLines(p) {
-        if(!p.active) return;
-        for(let i in p.closest) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p.closest[i].x, p.closest[i].y);
-            ctx.strokeStyle = 'rgba(156,217,249,'+ p.active+')';
-            ctx.stroke();
+            console.log(history);
+            return history;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return null;
         }
     }
 
-    function Circle(pos,rad,color) {
-        let _this = this;
+    const history = await fechtCryptoHistory();
 
-        // constructor
-        (function() {
-            _this.pos = pos || null;
-            _this.radius = rad || null;
-            _this.color = color || null;
-        })();
+    async function updateCryptoTable() {
+        try {
+            let tableBody = document.getElementById("cryptoTableBody");
+            tableBody.innerHTML = ""; // Limpiar la tabla antes de actualizarla
 
-        this.draw = function() {
-            if(!_this.active) return;
-            ctx.beginPath();
-            ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'rgba(156,217,249,'+ _this.active+')';
-            ctx.fill();
-        };
+            let contador = 1;
+            // Iterar sobre cada criptomoneda
+            for (const coin of history) {
+
+                // Construir la fila de la tabla con los datos calculados
+                let row = `
+                <tr>
+                    <td class="sticky-col start-0 text-end">${contador}</td>
+                    <td class="sticky-col start-0 text-start" style="cursor:pointer;"><div onclick="window.location.href='infoCrypto.html?ticker=${coin.currency.ticker}'"><img src="${coin.currency.image}" height="24" alt="Icono de " ${coin.currency.name}> ${coin.currency.name} (${coin.currency.ticker.toUpperCase()})</div></td>
+                    <td class="text-end">${coin.currentPrice.toLocaleString()}$</td>
+                    <td class="text-end fw-bold ${coin.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'}">${coin.priceChangePercentage24h.toLocaleString()}%</td>
+                    <td class="text-end">${coin.totalVolume.toLocaleString()}$</td>
+                    <td class="text-end">${coin.marketCap.toLocaleString()}$</td>
+                </tr>
+            `;
+                tableBody.innerHTML += row;
+                contador++;
+            }
+
+        } catch (error) {
+            console.error("Error al obtener datos:", error);
+        }
     }
 
-    // Util
-    function getDistance(p1, p2) {
-        return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
-    }
+    updateCryptoTable();
+    setInterval(updateCryptoTable, 300000); // Actualiza cada 5 min
+
+});
+document.getElementById("trendingCoins").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=trendingCoins";
+});
+document.getElementById("topLosers").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=topLosers";
+});
+document.getElementById("topWinners").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=topWinners";
+});
+document.getElementById("highestVolume").addEventListener("click" , function () {
+    window.location.href = "rankings.html?nameRanking=highestVolume";
+});

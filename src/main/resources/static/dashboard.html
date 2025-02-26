@@ -18,12 +18,12 @@
 </head>
 <body>
 <header>
+    <!-- TOP DATA CAROUSEL -->
     <div id="awards" class="awards-block bg-white border-bottom">
         <div class="container-fluid">
             <div class="row">
                 <div class="mt-3 col-12 position-relative overflow-hidden">
                     <div class="awards-carousel awards-items-wrapper">
-                        <!-- Contenido duplicado para efecto circular -->
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Coins: </span>
                             <p>16.937</p>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Market Cap: </span>
-                            <p class="marketCapValue"></p><span class="percentage"><i class="fa-solid fa-caret-down"></i> 1.2%</span>
+                            <p class="marketCapValue"></p>
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">24h Vol: </span>
@@ -42,55 +42,51 @@
                         </div>
                         <div class="awards-item text-center gap-1">
                             <span class="fw-bold d-block">Dominance: </span>
-                            <p>BTC 55.4% / ETH 44.6%</p>
+                            <p class="dominance"></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- NAVIGATION BAR -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container-fluid">
+            <!-- HODLVERSE LOGO FOR LARGE SCREENS -->
             <a class="navbar-brand mx-auto d-block d-lg-none" href="dashboard.html">
-                <img src="images/logo.png" alt="Logo de la aplicación" height="70">
+                <img src="images/logo.png" alt="HodlVerse Logo" height="70">
             </a>
-            <!-- Logo en su posición original en pantallas grandes -->
+            <!-- HODLVERSE LOGO FOR SMALL SCREENS -->
             <a class="navbar-brand d-none d-lg-block" href="dashboard.html">
-                <img src="images/logo.png" alt="Logo de la aplicación" height="50">
+                <img src="images/logo.png" alt="HodlVerse Logo" height="50">
             </a>
-            <!-- Botón para abrir el offcanvas en pantallas pequeñas -->
+            <!-- DISPLAY BUTTON FOR SMALL SCREENS -->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                     aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <!-- Menú que se muestra en pantallas grandes -->
+            <!-- MENU DISPLAY FOR LARGE SCREENS -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav-underline">
+                    <!-- Dashboard Link -->
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="dashboard.html"><i
                                 class="fa-solid fa-gauge-high"></i>Dashboard</a>
                     </li>
+                    <!-- Highlights Link & Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown" href="highlights.html" id="dropdownMenu" role="button"
                            data-bs-toggle="dropdown"
                            aria-expanded="false"><i class="fa-solid fa-chart-line"></i>Highlights</a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" href="#">Trending Coins</a></li>
-                            <li><a class="dropdown-item" href="#">Top Gainers</a></li>
-                            <li><a class="dropdown-item" href="#">Top Losers</a></li>
-                            <li><a class="dropdown-item" href="#">New Coins</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending Coins</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topLosers">Top Losers</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest Volume</a></li>
                         </ul>
                     </li>
-                    <!--                    <li class="nav-item dropdown">-->
-                    <!--                        <a class="nav-link dropdown" href="#" id="dropdownMenu2" role="button" data-bs-toggle="dropdown"-->
-                    <!--                           aria-expanded="false"><i class="fa-solid fa-graduation-cap"></i>Learn</a>-->
-                    <!--                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">-->
-                    <!--                            <li><a class="dropdown-item" href="learnCrypto.html">Learn Crypto</a></li>-->
-                    <!--                            <li><a class="dropdown-item" href="news.html">News</a></li>-->
-                    <!--                            <li><a class="dropdown-item" href="researchInsights.html">Research Insights</a></li>-->
-                    <!--                        </ul>-->
-                    <!--                    </li>-->
                 </ul>
+                <!-- Your Crypto Link -->
                 <div class="d-flex align-items-center mb-lg-0 wallet">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-currency-bitcoin" viewBox="0 0 16 16">
@@ -98,11 +94,12 @@
                     </svg>
                     <a class="nav-link" href="myCryptos.html">My Cryptos</a>
                 </div>
+                <!-- Search Bar -->
                 <form class="d-flex search me-3" role="search">
                     <input class="form-control " type="search" placeholder="Search" aria-label="Search">
                 </form>
+                <!-- Configuration Modal Button -->
                 <div class="d-flex align-items-center justify-content-end config">
-                    <!-- Botón Configuración -->
                     <a class="text-decoration-none config-item" data-bs-toggle="modal" data-bs-target="#settingsModal">
                         <i class="fa-solid fa-gear border border-2 p-2 justify-content-center align-items-center"></i>
                     </a>
@@ -110,59 +107,49 @@
                             class="fa-solid fa-user border border-2 p-2 justify-content-center align-items-center"></i></a>
                 </div>
             </div>
+            <!-- MENU DISPLAY FOR SMALL SCREENS -->
             <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="offcanvasRight"
                  aria-labelledby="offcanvasRightLabel">
+                <!-- OFFCANVAS TOP HODLVERSE LOGO -->
                 <div class="offcanvas-header">
-                    <img src="images/logo.png" alt="Logo de la aplicación" height="55">
+                    <img src="images/logo.png" alt="HodlVerse Logo" height="55">
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <hr>
+                <!-- OFFCANVAS MENU -->
                 <div class="offcanvas-body">
                     <ul class="list-unstyled ps-0">
+                        <!-- Dashboard link -->
                         <li class="mb-1 ms-3">
                             <button type="button" onclick="window.location.href='dashboard.html'"
                                     class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
                                 <i class="fa-solid fa-gauge-high"></i> Dashboard
                             </button>
                         </li>
+                        <!-- Highlights link & Dropdown -->
                         <li class="mb-1 ms-3">
-                            <!-- Botón que activa el dropdown -->
                             <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0"
                                     id="dropdownButton" onclick="window.location.href='highlights.html'">
                                 <i class="fa-solid fa-chart-line"></i> Highlights
                             </button>
-                            <!-- Menú desplegable -->
                             <div class="collapse" id="dashboard-collapse">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="#"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
-                                    <li><a href="#"><i class="fa-solid fa-arrow-up"></i> Top Gainers</a></li>
-                                    <li><a href="#"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
-                                    <li><a href="#"><i class="fa-solid fa-star"></i> New Coins</a></li>
+                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
+                                    <li><a href="rankings.html?nameRanking=topWinners"><i class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
+                                    <li><a href="rankings.html?nameRanking=topLosers"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
+                                    <li><a href="rankings.html?nameRanking=highestVolume"><i class="fa-solid fa-star"></i> Highest Volume</a></li>
                                 </ul>
                             </div>
                         </li>
-                        <!--                        <li class="mb-1 ms-3">-->
-                        <!--                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"-->
-                        <!--                                    data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">-->
-                        <!--                                <i class="fa-solid fa-graduation-cap"></i> Learn-->
-                        <!--                            </button>-->
-                        <!--                            <div class="collapse" id="orders-collapse">-->
-                        <!--                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">-->
-                        <!--                                    <li><a href="learnCrypto.html"><i class="fa-solid fa-book"></i> Learn Crypto</a>-->
-                        <!--                                    </li>-->
-                        <!--                                    <li><a href="news.html"><i class="fa-solid fa-newspaper"></i> News</a></li>-->
-                        <!--                                    <li><a href="researchInsights.html"><i class="fa-solid fa-lightbulb"></i> Research-->
-                        <!--                                        Insights</a></li>-->
-                        <!--                                </ul>-->
-                        <!--                            </div>-->
-                        <!--                        </li>-->
                         <hr>
+                        <!-- My Profile Link -->
                         <li class="mb-1 ms-3">
                             <button type="button" onclick="window.location.href='myProfile.html'"
                                     class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
                                 <i class="fa-solid fa-user"></i> My Profile
                             </button>
                         </li>
+                        <!-- My Cryptos Link -->
                         <li class="mb-1 ms-3">
                             <button type="button" onclick="window.location.href='myCryptos.html'"
                                     class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed">
@@ -174,6 +161,7 @@
                             </button>
                         </li>
                         <hr>
+                        <!-- Settings Modal Button -->
                         <li class="mb-1 ms-3">
                             <button type="button"
                                     class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
@@ -183,6 +171,49 @@
                             </button>
                         </li>
                     </ul>
+                </div>
+            </div>
+            <!-- MODAL CONFIGURATION -->
+            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <i class="fa-solid fa-language"></i>
+                                <label for="languageSelect" class="form-label">Language</label>
+                                <select class="form-select" id="languageSelect">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <i class="fa-solid fa-money-bill"></i>
+                                <label for="currencySelect" class="form-label">Currency</label>
+                                <select class="form-select" id="currencySelect">
+                                    <option value="usd">USD</option>
+                                    <option value="eur">EUR</option>
+                                    <option value="gbp">GBP</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3 d-flex align-items-center">
+                                <i class="fa-solid fa-moon"></i>
+                                <label for="darkModeSwitch">Dark Mode</label>
+                                <div class="form-check form-switch ms-auto">
+                                    <input class="form-check-input dark-mode-toggle" type="checkbox"
+                                           id="darkModeSwitch">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -212,12 +243,15 @@
                                 <h3 id="daysRemaining" class="fw-bold mb-1 text"></h3>
                                 <p id="timeRemaining" class="text-muted"></p>
                             </div>
-                            <div class="d-flex justify-content-center">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button id="prevMonth" class="btn btn-secondary">Previous Month</button>
                                 <div id="calendar"></div>
+                                <button id="nextMonth" class="btn btn-secondary">Next Month</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Carrusel -->
                 <div id="gameCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
@@ -343,60 +377,16 @@
         </div>
     </div>
 </div>
-<!-- Modal Configuración -->
-<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Opciones de Configuración -->
-                <div class="mb-3">
-                    <i class="fa-solid fa-language"></i>
-                    <label for="languageSelect" class="form-label">Language</label>
-                    <select class="form-select" id="languageSelect">
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <i class="fa-solid fa-money-bill"></i>
-                    <label for="currencySelect" class="form-label">Currency</label>
-                    <select class="form-select" id="currencySelect">
-                        <option value="usd">USD</option>
-                        <option value="eur">EUR</option>
-                        <option value="gbp">GBP</option>
-                    </select>
-                </div>
-
-                <div class="mb-3 d-flex align-items-center">
-                    <i class="fa-solid fa-moon"></i>
-                    <label for="darkModeSwitch">Dark Mode</label>
-                    <div class="form-check form-switch ms-auto">
-                        <input class="form-check-input dark-mode-toggle" type="checkbox"
-                               id="darkModeSwitch">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <footer>
-    <!-- Footer para pantallas grandes (pantallas de 768px o más) -->
+    <!-- FOOTER FOR LARGE SCREENS -->
     <div class="d-none d-lg-block">
         <div class="container d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
             <p class="col-md-4 mb-0 ">© 2025 HodlStakers, Inc</p>
 
-            <a href="hodlStakers.html"
+            <a href="#"
                class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <img src="images/logo_hodlstakers.png" alt="Logo de HodlStakers" height="100">
+                <img src="images/logo_hodlstakers.png" alt="HodlStakers Logo" height="100">
             </a>
 
             <ul class="nav col-md-4 justify-content-end footer-info">
@@ -406,19 +396,16 @@
             </ul>
         </div>
     </div>
-    <!-- Footer para pantallas medianas (menos de 768px) -->
+    <!-- FOOTER FOR SMALL SCREENS -->
     <div class="d-block d-lg-none">
         <div class="container text-center">
             <footer class="py-3 my-4">
-                <!-- Centrar la imagen -->
-                <!-- Enlace con imagen y margen inferior directamente en el HTML -->
-                <a href="hodlStakers.html"
+                <a href="#"
                    class="d-flex align-items-center justify-content-center mb-3 me-md-auto link-body-emphasis text-decoration-none">
-                    <img src="images/logo_hodlstakers.png" alt="Logo de HodlStakers" height="100"
+                    <img src="images/logo_hodlstakers.png" alt="HodlStakers Logo" height="100"
                          style="margin-bottom: 20px;">
                 </a>
 
-                <!-- Centrar los enlaces -->
                 <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                     <li><a href="dashboard.html" class="px-2">Dashboard</a></li>
                     <li><a href="privacyPolicy.html" class="px-2">Privacy & Policy</a></li>
@@ -429,12 +416,15 @@
         </div>
     </div>
 </footer>
-<script src="/js/UserJs/User.js"></script>
-<script src="/js/TransactionJs/Transaction.js"></script>
-<script src="/js/GameJs/Game.js"></script>
-<script src="/js/HistoryJs/History.js"></script>
-<script src="/js/WalletJs/Wallet.js"></script>
-<script src="/js/javaScript.js"></script>
+
+<script src="/js/userJs/user.js"></script>
+<script src="/js/transactionJs/transaction.js"></script>
+<script src="/js/gameJs/game.js"></script>
+<script src="/js/historyJs/history.js"></script>
+<script src="/js/walletJs/wallet.js"></script>
+<script src="/js/loadGeneral.js"></script>
 <script src="/js/dashboard.js"></script>
+<script src="js/darkMode.js"></script>
+
 </body>
 </html>

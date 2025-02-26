@@ -1,10 +1,9 @@
-
-/* Títulos */
+/* ---- USERNAME HIGHLIGHT ---- */
 h1 span {
     color: var(--oro);
 }
 
-/* Botones */
+/* ---- MODAL BUTTONS ---- */
 .btn-azuloscuro {
     background-color: var(--azuloscuro);
     color: white;
@@ -18,6 +17,7 @@ h1 span {
     background-color: var(--oro);
     color: white;
 }
+
 .btn-oro {
     background-color: var(--oro);
     color: white;
@@ -31,49 +31,40 @@ h1 span {
     background-color: darkgoldenrod;
 }
 
-
-/* Estilos para la sección */
-
-
-/* Icono con animación */
+/* ---- TOKEN/BALANCE CARD ---- */
 .wallet-icon i {
     animation: bounce 1.5s infinite alternate;
     color: var(--azuloscuro);
 }
 
-/* Animación de rebote */
 @keyframes bounce {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-5px); }
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-5px);
+    }
 }
 
-/* Efecto hover */
-#total-balance-section .card:hover {
-    transform: scale(1.02);
-}
-.small-token-card{
+.balance-token-card {
     border: solid 1px var(--azuloscuro);
-
 }
 
-/* Para reducir el espacio entre las secciones dentro de la tarjeta */
-.small-token-card .card-body {
-    padding: 0.75rem; /* Ajusta el padding para reducir el espacio entre los elementos */
+.balance-token-card .card-body {
+    padding: 0.75rem;
 }
 
-
-
-/* Reduce el espacio entre la barra vertical y el contenido de la derecha */
-.small-token-card .vr {
-    margin:  1.5rem; /* Ajusta el espacio de la barra vertical */
+.balance-token-card .vr {
+    margin: 1.5rem;
     border: solid 1px var(--azuloscuro);
-
 }
-.token-icon img{
+
+.token-icon img {
     width: 60px;
     height: 60px;
 }
 
+/* ---- TIP & ADVICE CARDS ---- */
 .tip-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
@@ -93,3 +84,40 @@ h1 span {
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* ---- RESPONSIVE MEDIA QUERYS ---- */
+@media (max-width: 1462px) {
+    .col-md-6 {
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+    .small-token-card,
+    .card-profile {
+        width: 100% !important;
+    }
+
+    .tips-advice-cards {
+        width: 100% !important;
+    }
+
+    #main-sections {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+.logout-button {
+    background-color: var(--azuloscuro); /* Color similar al de los botones "Edit" */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+}
+
+.logout-button:hover {
+    background-color: var(--oro); /* Un tono más claro al pasar el mouse */
+}

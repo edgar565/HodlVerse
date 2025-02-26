@@ -1,106 +1,165 @@
-let currentPage = 1; // Página actual
+document.getElementById("floatingInput").addEventListener("blur", function () {
+    const email = document.getElementById("floatingInput").value;
+   document.getElementById("errorMessageSignup").innerHTML = checkEmail(email);
+});
+document.getElementById("floatingInputLogin").addEventListener("blur", function () {
+    const email = document.getElementById("floatingInputLogin").value;
+    document.getElementById("errorMessageLogin").innerHTML = checkEmail(email);
+});
 
-function getDateSevenDaysAgo() {
-    let date = new Date();
-    date.setDate(date.getDate() - 7);  // Restar 7 días
-    let day = ("0" + date.getDate()).slice(-2);
-    let month = ("0" + (date.getMonth() + 1)).slice(-2); // Los meses empiezan desde 0
-    let year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-}
+function checkEmail(email) {
+    if (!email) {
+        return "El campo de correo electrónico no puede estar vacío.";
+    }
 
-async function fetchCryptoData7Days(coin) {
-    // Obtener los datos históricos de la moneda en los últimos 7 días
-    let historicalData = await fetch(`https://api.coingecko.com/api/v3/coins/${coin.id}/history?date=${getDateSevenDaysAgo()}&localization=false&x_cg_demo_api_key=CG-znytHBgZBqGquS3aSyJMhuHA`);
-    let historicalPriceData = await historicalData.json();
-    return historicalPriceData;
-}
+    // Expresión regular simple para validar formato general de email
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
-async function fetchCryptoData() {
+    if (!emailRegex.test(email)) {
+        return "Por favor, introduce un correo electrónico válido.";
+    }
+
+    // Si tienes un validador adicional como `User.isValidEmail`, podrías usarlo aquí
     try {
-        const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=40&page=${currentPage}&x_cg_demo_api_key=CG-znytHBgZBqGquS3aSyJMhuHA`);
-        const data = await response.json();
-
-        console.log("Datos obtenidos:", data); // Para depuración
-
-        let tableBody = document.getElementById("cryptoTableBody");
-        tableBody.innerHTML = ""; // Limpiar la tabla antes de actualizarla
-
-        // Iterar sobre cada criptomoneda
-        for (const coin of data) {
-            // Obtener los datos históricos de la moneda (cambio en 7 días)
-            let historicalPriceData = await fetchCryptoData7Days(coin);
-
-            // Calcular cambio en 1 hora manualmente
-            let price1hAgo = coin.current_price / (1 + coin.price_change_percentage_24h / 100);
-            let change1h = ((coin.current_price - price1hAgo) / price1hAgo) * 100;
-
-            // Calcular cambio en 24 horas
-            let change24h = coin.price_change_percentage_24h?.toFixed(1) ?? "N/A";
-            let class1h = change1h < 0 ? 'text-danger' : 'text-success';
-            let class24h = change24h < 0 ? 'text-danger' : 'text-success';
-
-            // Calcular cambio en 7 días (usando los datos históricos)
-            let price7dAgo = historicalPriceData.market_data?.current_price?.usd;
-            let change7d = price7dAgo ? ((coin.current_price - price7dAgo) / price7dAgo) * 100 : 0;
-            let class7d = change7d < 0 ? 'text-danger' : 'text-success';
-
-            // Construir la fila de la tabla con los datos calculados
-            let row = `
-                <tr>
-                    <td class="text-end">${coin.market_cap_rank}</td>
-                    <td class="sticky-col start-0 text-start"><img src="${coin.image}" height="24"> ${coin.name} (${coin.symbol.toUpperCase()})</td>
-                    <td class="text-end">${coin.current_price.toLocaleString()} US$</td>
-                    <td class="${class1h}">${change1h.toFixed(1)}%</td>
-                    <td class="${class24h}">${change24h}%</td>
-                    <td class="${class7d}">${change7d.toFixed(1)}%</td>
-                    <td class="text-end">${coin.total_volume.toLocaleString()} US$</td>
-                    <td class="text-end">${coin.market_cap.toLocaleString()} US$</td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
+        const isValid = User.isValidEmail(email); // Suponiendo que esta función retorna un valor booleano
+        if (!isValid) {
+            return "El correo electrónico no es válido según las reglas del sistema.";
         }
-
-        // Actualizar número de página
-        document.getElementById("currentPage").innerText = currentPage;
-
     } catch (error) {
-        console.error("Error al obtener datos:", error);
+        console.error(error);
+        return "Hubo un error al validar el correo electrónico.";
+    }
+
+    return ""; // Si pasa todas las validaciones
+}
+document.getElementById("floatingPassword").addEventListener("blur", function () {
+    const password = document.getElementById("floatingPassword").value;
+    document.getElementById("errorMessagePasswordSignup").innerHTML = checkPassword(password);
+});
+
+document.getElementById("floatingPasswordLogin").addEventListener("blur", function () {
+    const password = document.getElementById("floatingPasswordLogin").value;
+    document.getElementById("errorMessagePasswordLogin").innerHTML = checkPassword(password);
+});
+
+document.getElementById("playNow").addEventListener("click", function () {
+    document.querySelectorAll(".formRegLog").forEach((form) => {
+        form.reset();
+    });
+    document.querySelectorAll(".error").forEach((error) => {
+       error.innerHTML = "";
+    });
+});
+document.querySelectorAll(".btn-changeLogin").forEach((btn) => {
+    btn.addEventListener("click", function () {
+        document.querySelectorAll(".formRegLog").forEach((form) => {
+            form.reset();
+        });
+        document.querySelectorAll(".error").forEach((error) => {
+            error.innerHTML = "";
+        });
+    });
+});
+
+function checkPassword(password) {
+    let errorMessages = [];
+
+    // Validación de vacío
+    if (!password) {
+        errorMessages.push("El campo de contraseña no puede estar vacío.");
+    }
+
+    // Validación de longitud
+    if (password.length < 8 || password.length > 16) {
+        errorMessages.push("La contraseña debe tener entre 8 y 16 caracteres.");
+    }
+
+    // Validación de mayúscula
+    if (!/[A-Z]/.test(password)) {
+        errorMessages.push("La contraseña debe contener al menos una letra mayúscula.");
+    }
+
+    // Validación de carácter especial
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        errorMessages.push("La contraseña debe contener al menos un carácter especial (por ejemplo, !, @, #).");
+    }
+
+    // Si hay errores, devolver todos los mensajes
+    return errorMessages.join("<br>");
+}
+
+async function createWallet(){
+    try{
+        let wallet = await Wallet.createWallet();
+        return wallet;
+    } catch (error) {
+        console.error("Error al registrar el usuario:", error);
     }
 }
 
-function changePage(direction) {
-    if (direction === -1 && currentPage > 1) {
-        currentPage--; // Retroceder página
-    } else if (direction === 1) {
-        currentPage++; // Avanzar página
-    }
-    fetchCryptoData(); // Recargar datos con la nueva página
-}
-
-fetchCryptoData();
-setInterval(fetchCryptoData, 60000); // Actualiza cada 60s
-
-function registerUser(event) {
+async function registerUser(event) {
     event.preventDefault(); // Evita que se recargue la página
 
+    const name = document.getElementById("floatingNameSignup").value;
     const email = document.getElementById("floatingInput").value;
     const password = document.getElementById("floatingPassword").value;
 
-    fetch('/users', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password})
-    })
-        .then(response => {
-            if (response.ok) {
-                alert("Usuario registrado con éxito!");
-                window.location.href = "/dashboard";
-            } else {
-                response.text().then(errorMessage => alert("Error: " + errorMessage));
-            }
-        })
-        .catch(error => console.error("Error en la petición:", error));
+    // Validaciones antes de intentar registrar al usuario
+    const emailError = checkEmail(email);
+    const passwordError = checkPassword(password);
+
+    // Mostrar mensajes de error en la interfaz si existen
+    document.getElementById("errorMessageSignup").innerHTML = emailError;
+    document.getElementById("errorMessagePasswordSignup").innerHTML = passwordError;
+
+    // Si hay errores, detener el registro
+    if (emailError || passwordError) {
+        console.log("Registro detenido debido a errores en los campos.");
+        return;
+    }
+
+    try {
+        let wallet = await createWallet();
+        let currency = await Currency.getCurrencyById(3);
+        console.log(wallet);
+        console.log(currency);
+        let balance = new Balance( null, 100000 ,wallet, currency);
+        console.log(balance)
+        // Llamada a la función para crear el usuario si todo está correcto
+        User.createUser(name, email, password, wallet);
+        console.log("Usuario registrado correctamente.");
+        window.document.location.href = "createGame.html";
+    } catch (error) {
+        console.error("Error al registrar el usuario:", error);
+    }
+}
+
+async function loginUser(event) {
+    event.preventDefault(); // Evita recarga de la página
+
+    const email = document.getElementById("floatingInputLogin").value;
+    const password = document.getElementById("floatingPasswordLogin").value;
+
+    // Validación de email
+    const emailError = checkEmail(email);
+    document.getElementById("errorMessageLogin").innerHTML = emailError;
+
+    if (emailError) return; // No continuar si hay errores
+
+    try {
+        const users = await User.loadUsers(); // Esperar carga de usuarios
+        console.log("Usuarios cargados:", users);
+
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (user) {
+            console.log("✅ Usuario autenticado correctamente.");
+            window.location.href = "dashboard.html"; // Redirigir al dashboard
+        } else {
+            document.getElementById("errorMessageLogin").innerHTML = "❌ Correo o contraseña incorrectos.";
+        }
+    } catch (error) {
+        console.error("Error al iniciar sesión:", error);
+        document.getElementById("errorMessageLogin").innerHTML = "❌ Error al conectar con el servidor.";
+    }
 }

@@ -18,7 +18,7 @@ public class User {
     private Long userId;
 
     @Column(nullable = false, length = 50)
-    private String username;
+    private String name;
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
@@ -31,6 +31,9 @@ public class User {
 
     @Column(length = 200)
     private String picture;  // Nuevo campo para la URL de la imagen del perfil
+
+    @Column(nullable = false)
+    private int token;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Wallet wallet;
@@ -54,12 +57,12 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String username) {
+        this.name = username;
     }
 
     public String getEmail() {
@@ -117,4 +120,13 @@ public class User {
     public void setGames(List<Game> games) {
         this.games = games;
     }
+
+    public int getToken() {
+        return token;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
+    }
+
 }

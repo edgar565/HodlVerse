@@ -211,6 +211,23 @@ class Game {
             return null;
         }
     }
+
+    static async getGames(userId) {
+        if (typeof userId !== 'number' || isNaN(userId)) {
+            console.error('El ID del usuario debe ser un número válido.');
+            return;
+        }
+        try {
+            const response = await $.ajax({
+                url: `/games/user/${userId}`,
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el ID del usuario:', error);
+            return null;
+        }
+    }
 }
 
 // *** Implementación en la página web ***

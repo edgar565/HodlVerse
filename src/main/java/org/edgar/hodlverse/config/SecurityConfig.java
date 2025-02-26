@@ -13,12 +13,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/highlights.html", "/history/total-market-cap", "/history/total-volume", "/currencies", "/login", "/oauth2/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/highlights.html", "/infoCrypto.html", "/rankings.html", "/history/total-market-cap", "/history/total-volume", "/history/topWinners","/history/topLosers", "history/trending-coins", "/history/latest/**", "/currencies", "/history", "/history/**", "/login", "/oauth2/**", "/users", "/users/all").permitAll()
+                        .requestMatchers("/transactions").authenticated()  // Permitir el acceso solo a usuarios autenticados para `/transactions`
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/dashboard.html", true)
+                        .defaultSuccessUrl("/dashboard.html", false)
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/index.html").permitAll()

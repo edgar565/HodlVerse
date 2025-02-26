@@ -43,6 +43,7 @@ public class UserService {
         String email = oauth2User.getAttribute("email");
         String name = oauth2User.getAttribute("name");
         String picture = oauth2User.getAttribute("picture");
+        int token = 2;
 
         // Verifica si el usuario ya existe en la base de datos
         User user = userRepository.findByEmail(email);
@@ -51,10 +52,11 @@ public class UserService {
             // Si no existe, crea un nuevo usuario
             user = new User();
             user.setEmail(email);
-            user.setUsername(name);
+            user.setName(name);
             user.setPicture(picture);
             user.setRegistrationDate(LocalDate.now());
             user.setPassword(""); // O usa un valor por defecto
+            user.setToken(token);
 
             user = userRepository.save(user);
         }

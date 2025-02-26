@@ -1,109 +1,290 @@
- async function confirmBuy(){
-     const queryString = window.location.search;
-     const urlParams = new URLSearchParams(queryString);
-     const ticker = urlParams.get('ticker');
+async function fetchCryptoData(ticker) {
+    let cryptoFinal;
+    try {
+        const cryptos = await Currency.loadCurrencies();
+        console.log(cryptos);
+        cryptos.forEach(crypto => {
+            if (crypto.ticker === ticker) {
+                cryptoFinal = crypto;
+            }
+        });
+        return cryptoFinal;
+    } catch (error) {
+        console.error("Error fetching data from API:", error);
+        return null;
+    }
+}
 
-     async function fetchCryptoData() {
-         let cryptoFinal;
-         try {
-             const cryptos = await Currency.loadCurrencies();
-             console.log(cryptos);
-             cryptos.forEach(crypto => {
-                 if (crypto.ticker === ticker) {
-                     cryptoFinal = crypto;
-                 }
-             });
-             return cryptoFinal;
-         } catch (error) {
-             console.error("Error fetching data from API:", error);
-             return null;
-         }
-     }
-     let cryptoFinal = await fetchCryptoData();
+async function loadCryptoInfo(cryptoFinal) {
+    try {
+        const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
+        return crypto;
+    } catch (error) {
+        console.error("Error fetching data from API:", error);
+        return null;
+    }
+}
 
-     async function loadCryptoInfo() {
-         try {
-             const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
-             return crypto;
-         } catch (error) {
-             console.error("Error fetching data from API:", error);
-             return null;
-         }
-     }
-     const crypto = await loadCryptoInfo();
+async function loadHistoryByCurrency(cryptoFinal) {
+    console.log(cryptoFinal);
+    if (!cryptoFinal) {
+        throw new Error("cryptoFinal is undefined or null");
+    }
+    try {
+        const histories = await History.getLatestHistoryByCurrency(cryptoFinal.currencyId);
+        return histories;
+    } catch (error) {
+        console.error("Error fetching data from API:", error);
+        return null;
+    }
+}
 
-     async function getUser() {
-         try {
-             const userId = await User.getUserId();
-             console.log(userId);
-             return userId
-         } catch (error) {
-             console.error('❌ Error al obtener el usuario:', error);
-             return null; // Devuelve un array vacío en caso de error
-         }
-     }
-     let userId = await getUser();
-     // Ejemplo de cómo construir los datos de una transacción:
-     const transactionData = {
-         transactionId: 85,
-         transactionType: 'buy', // Puede ser "buy", "sell" o "exchange"
-         originTransactionAmount: crypto.currentPrice,        // Usar string para evitar problemas de precisión en BigDecimal
-         destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
-         originUnitPrice: 1,
-         destinationUnitPrice: crypto.currentPrice,
-         transactionDate: new Date().toISOString().split('T')[0], // Formato "YYYY-MM-DD"
-         user: {
-             userId: userId // ID del usuario (asegúrate de tener este valor)
-         },
-         originCurrency: {
-             currencyId: 3 // ID de la moneda de origen
-         },
-         destinationCurrency: {
-             currencyId: cryptoFinal.currencyId // ID de la moneda de destino
-         }
-     };
+async function showCharts(histories) {
+    console.log(histories);
 
-// Luego, puedes enviar estos datos utilizando la función createTransaction
-     Transaction.createTransaction(transactionData, (data) => {
-         console.log("Transacción creada:", data);
-     });
+    // Gráfico de las últimas 24 horas (Precio)
+    let last24HoursPriceData = histories
+        .filter(history => {
+            const date = new Date(history.lastUpdated);
+            const now = new Date();
+            return Math.abs(now - date) <= 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+        })
+        .map(history => [new Date(history.lastUpdated).getTime(), history.currentPrice]);
 
-    Transaction = new Transaction();
- }
+    let last24HoursVolumeData = histories
+        .filter(history => {
+            const date = new Date(history.lastUpdated);
+            const now = new Date();
+            return Math.abs(now - date) <= 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+        })
+        .map(history => [new Date(history.lastUpdated).getTime(), history.totalVolume]);
+
+    let last24HoursPriceOption = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: 'Crypto Price Chart (Last 24 Hours)'
+        },
+        toolbox: {
+            feature: {
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'time',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 100
+            },
+            {
+                start: 0,
+                end: 100
+            }
+        ],
+        series: [
+            {
+                name: 'Crypto Price',
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+                areaStyle: {},
+                data: last24HoursPriceData
+            }
+        ]
+    };
+
+    let last24HoursVolumeOption = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'time',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: 'Volume',
+                type: 'bar',
+                barWidth: '60%',
+                data: last24HoursVolumeData.map(item => item[1])
+            }
+        ]
+    };
+
+    // Gráfico diario (Precio)
+    let dailyDataMap = new Map();
+    histories.forEach(history => {
+        let date = new Date(history.lastUpdated).toISOString().split('T')[0];
+        if (!dailyDataMap.has(date) || new Date(history.lastUpdated) > new Date(dailyDataMap.get(date)[0])) {
+            dailyDataMap.set(date, [new Date(history.lastUpdated).getTime(), history.currentPrice]);
+        }
+    });
+
+    let dailyPriceData = Array.from(dailyDataMap.values());
+
+    let dailyPriceOption = {
+        tooltip: {
+            trigger: 'axis',
+            position: function (pt) {
+                return [pt[0], '10%'];
+            }
+        },
+        title: {
+            left: 'center',
+            text: 'Crypto Price Chart (Daily)'
+        },
+        toolbox: {
+            feature: {
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'time',
+            boundaryGap: false
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%']
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: 100
+            },
+            {
+                start: 0,
+                end: 100
+            }
+        ],
+        series: [
+            {
+                name: 'Crypto Price',
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+                areaStyle: {},
+                data: dailyPriceData
+            }
+        ]
+    };
+
+    // Gráfico diario (Volumen)
+    let dailyVolumeDataMap = new Map();
+    histories.forEach(history => {
+        let date = new Date(history.lastUpdated).toISOString().split('T')[0];
+        if (!dailyVolumeDataMap.has(date) || new Date(history.lastUpdated) > new Date(dailyVolumeDataMap.get(date)[0])) {
+            dailyVolumeDataMap.set(date, [new Date(history.lastUpdated).getTime(), history.totalVolume]);
+        }
+    });
+
+    let dailyVolumeData = Array.from(dailyVolumeDataMap.values());
+
+    let dailyVolumeOption = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: dailyVolumeData.map(item => new Date(item[0]).toISOString().split('T')[0]),
+            axisTick: {
+                alignWithLabel: true
+            }
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: 'Volume',
+                type: 'bar',
+                barWidth: '60%',
+                data: dailyVolumeData.map(item => item[1])
+            }
+        ]
+    };
+
+    // Inicializar los gráficos con ECharts
+    const last24HoursPriceChartDom = document.getElementById('last24HoursChart');
+    const dailyPriceChartDom = document.getElementById('dailyPriceChart');
+    const last24HoursVolumeChartDom = document.getElementById('volume-chart-value');
+    const dailyVolumeChartDom = document.getElementById('dailyChartVolume');
+
+    if (last24HoursPriceChartDom) {
+        const last24HoursPriceChart = echarts.init(last24HoursPriceChartDom);
+        last24HoursPriceChart.setOption(last24HoursPriceOption);
+    } else {
+        console.error("Element with id 'last24HoursChart' not found.");
+    }
+
+    if (dailyPriceChartDom) {
+        const dailyPriceChart = echarts.init(dailyPriceChartDom);
+        dailyPriceChart.setOption(dailyPriceOption);
+    } else {
+        console.error("Element with id 'dailyPriceChart' not found.");
+    }
+
+    if (last24HoursVolumeChartDom) {
+        const last24HoursVolumeChart = echarts.init(last24HoursVolumeChartDom);
+        last24HoursVolumeChart.setOption(last24HoursVolumeOption);
+    } else {
+        console.error("Element with id 'volume-chart-value' not found.");
+    }
+
+    if (dailyVolumeChartDom) {
+        const dailyVolumeChart = echarts.init(dailyVolumeChartDom);
+        dailyVolumeChart.setOption(dailyVolumeOption);
+    } else {
+        console.error("Element with id 'dailyChartVolume' not found.");
+    }
+}
 
 document.addEventListener('DOMContentLoaded', async function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const ticker = urlParams.get('ticker');
 
-    async function fetchCryptoData() {
-        let cryptoFinal;
-        try {
-            const cryptos = await Currency.loadCurrencies();
-            console.log(cryptos);
-            cryptos.forEach(crypto => {
-                if (crypto.ticker === ticker) {
-                    cryptoFinal = crypto;
-                }
-            });
-            return cryptoFinal;
-        } catch (error) {
-            console.error("Error fetching data from API:", error);
-            return null;
-        }
-    }
-    let cryptoFinal = await fetchCryptoData();
+    let cryptoFinal = await fetchCryptoData(ticker);
+    const crypto = await loadCryptoInfo(cryptoFinal);
+    let histories = await loadHistoryByCurrency(cryptoFinal);
+    showCharts(histories);
 
-    async function loadCryptoInfo() {
-        try {
-            const crypto = await History.getLatestHistoryByCurrencyId(cryptoFinal.currencyId);
-            return crypto;
-        } catch (error) {
-            console.error("Error fetching data from API:", error);
-            return null;
-        }
-    }
-    const crypto = await loadCryptoInfo();
     console.log(crypto);
     document.getElementById('icon').src = crypto.currency.image;
     document.getElementById('icon').alt = "Icono de " + crypto.currency.name;
@@ -113,301 +294,172 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
     let currencyPrice = document.querySelectorAll('.crypto-price');
     currencyPrice.forEach(el => {
-        el.innerHTML = "$" + crypto.currentPrice;
+        el.innerHTML = crypto.currentPrice.toLocaleString() + "$";
     });
     document.getElementById("market-cap-rank").innerText = crypto.marketCapRank;
-    document.getElementById("market-cap").innerText = "$" + crypto.marketCap;
-    document.getElementById("volume").innerText = "$" + crypto.totalVolume;
-    document.getElementById("total-supply").innerText = "$" + crypto.totalSupply;
-    document.getElementById("change-24h").innerText = "$" + crypto.priceChange24h;
+    document.getElementById("market-cap").innerText = crypto.marketCap.toLocaleString() + "$";
+    document.getElementById("volume").innerText = crypto.totalVolume.toLocaleString() + "$";
+    document.getElementById("total-supply").innerText = crypto.totalSupply.toLocaleString() + "$";
+    document.getElementById("change-24h").innerText = crypto.priceChange24h.toLocaleString() + "$";
     document.getElementById("change-24h-percentage").innerText = crypto.priceChangePercentage24h + "%";
-    document.getElementById("high-24").innerText = "$" + crypto.high24h;
-    document.getElementById("low-24").innerText = "$" + crypto.low24h;
+    document.getElementById("high-24").innerText = crypto.high24h.toLocaleString() + "$";
+    document.getElementById("low-24").innerText = crypto.low24h.toLocaleString() + "$";
+    document.getElementById("price-change").classList.add(crypto.priceChangePercentage24h > 0 ? "text-success" : "text-danger", "price-change");
+    document.getElementById("price-change").innerText = crypto.priceChangePercentage24h > 0 ? "▲ " + crypto.priceChangePercentage24h.toFixed(2) + "%" : "▼ " + crypto.priceChangePercentage24h.toFixed(2) + "%";
 
+    async function recommended() {
+        try {
+            const coins = await Currency.getRecommendations();
+            let history = [];
 
+            history = await Promise.all(coins.map(async (coin) => {
+                return await History.getLatestHistoryByCurrencyId(coin.currencyId);
+            }));
 
+            const top3Coins = history.slice(0, 3);
+            return top3Coins;
 
-
-
-
-});
-    /*  BUY/SELL CRYPTO EVENT */
-document.addEventListener('DOMContentLoaded', function () {
-    let actionType = '';
-    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-    const buyModal = new bootstrap.Modal(document.getElementById('buyModal'));
-    const sellModal = new bootstrap.Modal(document.getElementById('sellModal'));
-
-    document.getElementById('buy-btn').addEventListener('click', function () {
-        actionType = 'buy';
-        confirmationModal.show();
-    });
-
-    document.getElementById('sell-btn').addEventListener('click', function () {
-        actionType = 'sell';
-        confirmationModal.show();
-    });
-
-    document.getElementById('confirm-action').addEventListener('click', function () {
-        confirmationModal.hide();
-        setTimeout(() => {
-            if (actionType === 'buy') {
-                buyModal.show();
-            } else if (actionType === 'sell') {
-                sellModal.show();
-            }
-        }, 300);
-    });
-
-    // Function to update the estimated total based on the input amount and current price
-    function updateTotal(inputId, outputId) {
-        const amount = parseFloat(document.getElementById(inputId).value) || 0;
-        const currentPrice = parseFloat(document.getElementById('currentPriceBuy').innerText.replace('$', '')) || 0;
-        const total = amount * currentPrice;
-        document.getElementById(outputId).innerText = `$${total.toFixed(2)}`;
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    document.getElementById('buy-amount').addEventListener('input', function () {
-        updateTotal('buy-amount', 'buy-total-price');
-    });
+    const cryptoData = await recommended();
+    console.log(cryptoData);
 
-    document.getElementById('sell-amount').addEventListener('input', function () {
-        updateTotal('sell-amount', 'sell-total-price');
-    });
+    const container = document.getElementById("cryptoContainer");
 
-    document.getElementById('confirm-buy').addEventListener('click', function () {
-        // Aquí iría la lógica real de compra
-        alert('Purchase confirmed!');
+    cryptoData.forEach(item => {
+        const colDiv = document.createElement("div");
+        colDiv.classList.add("col");
 
-        buyModal.hide();
-    });
-
-    document.getElementById('confirm-sell').addEventListener('click', function () {
-        // Aquí iría la lógica real de venta
-        alert('Sale confirmed!');
-        sellModal.hide();
+        colDiv.innerHTML = `
+            <div class="card p-4 text-center rounded-4 shadow-sm bg-white">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h5 class="fw-bold">${item.currency.name}</h5>
+                    <div class="d-flex align-items-center me-3 text-center justify-content-center">
+                        <img src="${item.currency.image}" alt="Logo de criptomoneda ${item.currency.name}" class="img-fluid me-3" style="max-height: 40px;">
+                        <h4 class="fw-bold text-dark">${item.currentPrice}</h4>
+                    </div>
+                    <div class="text-center ${item.priceChangePercentage24h < 0 ? 'text-danger' : 'text-success'} fw-bold">
+                        ${item.priceChangePercentage24h.toLocaleString()}%
+                    </div>
+                </div>
+                <a href="infoCrypto.html?ticker=${item.currency.ticker}" class="btn btn-sell btn-sm w-100 mt-3 rounded-5">See More</a>
+            </div>
+        `;
+        container.appendChild(colDiv);
     });
 });
 
-/*TOOLTIP INFO */
-// Inicializar tooltips
-let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
+let actionType = '';
+const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+const buyModal = new bootstrap.Modal(document.getElementById('buyModal'));
+const sellModal = new bootstrap.Modal(document.getElementById('sellModal'));
+
+document.getElementById('buy-btn').addEventListener('click', function () {
+    actionType = 'buy';
+    checkUser(actionType);
 });
 
-// /* API CAROUSEL NEWS */
-//
-// async function loadCryptoNews() {
-//     try {
-//         // Realizamos la solicitud a la API de CryptoPanic con el token de autenticación
-//         const response = await fetch("https://cryptopanic.com/api/v1/posts/?auth_token=a4c7721b1d6af749de0f98cd0412b15e62d326a3", {
-//             method: "GET",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//         });
-//
-//         // Esperamos la respuesta en formato JSON
-//         const data = await response.json();
-//
-//         // Verificamos si la respuesta tiene los resultados
-//         if (data.results) {
-//             // Llamamos a la función para mostrar las noticias en el carrusel
-//             displayNewsCarousel(data.results);
-//         } else {
-//             console.log("No news available.");
-//         }
-//     } catch (error) {
-//         console.error("Error fetching news:", error);
-//     }
-// }
-//
-// function displayNewsCarousel(news) {
-//     // Seleccionamos el contenedor del carrusel
-//     const carouselInner = document.querySelector("#cryptoNewsCarousel .carousel-inner");
-//
-//     // Limpiamos cualquier contenido anterior en el carrusel
-//     carouselInner.innerHTML = "";
-//
-//     // Iteramos sobre las noticias y añadimos los elementos al carrusel
-//     news.slice(0, 5).forEach((article, index) => {
-//         // Establecemos el primer artículo como activo
-//         const isActive = index === 0 ? "active" : "";
-//
-//         // Construimos el HTML para cada artículo
-//         const newsItem = `
-//             <div class="carousel-item ${isActive}">
-//                 <img src="${article.thumbnail || 'placeholder.jpg'}" class="d-block w-100" alt="${article.title}">
-//                 <div class="carousel-caption d-none d-md-block">
-//                     <h5>${article.title}</h5>
-//                     <p>${article.text || "No description available."}</p>
-//                     <a href="${article.url}" class="btn btn-primary" target="_blank">Read More</a>
-//                 </div>
-//             </div>
-//         `;
-//
-//         // Añadimos el artículo al carrusel
-//         carouselInner.innerHTML += newsItem;
-//     });
-// }
-//
-// // Llamamos a la función loadCryptoNews cuando el contenido de la página se haya cargado completamente
-// document.addEventListener("DOMContentLoaded", loadCryptoNews);
+document.getElementById('sell-btn').addEventListener('click', function () {
+    actionType = 'sell';
+    checkUser(actionType);
+});
 
- window.onload = function () {
-     // ================================
-     // GRÁFICO DE EVOLUCIÓN DE PRECIOS
-     // ================================
+async function checkUser(actionType) {
+    async function getUserId() {
+        try {
+            const userId = await User.getUserId();
+            console.log(userId);
+            user = await User.getUserById(userId);
+            return userId;
+        } catch (error) {
+            console.error('❌ Error al obtener el usuario:', error);
+            return null;
+        }
+    }
 
-     // Obtenemos el contexto 2D del canvas donde se dibujará el gráfico.
-     const ctxPrice = document.getElementById('crypto-chart').getContext('2d');
+    let userId = await getUserId();
+    console.log(user);
+    if (userId) {
+        confirmationModal.show();
+        document.getElementById('confirm-action').addEventListener('click', function () {
+            confirmationModal.hide();
+            setTimeout(() => {
+                if (actionType === 'buy') {
+                    buyModal.show();
+                } else if (actionType === 'sell') {
+                    sellModal.show();
+                }
+            }, 300);
+        });
 
-     // Creamos un gradiente vertical para el fondo de la línea.
-     const gradientPrice = ctxPrice.createLinearGradient(0, 0, 0, 400);
-     gradientPrice.addColorStop(0, 'rgba(6, 20, 40, 0.9)'); // Color superior (más opaco)
-     gradientPrice.addColorStop(1, 'rgba(6, 20, 40, 0.2)'); // Color inferior (más transparente)
+        function updateTotal(inputId, outputId) {
+            const amount = parseFloat(document.getElementById(inputId).value) || 0;
+            const currentPrice = parseFloat(document.getElementById('currentPriceBuy').innerText.replace('$', '')) || 0;
+            const total = amount * currentPrice;
+            document.getElementById(outputId).innerText = `$${total.toFixed(2)}`;
+        }
 
-     // Etiquetas para el eje X (en este ejemplo, los meses).
-     const priceLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
-     // Datos de precio (uno por cada etiqueta).
-     const prices = [680, 700, 650, 720, 800, 750, 820, 780, 850];
+        document.getElementById('buy-amount').addEventListener('input', function () {
+            updateTotal('buy-amount', 'buy-total-price');
+        });
 
-     // Creamos el gráfico usando Chart.js.
-     new Chart(ctxPrice, {
-         // Tipo de gráfico: 'line' (gráfico de líneas).
-         type: 'line',
-         data: {
-             // Las etiquetas se usan en el eje X.
-             labels: priceLabels,
-             // Configuración de los datasets (en este caso, un solo dataset).
-             datasets: [{
-                 label: 'Bitcoin Price ($)',         // Etiqueta que se mostrará en la leyenda y tooltips.
-                 data: prices,                         // Datos del gráfico.
-                 fill: true,                           // Rellenar el área debajo de la línea.
-                 backgroundColor: gradientPrice,       // Fondo con el gradiente creado.
-                 borderColor: 'rgb(6, 20, 40)',         // Color de la línea.
-                 borderWidth: 2,                       // Grosor de la línea.
-                 pointRadius: 5,                       // Tamaño de los puntos de datos.
-                 pointBackgroundColor: 'rgb(6, 20, 40)',// Color de los puntos.
-                 tension: 0.3                          // Curvatura de la línea (0: recta, 1: muy curvada).
-             }]
-         },
-         options: {
-             responsive: true,                       // Se adapta al tamaño del contenedor.
-             maintainAspectRatio: false,             // Permite que la altura sea flexible.
-             scales: {
-                 x: {
-                     title: {display: true, text: 'Months'},  // Título del eje X.
-                     ticks: {                                 // Opciones de las etiquetas en el eje X.
-                         maxRotation: 45,                       // Rotación máxima.
-                         minRotation: 30,                       // Rotación mínima.
-                         autoSkip: true,                        // Se omiten etiquetas si es necesario para no sobrecargar.
-                         maxTicksLimit: 8                       // Máximo número de etiquetas a mostrar.
-                     }
-                 },
-                 y: {
-                     title: {display: true, text: 'Price ($)'}, // Título del eje Y.
-                     beginAtZero: false,                           // El eje Y no empieza en 0.
-                     ticks: {
-                         // Formatea las etiquetas del eje Y para que se vean como precios.
-                         callback: function (value) {
-                             return '$' + value.toLocaleString();
-                         }
-                     }
-                 }
-             },
-             plugins: {
-                 legend: {
-                     display: true,                        // Muestra la leyenda.
-                     position: 'top',                      // Ubicación de la leyenda.
-                     labels: {
-                         color: 'rgb(6, 20, 40)'             // Color del texto de la leyenda.
-                     }
-                 },
-                 tooltip: {
-                     enabled: true,                        // Activa los tooltips.
-                     mode: 'nearest',                      // Muestra el tooltip del punto más cercano.
-                     intersect: false,                     // Aparece incluso si no intersecta exactamente el punto.
-                     backgroundColor: 'rgba(255,255,255,0.9)', // Fondo claro para el tooltip.
-                     titleColor: '#000',                   // Color del título en el tooltip.
-                     bodyColor: '#000',                    // Color del contenido.
-                     borderColor: '#ddd',                  // Color del borde del tooltip.
-                     borderWidth: 1,                       // Grosor del borde.
-                     callbacks: {
-                         // Función para el título del tooltip.
-                         title: function (tooltipItems) {
-                             // Muestra el mes (la etiqueta) como título.
-                             return 'Date: ' + tooltipItems[0].label;
-                         },
-                         // Función para el contenido (etiqueta) del tooltip.
-                         label: function (context) {
-                             const price = context.parsed.y;  // Precio del punto.
-                             return 'Price: $' + price.toLocaleString();
-                         }
-                     }
-                 }
-             }
-         }
-     });
-     // ================================
-     // GRÁFICO DE EVOLUCIÓN DE VOLUMEN
-     // ================================
+        document.getElementById('sell-amount').addEventListener('input', function () {
+            updateTotal('sell-amount', 'sell-total-price');
+        });
 
-     // Obtenemos el contexto 2D del canvas para el gráfico de volumen.
-     const ctxVolume = document.getElementById('volume-chart-value').getContext('2d');
-     // Usamos las mismas etiquetas (meses) para el eje X.
-     const volumeLabels = priceLabels;
-     // Datos de volumen correspondientes a cada mes.
-     const volumes = [50000, 55000, 60000, 65000, 70000, 75000, 80000, 75000, 85000];
+        document.getElementById('confirm-buy').addEventListener('click', function () {
+            alert('Purchase confirmed!');
+            buyModal.hide();
+        });
 
-     // Creamos el gráfico de barras para el volumen.
-     new Chart(ctxVolume, {
-         type: 'bar', // Tipo de gráfico: 'bar' para barras.
-         data: {
-             labels: volumeLabels,
-             datasets: [{
-                 label: 'Volume',                        // Etiqueta para la leyenda.
-                 data: volumes,                          // Datos del volumen.
-                 backgroundColor: 'rgba(6, 20, 40, 0.7)',  // Color de las barras.
-                 borderColor: 'rgb(6, 20, 40)',            // Color del borde de las barras.
-                 borderWidth: 1                          // Grosor del borde.
-             }]
-         },
-         options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             scales: {
-                 x: {
-                     title: {display: true, text: 'Months'},
-                     ticks: {
-                         maxRotation: 45,
-                         minRotation: 30,
-                         autoSkip: true,
-                         maxTicksLimit: 8
-                     }
-                 },
-                 y: {
-                     title: {display: true, text: 'Volume'},
-                     beginAtZero: true,                       // El eje Y empieza en 0.
-                     ticks: {
-                         callback: function (value) {
-                             return value.toLocaleString();       // Formatea los números para mejor legibilidad.
-                         }
-                     }
-                 }
-             },
-             plugins: {
-                 tooltip: {
-                     enabled: true,
-                     backgroundColor: 'rgba(255,255,255,0.9)',
-                     titleColor: '#000',
-                     bodyColor: '#000',
-                     borderColor: '#ddd',
-                     borderWidth: 1
-                     // En este gráfico de volumen, no se han personalizado los callbacks, pero se pueden agregar de manera similar.
-                 }
-             }
-         }
-     });
- }
+        document.getElementById('confirm-sell').addEventListener('click', function () {
+            alert('Sale confirmed!');
+            sellModal.hide();
+        });
+    }
+}
+
+async function confirmBuy() {
+    const query = window.location.search;
+    const urlParams = new URLSearchParams(query);
+    const ticker = urlParams.get('ticker');
+
+    let cryptoFinal = await fetchCryptoData(ticker);
+    const crypto = await loadCryptoInfo(cryptoFinal);
+
+    async function getUser() {
+        try {
+            const userId = await User.getUserId();
+            const user = await User.getUserById(userId);
+            console.log(userId);
+            return user;
+        } catch (error) {
+            console.error('❌ Error al obtener el usuario:', error);
+            return null;
+        }
+    }
+
+    let user = await getUser();
+    const transactionData = {
+        transactionType: 'buy',
+        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0,
+        destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
+        originUnitPrice: 1,
+        destinationUnitPrice: crypto.currentPrice,
+        transactionDate: new Date().toISOString().split('T')[0],
+        user: user,
+        originCurrency: {
+            currencyId: 3
+        },
+        destinationCurrency: {
+            currencyId: cryptoFinal.currencyId
+        }
+    };
+
+    transactionData.transactionDate = new Date(transactionData.transactionDate);
+    await Transaction.createTransaction(transactionData);
+    console.log("Transacción creada correctamente.");
+}
