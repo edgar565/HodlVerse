@@ -158,32 +158,65 @@ async function confirmBuy() {
         }
     }
 
+    let usd = await Currency.getCurrencyByTicker("usdt");
+    let usdHistory = await History.getLatestHistoryByCurrencyId(usd.currencyId);
     let user = await getUser();
+    console.log("actionType", actionType);
     // Example of how to construct the transaction data:
-    const transactionData = {
-        transactionType: actionType, // Can be "buy", "sell" or "exchange"
-        originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
-        destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
-        originUnitPrice: 1,
-        destinationUnitPrice: crypto.currentPrice,
-        transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
-        user: user, // Use the already validated user object
-        originCurrency: {
-            currencyId: 3 // ID of the origin currency
-        },
-        destinationCurrency: {
-            currencyId: cryptoFinal.currencyId // ID of the destination currency
-        }
-    };
+    if (actionType === "buy") {
+        console.log("crypto current price", crypto.currentPrice, "buy-amount", parseFloat(document.getElementById("buy-amount").value));
+        const transactionData = {
+            transactionType: actionType, // Can be "buy", "sell" or "exchange"
+            //para saber la cantidad de origen (usds) multiplico la cantidad de monedas que quiero comprar por el precio de la moneda para sacar la cantidad de usds que necesitaré.
+            originTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("buy-amount").value) || 0, // Use string to avoid precision issues in BigDecimal
+            destinationTransactionAmount: parseFloat(document.getElementById("buy-amount").value) || 0,
+            originUnitPrice: usdHistory.currentPrice,
+            destinationUnitPrice: crypto.currentPrice,
+            transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
+            user: user, // Use the already validated user object
+            originCurrency: {
+                currencyId: usd.currencyId // ID of the origin currency
+            },
+            destinationCurrency: {
+                currencyId: cryptoFinal.currencyId // ID of the destination currency
+            }
+        };
 
-    // Ensure transactionDate is a Date instance
-    transactionData.transactionDate = new Date(transactionData.transactionDate);
+        // Ensure transactionDate is a Date instance
+        transactionData.transactionDate = new Date(transactionData.transactionDate);
 
-    // Call createTransaction without re-validating the user
-    await Transaction.createTransaction(transactionData);
+        // Call createTransaction without re-validating the user
+        await Transaction.createTransaction(transactionData);
 
-    // Handle the result if necessary
-    console.log("Transacción creada correctamente.");
+        // Handle the result if necessary
+        console.log("Transacción creada correctamente.");
+    } if (actionType === "sell") {
+        console.log("crypto current price", crypto.currentPrice, "sell-amount", parseFloat(document.getElementById("sell-amount").value));
+        const transactionData = {
+            transactionType: actionType, // Can be "buy", "sell" or "exchange"
+            originTransactionAmount: parseFloat(document.getElementById("sell-amount").value) || 0 , // Use string to avoid precision issues in BigDecimal
+            destinationTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("sell-amount").value) || 0,
+            originUnitPrice: crypto.currentPrice,
+            destinationUnitPrice: usdHistory.currentPrice,
+            transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"
+            user: user, // Use the already validated user object
+            originCurrency: {
+                currencyId: cryptoFinal.currencyId // ID of the origin currency
+            },
+            destinationCurrency: {
+                currencyId: usd.currencyId // ID of the destination currency
+            }
+        };
+
+        // Ensure transactionDate is a Date instance
+        transactionData.transactionDate = new Date(transactionData.transactionDate);
+
+        // Call createTransaction without re-validating the user
+        await Transaction.createTransaction(transactionData);
+
+        // Handle the result if necessary
+        console.log("Transacción creada correctamente.");
+    }
 }
 
 //     // ================================

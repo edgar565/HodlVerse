@@ -28,8 +28,8 @@ class Transaction {
             let userOriginBalanceAmount = userOriginBalanceCurrency[0].walletAmount;
             let userOriginBalancePrice = await History.getLatestHistoryByCurrencyId(transactionData.originCurrency.currencyId);
             userOriginBalancePrice = userOriginBalancePrice.currentPrice;
-            let userOriginBalance = userOriginBalanceAmount * userOriginBalancePrice;
-            console.log(`💰 Saldo en la moneda origen : ${userOriginBalance}`);
+            let userOriginBalancePriceTotal = userOriginBalanceAmount * userOriginBalancePrice;
+            console.log(`💰 Saldo en la moneda origen : ${userOriginBalancePriceTotal}`);
 
             // Calcular el precio de la transacción en USD
             const originPrice = transactionData.originTransactionAmount * transactionData.originUnitPrice;
@@ -40,8 +40,12 @@ class Transaction {
 
             // Validar si se puede realizar la transacción
             if (transactionData.transactionType === "buy") {
-                if (userOriginBalance < originPrice || originPrice < destinationPrice) {
+                if (userOriginBalancePriceTotal < originPrice || originPrice < destinationPrice) {
                     throw new Error('❌ Fondos insuficientes o el precio de origen es menor al precio de destino.');
+                }
+            } else if (transactionData.transactionType === "sell") {
+                if (userOriginBalanceAmount < transactionData.originTransactionAmount) {
+                    throw new Error("❌ Monedas insuficientes en la cartera.");
                 }
             }
 
@@ -80,7 +84,8 @@ class Transaction {
                         console.error("❌ balanceId inválido en originBalance:", originBalance);
                         return;
                     }
-                    if (transactionData.transactionType === "buy") {
+                    if (transactionData.transactionType === "buy" || transactionData.transactionType === "sell") {
+                        console.log("WalletAmount", originBalance.walletAmount, "originTransactionAmount", transactionData.originTransactionAmount);
                         let updatedOriginAmount = originBalance.walletAmount - transactionData.originTransactionAmount;
                         console.log(`💰 Actualizando balance de origen (${originBalance.balanceId}): Nuevo monto -> ${updatedOriginAmount}`);
 
@@ -94,6 +99,7 @@ class Transaction {
                         await Balance.updateBalance(originBalance.balanceId, updatedOriginBalance, (data) => {
                             console.log("✅ Balance de moneda origen actualizado:", data);
                         });
+
                     }
                 } else {
                     console.log("⚠️ No existe balance previo, creando uno nuevo...");
@@ -106,7 +112,7 @@ class Transaction {
                         return;
                     }
 
-                    if (transactionData.transactionType === "buy") {
+                    if (transactionData.transactionType === "buy" || transactionData.transactionType === "sell") {
                         let newOriginBalance = {
                             walletAmount: -transactionData.originTransactionAmount, // Se resta porque es un gasto
                             wallet: userWallet.walletId, // Se envía el ID de la wallet
@@ -116,7 +122,6 @@ class Transaction {
                         await Balance.createBalance(newOriginBalance, (createdBalance) => {
                             console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
                         });
-                    } else {
 
                     }
                 }
@@ -132,20 +137,21 @@ class Transaction {
                         console.error("❌ balanceId inválido en destinationBalance:", destinationBalance);
                         return;
                     }
+                    if (transactionData.transactionType === "buy" || transactionData.transactionType === "sell") {
+                        let updatedDestinationAmount = destinationBalance.walletAmount + transactionData.destinationTransactionAmount;
+                        console.log(`💰 Actualizando balance de destino (${destinationBalance.balanceId}): Nuevo monto -> ${updatedDestinationAmount}`);
 
-                    let updatedDestinationAmount = destinationBalance.walletAmount + transactionData.destinationTransactionAmount;
-                    console.log(`💰 Actualizando balance de destino (${destinationBalance.balanceId}): Nuevo monto -> ${updatedDestinationAmount}`);
+                        let updatedDestinationBalance = {
+                            balanceId: destinationBalance.balanceId,
+                            walletAmount: updatedDestinationAmount,
+                            wallet: destinationBalance.wallet.walletId || destinationBalance.wallet, // Ajuste para asegurar que se envía el ID correcto
+                            currency: destinationBalance.currency.currencyId || destinationBalance.currency // Ajuste para asegurar que se envía el ID correcto
+                        };
 
-                    let updatedDestinationBalance = {
-                        balanceId: destinationBalance.balanceId,
-                        walletAmount: updatedDestinationAmount,
-                        wallet: destinationBalance.wallet.walletId || destinationBalance.wallet, // Ajuste para asegurar que se envía el ID correcto
-                        currency: destinationBalance.currency.currencyId || destinationBalance.currency // Ajuste para asegurar que se envía el ID correcto
-                    };
-
-                    await Balance.updateBalance(destinationBalance.balanceId, updatedDestinationBalance, (data) => {
-                        console.log("✅ Balance de moneda destino actualizado:", data);
-                    });
+                        await Balance.updateBalance(destinationBalance.balanceId, updatedDestinationBalance, (data) => {
+                            console.log("✅ Balance de moneda destino actualizado:", data);
+                        });
+                    }
                 } else {
                     console.log("⚠️ No existe balance previo, creando uno nuevo...");
 
