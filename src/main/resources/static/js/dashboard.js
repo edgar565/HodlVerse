@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", async function () {
     let chartDom = document.getElementById("chart-container");
+    const loadingMessageChart = document.getElementById('loadingMessageChart');
+    loadingMessageChart.style.display = "flex";  // Mostrar el mensaje de carga
+
 
     if (!chartDom) {
         console.error("❌ No se encontró el contenedor del gráfico.");
@@ -164,6 +167,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     } catch (error) {
         console.error("❌ Error al cargar el gráfico:", error);
     }
+    loadingMessageChart.style.color = 'transparent';
+
 });
 
 
@@ -177,6 +182,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
+    const loadingMessageCalendar = document.getElementById('loadingMessageCalendar');
+    loadingMessageCalendar.style.display = "flex";  // Mostrar el mensaje de carga
+
 
     async function fetchEndDate() {
         try {
@@ -210,28 +218,47 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function updateCalendar(year, month) {
-        calendarContainer.innerHTML = '';
+        calendarContainer.innerHTML = ''; // Limpiar el contenido
+
+        // Crear el contenedor con CSS Grid
+        calendarContainer.style.display = "grid";
+        calendarContainer.style.gridTemplateColumns = "repeat(7, 1fr)";
+        calendarContainer.style.gap = "5px"; // Espacio entre celdas
+
+        // Crear la fila de nombres de los días de la semana
+        const daysOfWeek = ["L", "M", "X", "J", "V", "S", "D"];
+        daysOfWeek.forEach(day => {
+            const dayElement = document.createElement("div");
+            dayElement.classList.add("day-name");
+            dayElement.textContent = day;
+            calendarContainer.appendChild(dayElement);
+        });
+
+        // Obtener información del mes
+        const firstDay = new Date(year, month, 1).getDay(); // Día de la semana del primer día del mes
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const today = new Date();
         const currentDay = today.getDate();
-        const markedDay = endDate.getDate(); // Cambia este número según el día que desees marcar
+        const markedDay = endDate.getDate();
 
-        // Crear fecha objetivo (inicio del día marcado, es decir, a las 00:00:00)
-        const targetDate = new Date(year, month, markedDay, 0, 0, 0);
-
-        // Calcular la diferencia en milisegundos desde este momento hasta el inicio del día marcado
+        const targetDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 0, 0, 0);
         const timeDiff = targetDate - today;
 
-        // Calcular correctamente los días, horas y minutos restantes
         const remainingDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
         const remainingHours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const remainingMinutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
 
-        // Mostrar la cuenta regresiva con los valores correctos
         daysRemainingText.textContent = `${remainingDays} Days`;
         timeRemainingText.textContent = `${remainingHours} hours, ${remainingMinutes} minutes`;
 
-        // Crear el calendario
+        // Ajustar el primer día del mes con celdas vacías
+        for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
+            const emptyElement = document.createElement("div");
+            emptyElement.classList.add("empty-day");
+            calendarContainer.appendChild(emptyElement);
+        }
+
+        // Crear los días del mes
         for (let day = 1; day <= daysInMonth; day++) {
             const dayElement = document.createElement("div");
             dayElement.classList.add("day");
@@ -249,10 +276,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             calendarContainer.appendChild(dayElement);
         }
+
     }
 
+
     prevMonthButton.addEventListener("click", () => {
-        if (new Date(currentYear, currentMonth - 1) >= startDate) {
+        if (currentYear > startDate.getFullYear() ||
+            (currentYear === startDate.getFullYear() && currentMonth > startDate.getMonth())) {
             currentMonth--;
             if (currentMonth < 0) {
                 currentMonth = 11;
@@ -261,6 +291,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             updateCalendar(currentYear, currentMonth);
         }
     });
+
 
     nextMonthButton.addEventListener("click", () => {
         if (new Date(currentYear, currentMonth + 1) <= endDate) {
@@ -274,6 +305,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     updateCalendar(currentYear, currentMonth);
+    loadingMessageCalendar.style.color = "transparent";
+
 });
 
 
@@ -406,6 +439,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function populateTransactionTableAll(transactions) {
         const tableBody = document.getElementById("transactionTableBodyFull");
         tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar datos
+        const loadingMessageTransactions = document.getElementById('loadingMessageTransactions');
+
 
         transactions.forEach(transaction => {
             const row = document.createElement("tr");
@@ -443,6 +478,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             tableBody.appendChild(row);
         });
+
+        loadingMessageTransactions.style.color = "transparent";
 
         console.log("✅ Tabla actualizada con transacciones.");
     }
@@ -554,7 +591,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
         return num.toFixed(2);
     }
+    const loadingMessageYourCryptos = document.getElementById('loadingMessageYourCryptos');
 
+// Mostrar el mensaje de carga
+    loadingMessageYourCryptos.style.display = "flex";  // Mostrar el mensaje de carga
+
+// Asumimos que 'cryptos', 'totalValue', 'valueFinal', 'contador' y 'formatNumber' ya están definidos previamente
     cryptos.forEach(crypto => {
         const card = document.createElement("div");
         card.classList.add("card", "crypto", "shadow-sm", "mb-2");
@@ -563,23 +605,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         let final = valueFinal[contador];
 
         card.innerHTML = `
-  <div class="card-body d-flex align-items-center justify-content-between">
-    <!-- Columna izquierda: Texto -->
-    <div>
-      <h5 class="card-title fw-bold">${crypto.name}</h5>
-      <h5 class="card-title text-dark">${formatNumber(final)}</h5>
-      <div class="d-flex align-items-center gap-2">
-        <h6 class="text-muted fs-6">${crypto.ticker}</h6>
-        <h6 class="text-muted fs-6">${formatNumber(amount)}</h6>
-      </div>
-    </div>
-    <img src="${crypto.image}" alt="${crypto.name}" height="55" class="ms-3">
-  </div>
-`;
+        <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="card-title fw-bold">${crypto.name}</h5>
+                <h5 class="card-title text-dark">${formatNumber(final)}</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <h6 class="text-muted fs-6">${crypto.ticker}</h6>
+                    <h6 class="text-muted fs-6">${formatNumber(amount)}</h6>
+                </div>
+            </div>
+            <img src="${crypto.image}" alt="${crypto.name}" height="55" class="ms-3">
+        </div>
+    `;
 
         container.appendChild(card);
         contador++;
     });
 
+// Usar setTimeout para asegurar que el mensaje de carga desaparezca después de que se terminen de agregar los datos
+        loadingMessageYourCryptos.style.color = "transparent";  // Ocultar el mensaje de carga
 
 });

@@ -22,6 +22,45 @@
     background: white;
     position: relative;
 }
+/* ---- LOADING MESSAGES ---- */
+#loadingMessageYourCryptos {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #666;
+    display: none; /* Empezamos con el mensaje oculto */
+}
+#loadingMessageTransactions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #666;
+    display: none; /* Empezamos con el mensaje oculto */
+}
+#loadingMessageChart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #666;
+    display: none; /* Empezamos con el mensaje oculto */
+}
+#loadingMessageCalendar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #666;
+    display: none; /* Empezamos con el mensaje oculto */
+}
+
+
 
 /* -------------------- CALENDARIO -------------------- */
 .calendar-container {
@@ -35,7 +74,6 @@
     flex-direction: column;
     text-align: left;
     width: 100%;
-
 }
 .calendar-container h2,
 .calendar-container h3 {
@@ -46,13 +84,13 @@
 #calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    justify-content: center;
+    gap: 5px;
+    text-align: center;
 }
 
 .day {
-    width: 32px;
-    height: 32px;
+    width:28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -71,7 +109,7 @@
 
 .remaining {
     background-color: #FFFFFF;
-    color: #061428;
+    color: var(--azuloscuro);
     border: 2px solid #061428;
 }
 
@@ -83,97 +121,26 @@
     background-color: #C58120;
     box-shadow: 0 0 10px rgba(197, 129, 32, 0.6);
 }
-
-/* -------------------- TIMELINE -------------------- */
-.timeline {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-}
-
-.event {
-    position: relative;
-    background-color: #C58120;
-    padding: 10px 15px;
-    border-radius: 20px;
+.days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     font-weight: bold;
-    cursor: grab;
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: var(--azuloscuro) solid 1px;
+
 }
 
-.event.past {
-    background-color: #b9b9b9;
-}
-
-/* -------------------- CAROUSEL -------------------- */
-.carousel-item {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: relative;
-}
-
-.circle {
-    color: #061428;
-}
-
-#gameCarousel {
-    position: relative;
-    width: 100%;
-    margin-top: auto;
-}
-
-
-/* -------------------- PROGRESO -------------------- */
-.progress-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    height: 165px;
-    position: relative;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.progress-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-}
-
-.progress-line {
-    width: 6px;
-    background: #ccc;
-    transition: height 1.5s ease-in-out;
-}
-
-.progress-line.active {
-    background: #C58120;
-}
-
-.progress-bubble {
-    position: relative;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
+.day-name {
     font-weight: bold;
-    color: #061428;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
+    padding: 2px;
+    border-radius: 5px;
 }
-
-.bubble-prev {
-    background: #aaa;
+.calendar-arrow{
+    color: var(--azuloscuro);
 }
-
-.bubble-current {
-    background: #C58120;
+.calendar-arrow:hover{
+    color: var(--oro);
 }
 
 /* -------------------- MEDIA QUERIES (RESPONSIVE) -------------------- */
@@ -189,16 +156,6 @@
         height: 28px;
         font-size: 12px;
     }
-    .progress-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .progress-bar {
-        margin-bottom: 10px;
-    }
-    #gameCarousel {
-        margin-top: 40px !important;
-    }
 }
 
 @media (max-width: 1299px) {
@@ -212,22 +169,6 @@
         width: 26px;
         height: 26px;
         font-size: 12px;
-    }
-    .progress-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .progress-bar {
-        margin-bottom: 12px;
-    }
-    .timeline {
-        height: 180px;
-    }
-    .event {
-        padding: 8px 12px;
-    }
-    #gameCarousel {
-        margin-top: 50px !important;
     }
 }
 
@@ -246,27 +187,6 @@
         height: 24px;
         font-size: 11px;
     }
-    .progress-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .progress-bar {
-        margin-bottom: 12px;
-    }
-    .progress-line {
-        width: 5px;
-    }
-    .timeline {
-        height: 160px;
-        justify-content: space-between;
-    }
-    .event {
-        padding: 7px 10px;
-        font-size: 13px;
-    }
-    #gameCarousel {
-        margin-top: 65px !important;
-    }
 }
 
 @media (max-width: 1099px) {
@@ -284,28 +204,7 @@
         height: 22px;
         font-size: 10px;
     }
-    .progress-container {
-        flex-direction: column;
-        align-items: center;
-        padding: 8px;
-    }
-    .progress-bar {
-        margin-bottom: 10px;
-    }
-    .progress-line {
-        width: 4px;
-    }
-    .timeline {
-        height: 140px;
-        justify-content: space-around;
-    }
-    .event {
-        padding: 6px 9px;
-        font-size: 12px;
-    }
-    #gameCarousel {
-        margin-top: 80px !important;
-    }
+
 }
 
 /* -------------------- TRANSACTIONS SECTION -------------------- */
@@ -339,29 +238,29 @@
 }
 
 #cryptosContainer {
-    white-space: nowrap; /* Evita el salto de línea entre elementos */
-    overflow-x: auto; /* Permite desplazamiento horizontal */
-    scroll-snap-type: x mandatory; /* Suaviza el scroll */
+    white-space: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px; /* Espacio extra para evitar cortes */
+    padding-bottom: 10px;
 }
 
 .crypto {
-    flex: 0 0 220px; /* Ancho fijo para cada card */
-    height: 150px; /* Altura fija */
-    scroll-snap-align: start; /* Asegura el alineado correcto en el scroll */
+    flex: 0 0 220px;
+    height: 150px;
+    scroll-snap-align: start;
 }
 .card-title {
     font-family: 'Inter', sans-serif;
     font-size: 1.2rem;
-    font-weight: 400; /* Normal */
-    color: #061428; /* Dark Blue */
+    font-weight: 400;
+    color: #061428;
 }
 
 .text-muted {
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
-    color: #6c757d; /* Soft Grey */
+    color: #6c757d;
 }
 
 .card-body {
@@ -370,7 +269,7 @@
 .text-dark {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
-    font-weight: 400; /* Normal */
+    font-weight: 400;
 }
 
 .badge {

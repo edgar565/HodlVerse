@@ -186,78 +186,36 @@
             <!-- Chart -->
             <div class="col-lg-9 col-12 border-2 border-gray-200 rounded mb-4 chart">
                 <div class="card shadow-sm">
-                    <div class="card-body">
-                        <div id="chart-container"></div>
+                    <div class="card-body" style="position: relative;"> <!-- Agregamos position: relative -->
+                        <!-- Contenedor del gráfico -->
+                        <div id="chart-container" style="height: 400px;">
+                            <div id="loadingMessageChart" class="d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                                <span>Loading chart...</span>
+                            </div>
+                        </div> <!-- Agregamos altura -->
                     </div>
                 </div>
             </div>
-            <!-- Calendar -->
-            <div class="col-lg-3 border-2 border-gray-200 rounded mb-4 calendar">
-                <div class="card shadow-sm p-1">
+            <div class="col-lg-3 border-2 border-gray-200 rounded mb-4 d-flex align-items-center">
+                <!-- Calendar -->
+                <div class="card shadow-sm p-1 calendar" style="min-height: 400px; min-width: 320px">
                     <div class="card-body d-flex flex-column justify-content-between">
                         <div class="text-start calendar-container">
                             <div class="time-container">
-                                <h3 id="daysRemaining" class="fw-bold mb-1 text"></h3>
+                                <h3 id="daysRemaining" class="fw-semibold mb-1 text"></h3>
                                 <p id="timeRemaining" class="text-muted"></p>
                             </div>
-                            <div class="d-flex justify-content-center align-items-center">
-                                <i id="prevMonth" class="fa-solid fa-chevron-left ms-2"></i>
-                                <div id="calendar"></div>
-                                <i id="nextMonth" class="fa-solid fa-chevron-right ms-2"></i>
+                            <div id="loadingMessageCalendar" class="d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center gap-1">
+                                <i id="prevMonth" class="fa-solid fa-angles-left fs-5 calendar-arrow"></i>
+                                <div id="calendar" class="mb-2 p-2"></div>
+                                <i id="nextMonth" class="fa-solid fa-angles-right fs-5 calendar-arrow"></i>
                             </div>
                         </div>
                     </div>
-                </div>
-
-
-                <!-- Carrusel -->
-                <div id="gameCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <!-- Tarjeta 1: Barra de progreso circular -->
-                        <div class="carousel-item active">
-                            <div class="card text-center p-3 shadow-sm">
-                                <h5 class="fw-bold text">Game Progress</h5>
-                                <div class="d-flex justify-content-center mt-3">
-                                    <svg width="150" height="150">
-                                        <circle cx="70" cy="70" r="60" stroke="#061428" stroke-width="10" fill="none"/>
-                                        <circle id="progressCircle" cx="70" cy="70" r="60" stroke="#C58120"
-                                                stroke-width="10"
-                                                fill="none" stroke-dasharray="314" stroke-dashoffset="314"
-                                                stroke-linecap="round" transform="rotate(-90 70 70)"/>
-                                        <text id="progressText" x="50%" y="50%" text-anchor="middle"
-                                              alignment-baseline="middle"
-                                              font-size="18px"></text>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Tarjeta 2: Progreso de partidas -->
-                        <div class="carousel-item">
-                            <div class="card text-center p-3 shadow-sm">
-                                <h5 class="fw-bold text">Session Progress</h5>
-                                <div class="progress-container">
-                                    <div class="progress-bar">
-                                        <div class="progress-bubble bubble-prev" id="partidaAnteriorText"></div>
-                                        <div class="progress-line" id="past"></div>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-bubble bubble-current" id="partidaActualText"></div>
-                                        <div class="progress-line active" id="now"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Controles del carrusel -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#gameCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#gameCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -269,8 +227,12 @@
                         <div class="d-flex align-items-center gap-1 mb-3 p-2">
                             <h4 class="m-0 text">Your Cryptos</h4>
                         </div>
-                        <!-- Contenedor tipo carousel -->
-                        <div id="cryptosContainerWrapper" class="overflow-hidden position-relative">
+                        <div id="cryptosContainerWrapper" class="overflow-hidden position-relative" style="min-height: 200px;">
+                            <div id="loadingMessageYourCryptos" class="d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                                <span>Loading your cryptos...</span>
+                            </div>
+                            <!-- Contenedor de criptomonedas -->
                             <div id="cryptosContainer" class="d-flex align-items-center gap-3 p-2 mb-1 overflow-auto"></div>
                         </div>
                     </div>
@@ -290,7 +252,11 @@
                                 <i class="fa-solid fa-angle-right fa-xs"></i>
                             </div>
                         </div>
-                        <div class="p-3">
+                        <div id="loadingMessageTransactions" class="d-flex gap-2 mt-5">
+                            <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            <span>Loading transactions...</span>
+                        </div>
+                        <div class="p-3" style="min-height: 200px;">
                             <table class="table table-hover">
                                 <thead class="fw-semibold text-muted border-bottom pb-2 extra-small-text">
                                 <tr>
@@ -353,7 +319,7 @@
         </div>
     </div>
 </div>
-<!-- Modal para ver todas las transacciones -->
+<!-- MODAL TRANSACTIONS FULL VIEW -->
 <div class="modal fade" id="transactionsModal" tabindex="-1" aria-labelledby="transactionsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
