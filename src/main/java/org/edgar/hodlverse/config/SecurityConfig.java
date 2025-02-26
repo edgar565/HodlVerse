@@ -15,7 +15,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()// Permitir el acceso solo a usuarios autenticados para /transactions
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/highlights.html", "/infoCrypto.html", "/rankings.html", "/createGame.html", "/history/total-market-cap", "/history/total-volume", "/history/topWinners","/history/topLosers", "history/trending-coins", "/history/latest/**", "/currencies/**", "/history", "/history/**", "/users", "/oauth2/**").permitAll()
+                        .requestMatchers("/transactions").authenticated()  // Permitir el acceso solo a usuarios autenticados para `/transactions`
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
