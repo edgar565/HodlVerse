@@ -55,15 +55,19 @@ jobs:
             # 2️⃣ Recargar las variables de entorno en la sesión actual.
             source /etc/environment
 
-            # 3️⃣ Mover el archivo .war a la carpeta de despliegue de Tomcat.
-            sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
+            # 3️⃣ Crear el directorio de despliegue si no existe.
+            sudo mkdir -p /var/lib/tomcat10/webapps/ROOT
 
             # 4️⃣ Extraer el contenido del archivo .war en el directorio de despliegue de Tomcat.
-            sudo unzip -o /var/lib/tomcat10/webapps/ROOT.war -d /var/lib/tomcat10/webapps/ROOT/
+            sudo unzip -o /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war -d /var/lib/tomcat10/webapps/ROOT/
 
-            # 5️⃣ Cambiar el propietario y permisos del archivo para que Tomcat pueda acceder.
+            # 5️⃣ Mover los archivos de la carpeta WEB-INF a la raíz del directorio de despliegue.
+            sudo mv /var/lib/tomcat10/webapps/ROOT/WEB-INF/* /var/lib/tomcat10/webapps/ROOT/
+            sudo rmdir /var/lib/tomcat10/webapps/ROOT/WEB-INF
+
+            # 6️⃣ Cambiar el propietario y permisos del directorio para que Tomcat pueda acceder.
             sudo chown -R tomcat:tomcat /var/lib/tomcat10/webapps/ROOT/
             sudo chmod -R 755 /var/lib/tomcat10/webapps/ROOT/
 
-            # 6️⃣ Reiniciar el servicio Tomcat para cargar el nuevo archivo .war.
+            # 7️⃣ Reiniciar el servicio Tomcat para cargar el nuevo contenido desplegado.
             sudo systemctl restart tomcat10
