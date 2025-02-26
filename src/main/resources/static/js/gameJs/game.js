@@ -1,18 +1,5 @@
 class Game {
     constructor(difficulty, duration = 30, startDate = new Date()) {
-        // Validar difficulty
-        this.validateDifficulty(difficulty);
-
-        // Validar duration
-        if (typeof duration !== 'number' || duration <= 0) {
-            throw new Error('La duración debe ser un número positivo.');
-        }
-
-        // Validar startDate
-        if (!(startDate instanceof Date)) {
-            throw new Error('La fecha de inicio debe ser una instancia de Date.');
-        }
-
         this.difficulty = difficulty;
         this.duration = duration;
         this.startDate = startDate;

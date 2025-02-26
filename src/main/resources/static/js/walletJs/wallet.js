@@ -27,8 +27,9 @@ class Wallet {
             url: '/wallets',
             type: 'GET',
             success: (data) => {
+                console.log(data);
                 Wallet.wallets.length = 0; // Limpiar la lista antes de llenarla
-                data.forEach(w => {
+                data.wallets.forEach(w => {
                     try {
                         Wallet.validateData(w);
                         Wallet.wallets.push(new Wallet(
@@ -103,6 +104,8 @@ class Wallet {
                 contentType: 'application/json',
                 data: JSON.stringify(wallet)
             });
+
+            console.log("Billetera creada con éxito:", data);
 
             Wallet.loadWallets(); // Recargar la lista de billeteras si es necesario
 

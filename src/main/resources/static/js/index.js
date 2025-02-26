@@ -88,15 +88,6 @@ function checkPassword(password) {
     return errorMessages.join("<br>");
 }
 
-async function createWallet(){
-    try{
-        let wallet = await Wallet.createWallet();
-        return wallet;
-    } catch (error) {
-        console.error("Error al registrar el usuario:", error);
-    }
-}
-
 async function registerUser(event) {
     event.preventDefault(); // Evita que se recargue la página
 
@@ -119,14 +110,14 @@ async function registerUser(event) {
     }
 
     try {
-        let wallet = await createWallet();
+        let wallet = new Wallet(null, "defaultWallet", new Date());
         let currency = await Currency.getCurrencyById(3);
         console.log(wallet);
         console.log(currency);
         let balance = new Balance( null, 100000 ,wallet, currency);
         console.log(balance)
         // Llamada a la función para crear el usuario si todo está correcto
-        User.createUser(name, email, password, wallet);
+        await User.createUser(name, email, password, wallet);
         console.log("Usuario registrado correctamente.");
         window.document.location.href = "createGame.html";
     } catch (error) {
@@ -154,7 +145,7 @@ async function loginUser(event) {
 
         if (user) {
             console.log("✅ Usuario autenticado correctamente.");
-            window.location.href = "dashboard.html"; // Redirigir al dashboard
+            //window.location.href = "dashboard.html"; // Redirigir al dashboard
         } else {
             document.getElementById("errorMessageLogin").innerHTML = "❌ Correo o contraseña incorrectos.";
         }

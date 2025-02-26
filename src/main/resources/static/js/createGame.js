@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const customInput = document.getElementById("custom-objective");
     const startGameBtn = document.getElementById("start-game");
     const errorMessage = document.getElementById("error-message");
-
     difficultyButtons.forEach(button => {
         button.addEventListener("click", function () {
             // Elimina la clase 'active' de todos los botones
@@ -53,4 +52,20 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+    const startGameButton = document.getElementById("start-game");
+
+    startGameButton.addEventListener("click", function () {
+        const activeButton = document.querySelector(".btn-play-now.active");
+
+        if (!activeButton) {
+            console.log("No difficulty selected!");
+            return;
+        }
+
+        console.log("Active button:", activeButton.outerHTML); // Para verificar si tiene la clase active
+        const difficulty = activeButton.getAttribute("data-difficulty");
+        console.log("Difficulty:", difficulty);
+    });
+
 });
+
