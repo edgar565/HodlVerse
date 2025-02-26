@@ -15,9 +15,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/highlights.html", "/infoCrypto.html", "/rankings.html", "/history/total-market-cap", "/history/total-volume", "/history/topWinners","/history/topLosers", "history/trending-coins", "/history/latest/**", "/currencies", "/currencies/random","/history", "/history/**", "/login", "/oauth2/**", "/users", "/users/all").permitAll()
-                        .requestMatchers("/transactions").authenticated()  // Permitir el acceso solo a usuarios autenticados para `/transactions`
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll() // Permitir el acceso a todos los endpoints sin autenticación
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/dashboard.html", false)
