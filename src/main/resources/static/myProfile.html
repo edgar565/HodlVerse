@@ -247,7 +247,7 @@
         <!-- WELCOME MESSAGE -->
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
-                <h1>Welcome, <span class="text-oro" id="displayName">HodlStakers</span></h1>
+                <h1>Welcome, <span class="text-oro" id="displayName"></span></h1>
                 <button id="logout-btn" class="logout-button">Log Out</button>
 
             </div>
@@ -267,7 +267,7 @@
                                 <i class="fs-4 fa-solid fa-circle-user me-3"></i>
                                 <div>
                                     <p class="mb-0 fw-bold">Username:</p>
-                                    <p class="text-muted small mb-0" id="username">HodlStakers</p>
+                                    <p class="text-muted small mb-0" id="username"></p>
                                 </div>
                             </div>
                             <button class="btn btn-sm btn-azuloscuro text-light" data-bs-toggle="modal"
@@ -435,7 +435,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="editDisplayNameForm" onsubmit="changeName(event)">
                     <div class="mb-3">
                         <label for="newDisplayName" class="form-label">New Username</label>
                         <input type="text" class="form-control" id="newDisplayName" placeholder="Enter new username">
@@ -456,7 +456,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="editEmailForm" onsubmit="changeEmail(event)">
                     <div class="mb-3">
                         <label for="newEmail" class="form-label">New Email</label>
                         <input type="email" class="form-control" id="newEmail" placeholder="Enter new email">
@@ -478,7 +478,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="editPasswordForm" onsubmit="changePassword(event)">
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">New Password</label>
                         <input type="password" class="form-control" id="newPassword" placeholder="Enter new password">
@@ -535,6 +535,7 @@
 <script src="/js/userJs/user.js"></script>
 <script src="/js/walletJs/wallet.js"></script>
 <script src="/js/gameJs/game.js"></script>
+<script src="/js/transactionJs/transaction.js"></script>
 <script src="/js/historyJs/history.js"></script>
 <script src="/js/loadGeneral.js"></script>
 <script src="js/myProfile.js"></script>

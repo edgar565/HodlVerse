@@ -141,48 +141,29 @@ class User {
     }
 
     // 🔄 Actualizar un usuario en la API
-    static updateUser(userId, name, email, password, registrationDate, picture, callback) {
-        if (typeof userId !== 'number' || isNaN(userId)) {
+    static async updateUser(user) {
+        if (typeof user.userId !== 'number' || isNaN(user.userId)) {
             console.error('El ID del usuario debe ser un número válido.');
             return;
         }
 
         try {
-            this.validateData({
-                userId,
-                name,
-                email,
-                password,
-                registrationDate: new Date(registrationDate),
-                picture,
-                wallet: null,
-                transactions: [],
-                game: null
-            });
+            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate.toISOString(), picture: user.picture };
 
-            let updatedUser = { name, email, password, registrationDate: registrationDate.toISOString(), picture };
-            $.ajax({
-                url: `/users/${userId}`,
+            // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
+            const data = await $.ajax({
+                url: `/users/${user.userId}`,
                 type: 'PUT',
                 contentType: 'application/json',
-                data: JSON.stringify(updatedUser),
-                success: (data) => {
-                    let index = User.users.findIndex(u => u.userId === userId);
-                    if (index !== -1) {
-                        User.users[index] = new User(
-                            data.userId, data.name, data.email, data.password, new Date(data.registrationDate), data.picture,
-                            data.wallet ? new Wallet(data.wallet) : null, data.transactions.map(t => new Transaction(t)), data.game ? new Game(data.game) : null
-                        );
-                        console.log('Usuario actualizado:', User.users[index]);
-                    }
-                    if (callback) callback(data);
-                },
-                error: (error) => {
-                    console.error('Error al actualizar el usuario:', error);
-                }
+                data: JSON.stringify(updatedUser)
             });
+
+            console.log('Usuario creado:', data);
+            return data; // Retornar la respuesta del servidor
+
         } catch (error) {
-            console.error('Datos inválidos para actualizar el usuario:', error.message);
+            console.error('Error al crear el usuario:', error.message);
+            return null; // Retorna null en caso de error
         }
     }
 

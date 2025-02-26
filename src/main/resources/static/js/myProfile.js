@@ -54,22 +54,50 @@ document.addEventListener("DOMContentLoaded", async function () {
     setTimeout(animateBalance);
 });
 
-async function updateUser(user) {
+async function getTransactions(userId) {
     try {
-        const userId = await User.updateUser(user.userId, user.name, user.email, user.password, user.token, user.registrationDate, user.picture);
+        console.log(userId);
+        const totalBalance = await Transaction.getTransactionsByUserId(userId);
+        return totalBalance
     } catch (error) {
         console.error('❌ Error al obtener el usuario:', error);
         return null; // Devuelve un array vacío en caso de error
     }
 }
 
+async function updateUser(user) {
+    try {
+        const userId = await User.updateUser(user);
+        return userId;
+    } catch (error) {
+        console.error('❌ Error al obtener el usuario:', error);
+        return null; // Devuelve un array vacío en caso de error
+    }
+}
 
-
-async function changeName(){
+async function changeName(event){
+    event.preventDefault();
     let user = await getUser();
+    let transactions = await getTransactions(user.userId);
     let newName = document.getElementById("newDisplayName").value;
-    let updateUser = new User(user.userId, newName, user.email, user.password, user.token, user.registrationDate, user.picture);
-    updateUser(updateUser);
+    let newUser = new User(user.userId, newName, user.email, user.password, user.registrationDate, user.picture, user.wallet, transactions, );
+    let updatedUser = await updateUser(newUser);
+}
 
+async function changeEmail(event){
+    event.preventDefault();
+    let user = await getUser();
+    let transactions = await getTransactions(user.userId);
+    let newEmail = document.getElementById("newDisplayName").value;
+    let newUser = new User(user.userId, user.name, newEmail, user.password, user.registrationDate, user.picture, user.wallet, transactions);
+    let updatedEmail = await updateUser(newUser);
+}
 
+async function changePassword(event){
+    event.preventDefault();
+    let user = await getUser();
+    let transactions = await getTransactions(user.userId);
+    let newPassword = document.getElementById("newDisplayName").value;
+    let newUser = new User(user.userId, user.name, user.email, newPassword, user.registrationDate, user.picture, user.wallet, transactions);
+    let updatedPassword = await updateUser(newUser);
 }
