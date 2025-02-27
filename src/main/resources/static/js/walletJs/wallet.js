@@ -1,4 +1,11 @@
 class Wallet {
+    /**
+     * Constructor de la clase Wallet.
+     * @param {number} walletId - El identificador único de la billetera.
+     * @param {string} walletName - El nombre de la billetera.
+     * @param {Date} creationDate - La fecha de creación de la billetera.
+     * @param {User} user - El usuario asociado a la billetera.
+     */
     constructor(walletId, walletName, creationDate, user) {
         this.walletId = walletId;
         this.walletName = walletName;
@@ -6,7 +13,12 @@ class Wallet {
         this.user = user;
     }
 
-     static validateData(walletData) {
+    /**
+     * Valida los datos de la billetera.
+     * @param {Object} walletData - Los datos de la billetera a validar.
+     * @throws {Error} Si los datos no son válidos.
+     */
+    static validateData(walletData) {
         if (typeof walletData.walletName !== 'string' || walletData.walletName.trim() === '') {
             throw new Error('walletName debe ser una cadena no vacía.');
         }
@@ -20,9 +32,13 @@ class Wallet {
         }
     }
 
+    // Lista donde se almacenan todas las billeteras
     static wallets = [];
 
-    // Cargar todas las billeteras desde la API
+    /**
+     * Cargar todas las billeteras desde la API.
+     * @param {Function} callback - Función a ejecutar después de cargar las billeteras.
+     */
     static loadWallets(callback) {
         $.ajax({
             url: '/wallets',
@@ -56,7 +72,11 @@ class Wallet {
         });
     }
 
-    // Obtener una billetera por ID
+    /**
+     * Obtener una billetera por su ID.
+     * @param {number} id - El identificador de la billetera.
+     * @param {Function} callback - Función a ejecutar después de obtener la billetera.
+     */
     static getWalletById(id, callback) {
         if (typeof id !== 'number' || isNaN(id)) {
             console.error('El ID de la billetera debe ser un número válido.');
@@ -69,7 +89,7 @@ class Wallet {
                 try {
                     Wallet.validateData(data);
                     if (callback) callback(new Wallet(
-                        data.walletId, data.walletName, new Date(data.creationDate), data.walletId
+                        data.walletId, data.walletName, new Date(data.creationDate), data.user
                     ));
                 } catch (error) {
                     console.error(`Error al validar la billetera con ID ${id}:`, error.message);
@@ -81,6 +101,11 @@ class Wallet {
         });
     }
 
+    /**
+     * Obtener las monedas de una billetera por su ID.
+     * @param {number} id - El identificador de la billetera.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con las monedas de la billetera o null en caso de error.
+     */
     static async getWalletsCurrenciesById(id) {
         try {
             return await $.ajax({
@@ -88,16 +113,20 @@ class Wallet {
                 type: 'GET'
             });
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            console.error('Error al obtener las monedas de la billetera:', error);
             return null;
         }
     }
 
-    // Crear una nueva billetera
+    /**
+     * Crear una nueva billetera.
+     * @param {User} user - El usuario asociado a la nueva billetera.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos de la nueva billetera o null en caso de error.
+     */
     static async createWallet(user) {
         console.log("userId", user);
         try {
-            // Crear el objeto del nuevo usuario
+            // Crear el objeto de la nueva billetera
             let wallet = {
                 walletId: null,
                 walletName: "Mi billetera",
@@ -114,16 +143,19 @@ class Wallet {
             });
 
             console.log("Billetera creada con éxito:", data);
-
-
             return data; // Retornar la respuesta del servidor
         } catch (error) {
-            console.error('Error al crear el usuario:', error.message);
+            console.error('Error al crear la billetera:', error.message);
             return null; // Retorna null en caso de error
         }
     }
 
-    // Actualizar una billetera existente
+    /**
+     * Actualizar una billetera existente.
+     * @param {number} id - El identificador de la billetera.
+     * @param {Object} updatedData - Los datos actualizados de la billetera.
+     * @param {Function} callback - Función a ejecutar después de actualizar la billetera.
+     */
     static updateWallet(id, updatedData, callback) {
         if (typeof id !== 'number' || isNaN(id)) {
             console.error('El ID de la billetera debe ser un número válido.');
@@ -155,7 +187,11 @@ class Wallet {
         }
     }
 
-    // Eliminar una billetera
+    /**
+     * Eliminar una billetera.
+     * @param {number} id - El identificador de la billetera.
+     * @param {Function} callback - Función a ejecutar después de eliminar la billetera.
+     */
     static deleteWallet(id, callback) {
         if (typeof id !== 'number' || isNaN(id)) {
             console.error('El ID de la billetera debe ser un número válido.');
@@ -175,7 +211,11 @@ class Wallet {
         });
     }
 
-    // Obtener el saldo total de una billetera de un usuario
+    /**
+     * Obtener el saldo total de una billetera de un usuario.
+     * @param {number} userId - El identificador del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con el saldo total de la billetera o null en caso de error.
+     */
     static async getWalletTotalBalance(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -187,12 +227,17 @@ class Wallet {
                 type: 'GET'
             });
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            console.error('Error al obtener el saldo total de la billetera:', error);
             return null; // Retorna null en caso de error
         }
     }
 
-    // *** NUEVA FUNCIÓN PARA OBTENER EL BALANCE HISTÓRICO DE UN USUARIO EN UN DÍA ESPECÍFICO ***
+    /**
+     * Obtener el balance histórico de un usuario en una fecha específica.
+     * @param {number} userId - El identificador del usuario.
+     * @param {Date} date - La fecha específica.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con el balance histórico o null en caso de error.
+     */
     static async getUserBalanceOnSpecificDate(userId, date) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -209,23 +254,27 @@ class Wallet {
                 type: 'GET'
             });
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            console.error('Error al obtener el balance histórico:', error);
             return null; // Retorna null en caso de error
         }
     }
 
+    /**
+     * Obtener la billetera de un usuario por su ID.
+     * @param {number} userId - El identificador del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con la billetera del usuario o null en caso de error.
+     */
     static async getWalletByUserId(userId) {
         try {
             return await $.ajax({
                 url: `/wallets/user/${userId}`,
                 type: 'GET'
             });
-
         } catch (error) {
             console.error(`❌ Error al obtener la billetera del usuario con ID ${userId}:`, error);
             return null;
         }
     }
-
 }
- window.Wallet = Wallet;
+
+window.Wallet = Wallet;

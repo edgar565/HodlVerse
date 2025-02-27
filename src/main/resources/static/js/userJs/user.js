@@ -1,4 +1,14 @@
 class User {
+    /**
+     * Constructor de la clase User.
+     * @param {number} userId - El identificador único del usuario.
+     * @param {string} name - El nombre del usuario.
+     * @param {string} email - El correo electrónico del usuario.
+     * @param {string} password - La contraseña del usuario.
+     * @param {Date} registrationDate - La fecha de registro del usuario.
+     * @param {string} picture - La URL de la imagen del usuario.
+     * @param {string} token - El token de autenticación del usuario.
+     */
     constructor(userId, name, email, password, registrationDate, picture, token) {
         this.userId = Number(userId);
         this.name = name;
@@ -9,6 +19,11 @@ class User {
         this.token = token;
     }
 
+    /**
+     * Valida los datos del usuario.
+     * @param {Object} userData - Los datos del usuario a validar.
+     * @throws {Error} Si los datos no son válidos.
+     */
     static validateData(userData) {
         if (!userData || typeof userData !== 'object') {
             throw new Error('Datos del usuario inválidos.');
@@ -36,10 +51,20 @@ class User {
         }
     }
 
+    /**
+     * Verifica si una dirección de correo electrónico es válida.
+     * @param {string} email - La dirección de correo electrónico a validar.
+     * @returns {boolean} True si la dirección de correo electrónico es válida, false en caso contrario.
+     */
     static isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
+    /**
+     * Verifica si una URL es válida.
+     * @param {string} url - La URL a validar.
+     * @returns {boolean} True si la URL es válida, false en caso contrario.
+     */
     static isValidUrl(url) {
         try {
             new URL(url);
@@ -52,7 +77,10 @@ class User {
     // Lista donde se almacenan todos los usuarios
     static users = [];
 
-    // 🔄 Cargar todos los usuarios desde la API (limpia la lista antes)
+    /**
+     * Carga todos los usuarios desde la API.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos de los usuarios o null en caso de error.
+     */
     static async loadUsers() {
         try {
             const response = await $.ajax({
@@ -61,11 +89,16 @@ class User {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            console.error('Error al obtener los usuarios:', error);
             return null;
         }
     }
 
+    /**
+     * Obtiene un usuario por su ID.
+     * @param {number} userId - El identificador del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos del usuario o null en caso de error.
+     */
     static async getUserById(userId) {
         if (isNaN(Number(userId))) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -76,14 +109,17 @@ class User {
                 url: `/users/${userId}`,
                 type: 'GET'
             });
-            return response; // Retorna el ID del usuario autenticado
+            return response; // Retorna los datos del usuario
         } catch (error) {
             console.error('Error al obtener el usuario:', error);
             return null;
         }
     }
 
-    // 🔍 Obtener el ID del usuario autenticado desde la API
+    /**
+     * Obtiene el ID del usuario autenticado desde la API.
+     * @returns {Promise<number|null>} Una promesa que se resuelve con el ID del usuario autenticado o null en caso de error.
+     */
     static async getUserId() {
         try {
             const response = await $.ajax({
@@ -100,7 +136,13 @@ class User {
         }
     }
 
-    // ➕ Crear un nuevo usuario en la API
+    /**
+     * Crea un nuevo usuario en la API.
+     * @param {string} name - El nombre del nuevo usuario.
+     * @param {string} email - El correo electrónico del nuevo usuario.
+     * @param {string} password - La contraseña del nuevo usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos del nuevo usuario o null en caso de error.
+     */
     static async createUser(name, email, password) {
         try {
             // Crear el objeto del nuevo usuario
@@ -130,7 +172,11 @@ class User {
         }
     }
 
-    // 🔄 Actualizar un usuario en la API
+    /**
+     * Actualiza un usuario en la API.
+     * @param {Object} user - Los datos del usuario a actualizar.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos del usuario actualizado o null en caso de error.
+     */
     static async updateUser(user) {
         if (typeof user.userId !== 'number' || isNaN(user.userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -138,7 +184,14 @@ class User {
         }
 
         try {
-            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate, picture: user.picture, token: user.token};
+            let updatedUser = {
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                registrationDate: user.registrationDate,
+                picture: user.picture,
+                token: user.token
+            };
 
             // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
             const data = await $.ajax({
@@ -148,15 +201,20 @@ class User {
                 data: JSON.stringify(updatedUser)
             });
 
-            console.log('Usuario creado:', data);
+            console.log('Usuario actualizado:', data);
             return data; // Retornar la respuesta del servidor
 
         } catch (error) {
-            console.error('Error al crear el usuario:', error.message);
+            console.error('Error al actualizar el usuario:', error.message);
             return null; // Retorna null en caso de error
         }
     }
 
+    /**
+     * Elimina un usuario de la API.
+     * @param {number} userId - El identificador del usuario.
+     * @param {Function} callback - Función a ejecutar después de eliminar el usuario.
+     */
     static deleteUser(userId, callback) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');

@@ -1,4 +1,12 @@
 class Result {
+    /**
+     * Constructor de la clase Result.
+     * @param {number} resultId - El identificador único del resultado.
+     * @param {string} ending - El resultado final del juego ('BANKRUPTCY', 'OUT_OF_TIME', 'GOAL_REACHED').
+     * @param {number} profit - El porcentaje de beneficios.
+     * @param {Game} game - El objeto Game asociado al resultado.
+     * @param {Date} resultDate - La fecha del resultado.
+     */
     constructor(resultId, ending, profit, game, resultDate) {
         // Validar cada propiedad antes de inicializar el objeto
         this.validateData({ resultId, ending, profit, game, resultDate });
@@ -10,7 +18,11 @@ class Result {
         this.resultDate = resultDate;  // Fecha del resultado (instancia de Date)
     }
 
-    // Validar los datos del resultado
+    /**
+     * Valida los datos del resultado.
+     * @param {Object} resultData - Los datos del resultado a validar.
+     * @throws {Error} Si los datos no son válidos.
+     */
     static validateData(resultData) {
         // Validar resultId
         if (typeof resultData.resultId !== 'number' || isNaN(resultData.resultId)) {
@@ -42,7 +54,10 @@ class Result {
     // Lista donde se almacenan todos los resultados
     static results = [];
 
-    // Cargar todos los resultados desde la API
+    /**
+     * Carga todos los resultados desde la API.
+     * @param {Function} callback - Función a ejecutar después de cargar los resultados.
+     */
     static loadResults(callback) {
         $.ajax({
             url: '/results',
@@ -69,7 +84,11 @@ class Result {
         });
     }
 
-    // Obtener un resultado por ID
+    /**
+     * Obtiene un resultado por su ID.
+     * @param {number} id - El identificador del resultado.
+     * @param {Function} callback - Función a ejecutar después de obtener el resultado.
+     */
     static getResultById(id, callback) {
         if (typeof id !== 'number' || isNaN(id)) {
             console.error('El ID del resultado debe ser un número válido.');
@@ -96,7 +115,11 @@ class Result {
         });
     }
 
-    // Obtener un resultado por el ID del juego
+    /**
+     * Obtiene un resultado por el ID del juego.
+     * @param {number} gameId - El identificador del juego.
+     * @param {Function} callback - Función a ejecutar después de obtener el resultado.
+     */
     static getResultByGameId(gameId, callback) {
         if (typeof gameId !== 'number' || isNaN(gameId)) {
             console.error('El ID del juego debe ser un número válido.');
@@ -123,7 +146,11 @@ class Result {
         });
     }
 
-    // Crear un nuevo resultado
+    /**
+     * Crea un nuevo resultado.
+     * @param {Object} resultData - Los datos del nuevo resultado.
+     * @param {Function} callback - Función a ejecutar después de crear el resultado.
+     */
     static createResult(resultData, callback) {
         try {
             this.validateData(resultData); // Validar los datos antes de enviarlos
@@ -146,7 +173,11 @@ class Result {
         }
     }
 
-    // Eliminar un resultado
+    /**
+     * Elimina un resultado.
+     * @param {number} id - El identificador del resultado.
+     * @param {Function} callback - Función a ejecutar después de eliminar el resultado.
+     */
     static deleteResult(id, callback) {
         if (typeof id !== 'number' || isNaN(id)) {
             console.error('El ID del resultado debe ser un número válido.');

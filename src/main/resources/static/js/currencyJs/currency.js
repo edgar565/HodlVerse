@@ -1,4 +1,11 @@
 class Currency {
+    /**
+     * Constructor de la clase Currency.
+     * @param {number} currencyId - El identificador único de la moneda.
+     * @param {string} name - El nombre de la moneda.
+     * @param {string} ticker - El símbolo de la moneda.
+     * @param {string} image - La URL de la imagen de la moneda.
+     */
     constructor(currencyId, name, ticker, image) {
         this.currencyId = currencyId;
         this.name = name;
@@ -6,28 +13,38 @@ class Currency {
         this.image = image;
     }
 
+    /**
+     * Valida los datos de la moneda.
+     * @param {Object} currencyData - Los datos de la moneda a validar.
+     * @throws {Error} Si los datos no son válidos.
+     */
     static validateCurrencyData(currencyData) {
-        // Validar currencyId
+        // Validar que currencyId sea un número válido
         if (typeof currencyData.currencyId !== 'number' || isNaN(currencyData.currencyId)) {
             throw new Error('currencyId debe ser un número válido.');
         }
 
-        // Validar name
+        // Validar que name sea una cadena no vacía
         if (typeof currencyData.name !== 'string' || currencyData.name.trim() === '') {
             throw new Error('name debe ser una cadena no vacía.');
         }
 
-        // Validar ticker
+        // Validar que ticker sea una cadena no vacía
         if (typeof currencyData.ticker !== 'string' || currencyData.ticker.trim() === '') {
             throw new Error('ticker debe ser una cadena no vacía.');
         }
 
-        // Validar image (debe ser una URL válida)
+        // Validar que image sea una URL válida
         if (typeof currencyData.image !== 'string' || !Currency.isValidUrl(currencyData.image)) {
             throw new Error('image debe ser una URL válida.');
         }
     }
 
+    /**
+     * Verifica si una URL es válida.
+     * @param {string} url - La URL a verificar.
+     * @returns {boolean} True si la URL es válida, false en caso contrario.
+     */
     static isValidUrl(url) {
         try {
             new URL(url); // Intenta crear un objeto URL
@@ -37,6 +54,11 @@ class Currency {
         }
     }
 
+    /**
+     * Obtiene una moneda por su ticker desde la API.
+     * @param {string} ticker - El símbolo de la moneda.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos de la moneda o null en caso de error.
+     */
     static async getCurrencyByTicker(ticker) {
         try {
             return await $.ajax({
@@ -49,10 +71,16 @@ class Currency {
         }
     }
 
-    // Lista donde se almacenan todas las monedas
+    /**
+     * Lista donde se almacenan todas las monedas.
+     * @type {Currency[]}
+     */
     static currencies = [];
 
-    // 🔄 Cargar todas las monedas desde la API (limpia la lista antes)
+    /**
+     * Carga todas las monedas desde la API y limpia la lista antes.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos de las monedas o null en caso de error.
+     */
     static async loadCurrencies() {
         try {
             const response = await $.ajax({
@@ -61,12 +89,16 @@ class Currency {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el ID del usuario:', error);
+            console.error('Error al obtener las monedas:', error);
             return null; // Retorna null en caso de error
         }
     }
 
-    // 🔍 Obtener una moneda por su ID desde la API
+    /**
+     * Obtiene una moneda por su ID desde la API.
+     * @param {number} currencyId - El identificador de la moneda.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos de la moneda o null en caso de error.
+     */
     static async getCurrencyById(currencyId) {
         try {
             const response = await $.ajax({
@@ -75,12 +107,18 @@ class Currency {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el ID del usuario:', error);
+            console.error(`Error al obtener la moneda con ID ${currencyId}:`, error);
             return null; // Retorna null en caso de error
         }
     }
 
-    // ➕ Crear una nueva moneda en la API
+    /**
+     * Crea una nueva moneda en la API.
+     * @param {string} name - El nombre de la moneda.
+     * @param {string} ticker - El símbolo de la moneda.
+     * @param {string} image - La URL de la imagen de la moneda.
+     * @param {Function} callback - Función a ejecutar después de crear la moneda.
+     */
     static createCurrency(name, ticker, image, callback) {
         let newCurrency = { name, ticker, image };
 
@@ -111,7 +149,14 @@ class Currency {
         }
     }
 
-    // 🔄 Actualizar una moneda en la API
+    /**
+     * Actualiza una moneda en la API.
+     * @param {number} currencyId - El identificador de la moneda.
+     * @param {string} name - El nuevo nombre de la moneda.
+     * @param {string} ticker - El nuevo símbolo de la moneda.
+     * @param {string} image - La nueva URL de la imagen de la moneda.
+     * @param {Function} callback - Función a ejecutar después de actualizar la moneda.
+     */
     static updateCurrency(currencyId, name, ticker, image, callback) {
         let updatedCurrency = { name, ticker, image };
 
@@ -144,7 +189,11 @@ class Currency {
         }
     }
 
-    // ❌ Eliminar una moneda de la API
+    /**
+     * Elimina una moneda de la API.
+     * @param {number} currencyId - El identificador de la moneda.
+     * @param {Function} callback - Función a ejecutar después de eliminar la moneda.
+     */
     static deleteCurrency(currencyId, callback) {
         $.ajax({
             url: `/currencies/${currencyId}`,
@@ -160,7 +209,10 @@ class Currency {
         });
     }
 
-    // 🔊 Obtener las monedas recomendadas
+    /**
+     * Obtiene las monedas recomendadas desde la API.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con las monedas recomendadas o null en caso de error.
+     */
     static async getRecommendations() {
         try {
             const response = await $.ajax({
@@ -169,12 +221,15 @@ class Currency {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            console.error('Error al obtener las monedas recomendadas:', error);
             return null; // Retorna null en caso de error
         }
     }
 
-    // 🔊 Obtener las monedas mas vistas
+    /**
+     * Obtiene las monedas más vistas desde la API.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con las monedas más vistas o null en caso de error.
+     */
     static async getMostViewed() {
         try {
             const response = await $.ajax({
@@ -183,7 +238,7 @@ class Currency {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el usuario:', error);
+            console.error('Error al obtener las monedas más vistas:', error);
             return null; // Retorna null en caso de error
         }
     }

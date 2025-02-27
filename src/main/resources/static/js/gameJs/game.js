@@ -1,25 +1,37 @@
 class Game {
+    /**
+     * Constructor de la clase Game.
+     * @param {string} difficulty - La dificultad del juego ('BEGINNER', 'EXPERIENCED', 'PERSONALIZED').
+     * @param {Object} user - El usuario que está jugando.
+     */
     constructor(difficulty, user) {
         this.difficulty = difficulty;
-        this.duration = 30;
-        this.startDate = new Date();
-        this.endDate = this.calculateEndDate();
-        this.initialCredit = 100000;
-        this.currentCredit = this.initialCredit;
-        this.objective = this.calculateObjective();
-        this.gameId = null;
-        this.user = user;
+        this.duration = 30; // Duración del juego en días
+        this.startDate = new Date(); // Fecha de inicio del juego
+        this.endDate = this.calculateEndDate(); // Fecha de finalización del juego
+        this.initialCredit = 100000; // Crédito inicial del jugador
+        this.currentCredit = this.initialCredit; // Crédito actual del jugador
+        this.objective = this.calculateObjective(); // Objetivo del juego basado en la dificultad
+        this.gameId = null; // ID del juego (se asigna al iniciar el juego)
+        this.user = user; // Usuario que está jugando
     }
 
-    // Validar difficulty
+    /**
+     * Valida la dificultad del juego.
+     * @param {string} difficulty - La dificultad a validar.
+     * @throws {Error} Si la dificultad no es válida.
+     */
     validateDifficulty(difficulty) {
         const validDifficulties = ['BEGINNER', 'EXPERIENCED', 'PERSONALIZED'];
         if (!validDifficulties.includes(difficulty)) {
-            throw new Error('Dificultad no válida. Las opciones válidas son: beginner, experienced, personalized.');
+            throw new Error('Dificultad no válida. Las opciones válidas son: BEGINNER, EXPERIENCED, PERSONALIZED.');
         }
     }
 
-    // Calcular la fecha de finalización basado en la duración
+    /**
+     * Calcula la fecha de finalización del juego basado en la duración.
+     * @returns {Date} La fecha de finalización del juego.
+     */
     calculateEndDate() {
         let endDate = new Date(this.startDate);
         endDate.setDate(this.startDate.getDate() + this.duration);
@@ -27,7 +39,10 @@ class Game {
         return endDate;
     }
 
-    // Calcular el objetivo basado en la dificultad
+    /**
+     * Calcula el objetivo del juego basado en la dificultad.
+     * @returns {number} El objetivo del juego.
+     */
     calculateObjective() {
         const objectiveMultipliers = {
             BEGINNER: 0.1,
@@ -42,7 +57,9 @@ class Game {
         return this.initialCredit * objectiveMultipliers[this.difficulty];
     }
 
-    // Comenzar un juego enviando datos al backend
+    /**
+     * Comienza un juego enviando datos al backend.
+     */
     async startGame() {
         if (this.gameId) {
             console.warn('El juego ya ha comenzado.');
@@ -57,7 +74,7 @@ class Game {
             start_date: this.startDate.toISOString(),
             end_date: this.endDate.toISOString(),
             user: {
-                userId: this.user.userId // ID of the origin currency
+                userId: this.user.userId // ID del usuario
             },
         };
         console.log("gameData", gameData);
@@ -88,12 +105,14 @@ class Game {
                 console.error('Error al comenzar el juego:', errorMessage);
             }
         });
+
+        // Obtener la moneda y crear la billetera y el balance inicial
         let currency = await Currency.getCurrencyByTicker("usdt");
         console.log("currency", currency);
         let wallet = await Wallet.createWallet(this.user);
         console.log("wallet", wallet);
         let balance = new Balance(null, 100000, wallet, currency);
-        console.log("balance", balance)
+        console.log("balance", balance);
         let balanceData = {
             walletAmount: balance.walletAmount,
             wallet: balance.wallet.walletId,
@@ -104,7 +123,9 @@ class Game {
         window.location.href = "dashboard.html";
     }
 
-    // Obtener el estado del juego desde el backend
+    /**
+     * Obtiene el estado del juego desde el backend.
+     */
     getGameStatus() {
         if (!this.gameId) {
             console.log('El juego no ha comenzado aún.');
@@ -123,7 +144,10 @@ class Game {
         });
     }
 
-    // Realizar una transacción dentro del juego
+    /**
+     * Realiza una transacción dentro del juego.
+     * @param {Object} transactionData - Los datos de la transacción.
+     */
     makeTransaction(transactionData) {
         if (!this.gameId) {
             console.log('El juego no ha comenzado aún.');
@@ -148,7 +172,11 @@ class Game {
         });
     }
 
-    // Validar los datos de la transacción
+    /**
+     * Valida los datos de la transacción.
+     * @param {Object} transactionData - Los datos de la transacción a validar.
+     * @throws {Error} Si los datos no son válidos.
+     */
     validateTransactionData(transactionData) {
         if (typeof transactionData.transactionType !== 'string' || !['buy', 'sell', 'exchange'].includes(transactionData.transactionType)) {
             throw new Error('Tipo de transacción no válido. Debe ser "buy", "sell" o "exchange".');
@@ -175,7 +203,11 @@ class Game {
         }
     }
 
-    // Actualizar el crédito del jugador
+    /**
+     * Actualiza el crédito del jugador.
+     * @param {number} amount - El monto a actualizar.
+     * @throws {Error} Si el monto no es un número válido.
+     */
     updateCredit(amount) {
         if (typeof amount !== 'number' || isNaN(amount)) {
             throw new Error('El monto a actualizar debe ser un número válido.');
@@ -185,7 +217,10 @@ class Game {
         console.log('Nuevo crédito:', this.currentCredit);
     }
 
-    // Verificar si el objetivo ha sido alcanzado
+    /**
+     * Verifica si el objetivo ha sido alcanzado.
+     * @returns {boolean} True si el objetivo ha sido alcanzado, false en caso contrario.
+     */
     checkObjective() {
         if (this.currentCredit < 0) {
             console.log('Crédito insuficiente para continuar.');
@@ -197,7 +232,10 @@ class Game {
         return hasReachedGoal;
     }
 
-    // Verificar si el juego ha terminado
+    /**
+     * Verifica si el juego ha terminado.
+     * @returns {Object} Un objeto con la propiedad 'lost' y 'reason' si el juego ha terminado.
+     */
     checkGameOver() {
         const now = new Date();
 
@@ -215,7 +253,11 @@ class Game {
         return { lost: false, reason: null };
     }
 
-    // Obtener el juego activo de un usuario por su ID
+    /**
+     * Obtiene el juego activo de un usuario por su ID.
+     * @param {number} userId - El ID del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos del juego activo o null en caso de error.
+     */
     static async getActiveGameByUserId(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -228,12 +270,16 @@ class Game {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el ID del usuario:', error);
+            console.error('Error al obtener el juego activo del usuario:', error);
             return null;
         }
     }
 
-    // Obtener el último juego terminado de un usuario por su ID
+    /**
+     * Obtiene el último juego terminado de un usuario por su ID.
+     * @param {number} userId - El ID del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos del último juego terminado o null en caso de error.
+     */
     static async getLastFinishedGameByUserId(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -246,11 +292,16 @@ class Game {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el ID del usuario:', error);
+            console.error('Error al obtener el último juego terminado del usuario:', error);
             return null;
         }
     }
 
+    /**
+     * Obtiene todos los juegos de un usuario por su ID.
+     * @param {number} userId - El ID del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con los datos de los juegos del usuario o null en caso de error.
+     */
     static async getGames(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -263,7 +314,7 @@ class Game {
             });
             return response;
         } catch (error) {
-            console.error('Error al obtener el ID del usuario:', error);
+            console.error('Error al obtener los juegos del usuario:', error);
             return null;
         }
     }

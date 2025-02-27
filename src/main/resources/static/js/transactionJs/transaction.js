@@ -1,4 +1,17 @@
 class Transaction {
+    /**
+     * Constructor de la clase Transaction.
+     * @param {number} id - El identificador único de la transacción.
+     * @param {string} transactionType - El tipo de transacción ('buy', 'sell', 'exchange').
+     * @param {number} originTransactionAmount - El monto de la transacción en la moneda de origen.
+     * @param {number} destinationTransactionAmount - El monto de la transacción en la moneda de destino.
+     * @param {number} originUnitPrice - El precio unitario de la moneda de origen.
+     * @param {number} destinationUnitPrice - El precio unitario de la moneda de destino.
+     * @param {Date} transactionDate - La fecha de la transacción.
+     * @param {User} user - El usuario que realiza la transacción.
+     * @param {Currency} originCurrency - La moneda de origen.
+     * @param {Currency} destinationCurrency - La moneda de destino.
+     */
     constructor(id, transactionType, originTransactionAmount, destinationTransactionAmount, originUnitPrice, destinationUnitPrice, transactionDate, user, originCurrency, destinationCurrency) {
         this.id = id || null;
         this.transactionType = transactionType;
@@ -12,12 +25,21 @@ class Transaction {
         this.destinationCurrency = destinationCurrency;
     }
 
+    /**
+     * Valida los datos de la transacción.
+     * @param {Object} transactionData - Los datos de la transacción a validar.
+     * @throws {Error} Si los datos no son válidos.
+     */
     static validateData(transactionData) {
         if (!transactionData.user) {
             throw new Error('El campo user debe ser una instancia válida de la clase User.');
         }
     }
 
+    /**
+     * Crea una nueva transacción.
+     * @param {Object} transactionData - Los datos de la nueva transacción.
+     */
     static async createTransaction(transactionData) {
         try {
             // Validar los datos de la transacción
@@ -31,6 +53,7 @@ class Transaction {
             let userOriginBalancePriceTotal = userOriginBalanceAmount * userOriginBalancePrice;
             console.log(`💰 Saldo en la moneda origen : ${userOriginBalancePriceTotal}`);
             console.log("origin price", transactionData.originUnitPrice, transactionData.originTransactionAmount, "destination price", transactionData.destinationUnitPrice, transactionData.destinationTransactionAmount);
+
             // Calcular el precio de la transacción en USD
             const originPrice = (transactionData.originTransactionAmount * transactionData.originUnitPrice).toFixed(2);
             const destinationPrice = (transactionData.destinationTransactionAmount * transactionData.destinationUnitPrice).toFixed(2);
@@ -41,7 +64,6 @@ class Transaction {
             console.log("✅ Transacción validada correctamente, procediendo...");
             const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
 
             const response = await $.ajax({
                 url: '/transactions',
@@ -57,12 +79,12 @@ class Transaction {
                 },
                 error: function (xhr, status, error) {
                     console.error("❌ Error al crear la transacción:", xhr);
-                    console.error("❌ STATUS / ERRoR:", status, error);
+                    console.error("❌ STATUS / ERROR:", status, error);
                 }
             });
 
             try {
-                // 7️⃣ Actualizar el balance de la moneda de origen
+                // Actualizar el balance de la moneda de origen
                 let originBalanceArray = await Balance.getBalancesByCurrency(transactionData.originCurrency.currencyId);
                 console.log("originBalanceArray", originBalanceArray);
 
@@ -88,7 +110,6 @@ class Transaction {
                         await Balance.updateBalance(originBalance.balanceId, updatedOriginBalance, (data) => {
                             console.log("✅ Balance de moneda origen actualizado:", data);
                         });
-
                     }
                 } else {
                     console.log("⚠️ No existe balance previo, creando uno nuevo...");
@@ -111,11 +132,10 @@ class Transaction {
                         await Balance.createBalance(newOriginBalance, (createdBalance) => {
                             console.log("✅ Nuevo balance de moneda origen creado:", createdBalance);
                         });
-
                     }
                 }
 
-                // 8️⃣ Actualizar el balance de la moneda de destino
+                // Actualizar el balance de la moneda de destino
                 let destinationBalanceArray = await Balance.getBalancesByCurrency(transactionData.destinationCurrency.currencyId);
                 console.log("destinationBalanceArray", destinationBalanceArray);
 
@@ -167,11 +187,17 @@ class Transaction {
             } finally {
                 console.log("🔄 Proceso de transacción terminado.");
             }
-        } catch {
-
+        } catch (error) {
+            console.error('Datos inválidos para crear la transacción:', error.message);
         }
     }
 
+    /**
+     * Actualiza una transacción existente.
+     * @param {number} id - El identificador de la transacción.
+     * @param {Object} updatedData - Los datos actualizados de la transacción.
+     * @param {Function} callback - Función a ejecutar después de actualizar la transacción.
+     */
     static updateTransaction(id, updatedData, callback) {
         if (!updatedData.user || !updatedData.user.id) {
             console.error('Usuario no especificado para la actualización de la transacción.');
@@ -201,9 +227,13 @@ class Transaction {
         }
     }
 
+    // Lista donde se almacenan todas las transacciones
     static transactions = [];
 
-    // Cargar todas las transacciones desde la API
+    /**
+     * Carga todas las transacciones desde la API.
+     * @param {Function} callback - Función a ejecutar después de cargar las transacciones.
+     */
     static loadTransactions(callback) {
         $.ajax({
             url: '/transactions',
@@ -231,7 +261,11 @@ class Transaction {
         });
     }
 
-    // Obtener una transacción por ID
+    /**
+     * Obtiene una transacción por su ID.
+     * @param {number} id - El identificador de la transacción.
+     * @param {Function} callback - Función a ejecutar después de obtener la transacción.
+     */
     static getTransactionById(id, callback) {
         if (typeof id !== 'number' || isNaN(id)) {
             console.error('El ID de la transacción debe ser un número válido.');
@@ -259,7 +293,10 @@ class Transaction {
         });
     }
 
-    // Eliminar una transacción
+    /**
+     * Elimina una transacción.
+     * @param {number} id - El identificador de la transacción.
+     */
     static async deleteTransaction(id) {
         try {
             const transaction = await this.getTransactionById(id);
@@ -291,7 +328,11 @@ class Transaction {
         }
     }
 
-    // Obtener las transacciones de un usuario por su ID
+    /**
+     * Obtiene las transacciones de un usuario por su ID.
+     * @param {number} userId - El identificador del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con las transacciones del usuario o null en caso de error.
+     */
     static async getTransactionsByUserId(userId) {
         try {
             const response = await $.ajax({
@@ -305,7 +346,11 @@ class Transaction {
         }
     }
 
-    // Obtener las últimas 3 transacciones de un usuario por su ID
+    /**
+     * Obtiene las últimas 3 transacciones de un usuario por su ID.
+     * @param {number} userId - El identificador del usuario.
+     * @returns {Promise<Object|null>} Una promesa que se resuelve con las últimas 3 transacciones del usuario o null en caso de error.
+     */
     static async getLatestTransactionsByUserId(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
@@ -323,4 +368,5 @@ class Transaction {
         }
     }
 }
+
 window.Transaction = Transaction;

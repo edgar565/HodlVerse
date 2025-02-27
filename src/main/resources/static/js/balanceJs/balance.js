@@ -1,4 +1,11 @@
 class Balance {
+    /**
+     * Constructor de la clase Balance.
+     * @param {number} balanceId - El identificador único del balance.
+     * @param {number} walletAmount - La cantidad en la billetera.
+     * @param {Wallet} wallet - La billetera asociada al balance.
+     * @param {Currency} currency - La divisa del balance.
+     */
     constructor(balanceId, walletAmount, wallet, currency) {
         this.balanceId = balanceId || null;
         this.walletAmount = walletAmount;
@@ -6,26 +13,38 @@ class Balance {
         this.currency = currency;
     }
 
+    /**
+     * Valida los datos del balance.
+     * @param {Object} balanceData - Los datos del balance a validar.
+     * @throws {Error} Si los datos no son válidos.
+     */
     static validateBalanceData(balanceData) {
-
-        // Validar walletAmount
+        // Validar que walletAmount sea un número válido
         if (typeof balanceData.walletAmount !== 'number' || isNaN(balanceData.walletAmount)) {
             throw new Error('walletAmount debe ser un número válido.');
         }
 
-        // Validar wallet
+        // Validar que wallet sea una instancia de Wallet
         if (!(balanceData.wallet instanceof Wallet)) {
             throw new Error('wallet debe ser una instancia de Wallet.');
         }
 
-        // Validar currency
+        // Validar que currency sea una instancia de Currency
         if (!(balanceData.currency instanceof Currency)) {
             throw new Error('currency debe ser una instancia de Currency.');
         }
     }
 
+    /**
+     * Almacena los balances cargados.
+     * @type {Balance[]}
+     */
     static balances = [];
 
+    /**
+     * Carga los balances desde el servidor.
+     * @param {Function} callback - Función a ejecutar después de cargar los balances.
+     */
     static loadBalances(callback) {
         $.ajax({
             url: '/balances',
@@ -44,6 +63,11 @@ class Balance {
         });
     }
 
+    /**
+     * Obtiene un balance por su ID.
+     * @param {number} id - El identificador del balance.
+     * @param {Function} callback - Función a ejecutar después de obtener el balance.
+     */
     static getBalanceById(id, callback) {
         $.ajax({
             url: `/balances/${id}`,
@@ -59,6 +83,11 @@ class Balance {
         });
     }
 
+    /**
+     * Crea un nuevo balance.
+     * @param {Object} balanceData - Los datos del nuevo balance.
+     * @param {Function} callback - Función a ejecutar después de crear el balance.
+     */
      static async createBalance(balanceData, callback) {
         try {
             console.log("📤 Enviando solicitud POST con datos:", balanceData);
@@ -91,6 +120,12 @@ class Balance {
         }
     }
 
+    /**
+     * Actualiza un balance existente.
+     * @param {number} balanceId - El identificador del balance a actualizar.
+     * @param {Object} updatedBalance - Los datos actualizados del balance.
+     * @param {Function} callback - Función a ejecutar después de actualizar el balance.
+     */
     static async updateBalance(balanceId, updatedBalance, callback) {
         console.log("🔄 Intentando actualizar balance...", balanceId, updatedBalance);
 
@@ -125,6 +160,11 @@ class Balance {
         }
     }
 
+    /**
+     * Elimina un balance por su ID.
+     * @param {number} id - El identificador del balance a eliminar.
+     * @param {Function} callback - Función a ejecutar después de eliminar el balance.
+     */
     static deleteBalance(id, callback) {
         $.ajax({
             url: `/balances/${id}`,
@@ -140,6 +180,11 @@ class Balance {
         });
     }
 
+    /**
+     * Obtiene los balances asociados a una billetera.
+     * @param {number} walletId - El identificador de la billetera.
+     * @returns {Promise<Balance[]>} Una promesa que se resuelve con los balances asociados.
+     */
     static async getBalancesByWallet(walletId) {
         try {
             const data = await $.ajax({
@@ -168,6 +213,11 @@ class Balance {
         }
     }
 
+    /**
+     * Obtiene los balances asociados a una divisa.
+     * @param {number} currencyId - El identificador de la divisa.
+     * @returns {Promise<Balance[]>} Una promesa que se resuelve con los balances asociados.
+     */
     static getBalancesByCurrency(currencyId) {
         return new Promise((resolve, reject) => {
             $.ajax({
