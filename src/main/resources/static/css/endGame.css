@@ -1,0 +1,17 @@
+/* ----- MAIN STYLES ----- */
+h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+}
+.btn-play-now{
+    width: 170px !important;
+}
+#win-message h1 {
+    text-shadow: 3px 3px 20px rgba(255, 215, 0, 0.5); /* Brillo dorado */
+}
+#lose-message h1 {
+    color: #860000; /* Rojo llamativo */
+    text-shadow: 3px 1px 10px rgba(255, 35, 35, 0.5); /* Sombra roja */
+}
+

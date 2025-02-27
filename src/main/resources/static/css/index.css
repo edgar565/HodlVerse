@@ -95,9 +95,35 @@ hr {
 }
 
 .btn-play-now:active {
-    background-color: rgba(197, 129, 32, 0.5);
+    background-color: var(--oro);
     transform: scale(0.95);
     box-shadow: 0 0 10px rgba(197, 129, 32, 0.5);
+}
+.btn-play-now:focus {
+    background-color: var(--oro);
+    transform: scale(0.95);
+    box-shadow: 0 0 10px rgba(197, 129, 32, 0.5);
+    color: white;
+}
+/* ------ VIDEO STYLES ------ */
+.video-container {
+    width: 100%;
+    max-width: 800px;  /* Limitar el ancho máximo */
+    margin: 0 auto;    /* Centrar el contenedor */
+    padding: 10px;
+    border-radius: 12px;  /* Bordes redondeados */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  /* Sombra suave */
+    overflow: hidden;  /* Asegura que los bordes redondeados no se vean afectados por el contenido */
+}
+
+video {
+    width: 100%;  /* Hace que el video ocupe todo el ancho del contenedor */
+    height: auto;  /* Mantiene la relación de aspecto del video */
+    border-radius: 8px;  /* Bordes redondeados en el video */
+}
+
+video:focus {
+    outline: none;  /* Elimina el borde de enfoque predeterminado */
 }
 
 /* ------ ANIMATION BACKGROUND ------ */
@@ -113,7 +139,7 @@ hr {
     height: 100vh;
     top: 0;
     left: 0;
-    background: #061428;
+    background: var(--azuloscuro);
     z-index: -1;
 }
 

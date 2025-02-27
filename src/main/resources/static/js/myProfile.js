@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         let interval = setInterval(function () {
             if (balance < totalBalance) {
                 balance += step;
-                totalBalanceElement.textContent = balance.toFixed(2) + "$";
+                totalBalanceElement.textContent = formatNumber(balance.toFixed(2)) + "$";
             } else {
                 clearInterval(interval);
             }
@@ -132,4 +132,11 @@ function closeModal(idModal){
     const editDisplayModal = bootstrap.Modal.getInstance(editDisplayModalEl) || new bootstrap.Modal(editDisplayModalEl);
 // Cerrar el modal
     editDisplayModal.hide();
+}
+// Genera y añade una card para cada crypto
+function formatNumber(num) {
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + "B";
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
+    if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
+    return num.toFixed(2);
 }

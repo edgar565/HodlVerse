@@ -1,50 +1,58 @@
-/* ---- MAIN STYLES ---- */
-th, td {
-    padding: 10px;
-    text-align: left;
+/* ---- TABLE STYLES ---- */
+table {
+    width: 100%;
+}
+.more-info-card{
+    width: 600px;
 }
 
-thead {
-    background-color: #f8f9fa;
-    color: #333;
+
+#toggleIcon{
+    color: var(--azuloscuro);
+}
+#toggleIcon:hover{
+    color: var(--oro);
 }
 
-tbody tr:nth-child(even) {
-    background-color: var(--azuloscuro);
-    color: white;
+/* ------ RESPONSIVE MEDIA QUERYS ---- */
+@media (max-width: 1300px) {
+    #cryptoPieChart {
+        height: 700px;
+        width: 100% !important;
+        align-items: center;
+    }
+
+    .row > .col-12 {
+        width: 100% !important;
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+
+    .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+.text-dark {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 400; /* Normal */
 }
 
-tbody tr:hover {
-    background-color: var(--oro);
+.d-flex {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
 }
 
-/* Estilo para los nombres de las criptos */
-.coin-name {
-    color: #2a9df4;
-    text-transform: capitalize;
+.align-middle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
 }
 
-/* Estilo para la cantidad */
-.quantity {
-    color: #5a6268;
-    font-size: 1.1rem;
-}
 
-/* Estilo para los precios */
-.current-price {
-    color: #28a745;
-}
 
-/* Estilo para las ganancias */
-.gains {
-    font-weight: bold;
-    font-size: 1.2rem;
-}
 
-.text-success {
-    color: #28a745;
-}
 
-.text-danger {
-    color: #dc3545;
-}
+
+
+

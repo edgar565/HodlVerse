@@ -155,15 +155,45 @@ async function fillCryptoTable() {
 
             let row = document.createElement("tr");
             row.innerHTML = `
-                <td class="d-flex align-items-center gap-2"><img src="${currency.image}" alt="Icon de ${currency.name}" height="24">${currency.name}</td>
-                <td>${quantity}</td>
-                <td>$${currentPrice.toLocaleString()}</td>
-            `;
+  <td class="d-flex gap-2 align-items-center align-middle">
+    <img src="${currency.image}" alt="Icono de ${currency.name}" height="35">
+    <span class="fw-bold">${currency.name}</span>
+  </td>
+  <td class="text-end align-middle">
+    <span class="text-dark">${quantity.toFixed(2)}</span>
+  </td>
+  <td class="text-end align-middle">
+    <span class="text-dark">$${currentPrice.toLocaleString()}</span>
+  </td>
+`;
+
             tableBody.appendChild(row);
         });
+
 
         console.log("✅ Tabla actualizada con éxito.");
     } catch (error) {
         console.error("❌ Error al llenar la tabla:", error);
     }
 }
+
+// ================================
+// ANIMATION ARROW SHOW MORE INFO
+// ================================
+
+// Cambiar la dirección de la flecha cuando se haga clic en el botón "More Info"
+const collapseButton = document.querySelector('[data-bs-toggle="collapse"]');
+const toggleIcon = document.getElementById('toggleIcon');
+
+collapseButton.addEventListener('click', function() {
+    // Comprobar si el contenido está abierto o cerrado y cambiar la flecha
+    const isExpanded = collapseButton.getAttribute('aria-expanded') === 'true';
+    if (isExpanded) {
+        toggleIcon.classList.remove('fa-chevron-right'); // Flecha hacia arriba
+        toggleIcon.classList.add('fa-chevron-down'); // Flecha hacia abajo
+    } else {
+        toggleIcon.classList.remove('fa-chevron-down'); // Flecha hacia abajo
+        toggleIcon.classList.add('fa-chevron-right'); // Flecha hacia arriba
+    }
+});
+

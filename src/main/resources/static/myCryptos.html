@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link rel="stylesheet" href="css/myCryptos.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -80,10 +81,13 @@
                            data-bs-toggle="dropdown"
                            aria-expanded="false"><i class="fa-solid fa-chart-line"></i>Highlights</a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending Coins</a></li>
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending
+                                Coins</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a>
+                            </li>
                             <li><a class="dropdown-item" href="rankings.html?nameRanking=topLosers">Top Losers</a></li>
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest Volume</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest
+                                Volume</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -135,10 +139,14 @@
                             </button>
                             <div class="collapse" id="dashboard-collapse">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
-                                    <li><a href="rankings.html?nameRanking=topWinners"><i class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
-                                    <li><a href="rankings.html?nameRanking=topLosers"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
-                                    <li><a href="rankings.html?nameRanking=highestVolume"><i class="fa-solid fa-star"></i> Highest Volume</a></li>
+                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i
+                                            class="fa-solid fa-fire"></i> Trending Coins</a></li>
+                                    <li><a href="rankings.html?nameRanking=topWinners"><i
+                                            class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
+                                    <li><a href="rankings.html?nameRanking=topLosers"><i
+                                            class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
+                                    <li><a href="rankings.html?nameRanking=highestVolume"><i
+                                            class="fa-solid fa-star"></i> Highest Volume</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -174,55 +182,12 @@
                     </ul>
                 </div>
             </div>
-            <!-- MODAL CONFIGURATION -->
-            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <i class="fa-solid fa-language"></i>
-                                <label for="languageSelect" class="form-label">Language</label>
-                                <select class="form-select" id="languageSelect">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <i class="fa-solid fa-money-bill"></i>
-                                <label for="currencySelect" class="form-label">Currency</label>
-                                <select class="form-select" id="currencySelect">
-                                    <option value="usd">USD</option>
-                                    <option value="eur">EUR</option>
-                                    <option value="gbp">GBP</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-moon"></i>
-                                <label for="darkModeSwitch">Dark Mode</label>
-                                <div class="form-check form-switch ms-auto">
-                                    <input class="form-check-input dark-mode-toggle" type="checkbox"
-                                           id="darkModeSwitch">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 </header>
 <main class="container my-4">
     <div class="p-5 bg-white rounded shadow">
-        <!-- Encabezado de Highlights -->
+        <!-- Encabezado -->
         <div class="d-flex flex-column mb-3">
             <h1 class="h2">YOUR CRYPTOS</h1>
             <p class="text-secondary text-sm" style="font-style: italic;">
@@ -232,31 +197,26 @@
             </p>
         </div>
 
+        <!-- Sección dividida en dos columnas -->
         <div class="row mt-5">
-            <!-- Columna para el gráfico (centrado y grande) -->
-            <div class="col-12 mb-5">
-                <!-- Pie Chart con ECharts -->
-                <div id="cryptoPieChart" style="height: 700px;"></div>
+            <!-- Columna izquierda: Pie Chart -->
+            <div class="col-12 col-md-6 mb-4 mb-md-0">
+                <div id="cryptoPieChart" style="height: 400px; width: 100%;"></div>
             </div>
-        </div>
 
-        <!-- CRYPTO COINS OWNED -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-body pb-1">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <div class="d-flex align-items-center gap-1 mb-3">
-                                <h4 class="m-0 fw-bold">Your Cryptocurrencies</h4>
-                            </div>
-                        </div>
-                        <!-- Tabla resumida con efecto stripe y hover -->
-                        <table class="table table-striped table-hover">
-                            <thead class="fw-bold text-muted border-bottom pb-2 extra-small-text">
+            <!-- Columna derecha: Lista de criptomonedas -->
+            <div class="col-12 col-md-6 d-flex align-items-center">
+                <div class="card more-info-card w-100 p-3">
+                    <div class="gap-1 mb-1 d-flex justify-content-between p-2">
+                        <h4 class="m-0">More Info</h4>
+                    </div>
+                    <div class="collapse show card-body pb-1">
+                        <table class="table table-hover">
+                            <thead class=" text-muted border-bottom pb-2 extra-small-text">
                             <tr>
                                 <th>Coin</th>
-                                <th>Quantity</th>
-                                <th>Current Price</th>
+                                <th class="text-end">Quantity</th>
+                                <th class="text-end">Current Price</th>
                             </tr>
                             </thead>
                             <tbody id="cryptoHoldingsTable"></tbody>
@@ -267,6 +227,50 @@
         </div>
     </div>
 </main>
+
+<!-- MODAL CONFIGURATION -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <i class="fa-solid fa-language"></i>
+                    <label for="languageSelect" class="form-label">Language</label>
+                    <select class="form-select" id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <i class="fa-solid fa-money-bill"></i>
+                    <label for="currencySelect" class="form-label">Currency</label>
+                    <select class="form-select" id="currencySelect">
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                        <option value="gbp">GBP</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <i class="fa-solid fa-moon"></i>
+                    <label for="darkModeSwitch">Dark Mode</label>
+                    <div class="form-check form-switch ms-auto">
+                        <input class="form-check-input dark-mode-toggle" type="checkbox"
+                               id="darkModeSwitch">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <footer>
     <!-- FOOTER FOR LARGE SCREENS -->
     <div class="d-none d-lg-block">

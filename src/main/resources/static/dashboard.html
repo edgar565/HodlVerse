@@ -10,6 +10,7 @@
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
@@ -173,49 +174,6 @@
                     </ul>
                 </div>
             </div>
-            <!-- MODAL CONFIGURATION -->
-            <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <i class="fa-solid fa-language"></i>
-                                <label for="languageSelect" class="form-label">Language</label>
-                                <select class="form-select" id="languageSelect">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <i class="fa-solid fa-money-bill"></i>
-                                <label for="currencySelect" class="form-label">Currency</label>
-                                <select class="form-select" id="currencySelect">
-                                    <option value="usd">USD</option>
-                                    <option value="eur">EUR</option>
-                                    <option value="gbp">GBP</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3 d-flex align-items-center">
-                                <i class="fa-solid fa-moon"></i>
-                                <label for="darkModeSwitch">Dark Mode</label>
-                                <div class="form-check form-switch ms-auto">
-                                    <input class="form-check-input dark-mode-toggle" type="checkbox"
-                                           id="darkModeSwitch">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 </header>
@@ -229,128 +187,140 @@
             <!-- Chart -->
             <div class="col-lg-9 col-12 border-2 border-gray-200 rounded mb-4 chart">
                 <div class="card shadow-sm">
-                    <div class="card-body">
-                        <div id="chart-container"></div>
+                    <div class="card-body" style="position: relative;"> <!-- Agregamos position: relative -->
+                        <!-- Contenedor del gráfico -->
+                        <div id="chart-container" style="height: 400px;">
+                            <div id="loadingMessageChart" class="d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                                <span>Loading chart...</span>
+                            </div>
+                        </div> <!-- Agregamos altura -->
                     </div>
                 </div>
             </div>
-            <!-- Calendar -->
-            <div class="col-lg-3 border-2 border-gray-200 rounded mb-4 calendar">
-                <div class="card shadow-sm p-1">
+            <div class="col-lg-3 col-12 border-2 border-gray-200 rounded mb-4 d-flex align-items-center">
+                <!-- Calendar -->
+                <div class="card shadow-sm p-1 calendar" style="min-height: 400px; min-width: 320px">
                     <div class="card-body d-flex flex-column justify-content-between">
                         <div class="text-start calendar-container">
                             <div class="time-container">
-                                <h3 id="daysRemaining" class="fw-bold mb-1 text"></h3>
+                                <h3 id="daysRemaining" class="fw-semibold mb-1 text"></h3>
                                 <p id="timeRemaining" class="text-muted"></p>
                             </div>
-                            <div class="d-flex justify-content-center align-items-center">
-                                <button id="prevMonth" class="btn btn-secondary">Previous Month</button>
-                                <div id="calendar"></div>
-                                <button id="nextMonth" class="btn btn-secondary">Next Month</button>
+                            <div id="loadingMessageCalendar" class="d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center gap-1">
+                                <i id="prevMonth" class="fa-solid fa-angles-left fs-5 calendar-arrow"></i>
+                                <div id="calendar" class="mb-2 p-2"></div>
+                                <i id="nextMonth" class="fa-solid fa-angles-right fs-5 calendar-arrow"></i>
                             </div>
                         </div>
                     </div>
-                </div>
-
-
-                <!-- Carrusel -->
-                <div id="gameCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <!-- Tarjeta 1: Barra de progreso circular -->
-                        <div class="carousel-item active">
-                            <div class="card text-center p-3 shadow-sm">
-                                <h5 class="fw-bold text">Game Progress</h5>
-                                <div class="d-flex justify-content-center mt-3">
-                                    <svg width="150" height="150">
-                                        <circle cx="70" cy="70" r="60" stroke="#061428" stroke-width="10" fill="none"/>
-                                        <circle id="progressCircle" cx="70" cy="70" r="60" stroke="#C58120"
-                                                stroke-width="10"
-                                                fill="none" stroke-dasharray="314" stroke-dashoffset="314"
-                                                stroke-linecap="round" transform="rotate(-90 70 70)"/>
-                                        <text id="progressText" x="50%" y="50%" text-anchor="middle"
-                                              alignment-baseline="middle"
-                                              font-size="18px"></text>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Tarjeta 2: Progreso de partidas -->
-                        <div class="carousel-item">
-                            <div class="card text-center p-3 shadow-sm">
-                                <h5 class="fw-bold text">Session Progress</h5>
-                                <div class="progress-container">
-                                    <div class="progress-bar">
-                                        <div class="progress-bubble bubble-prev" id="partidaAnteriorText"></div>
-                                        <div class="progress-line" id="past"></div>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-bubble bubble-current" id="partidaActualText"></div>
-                                        <div class="progress-line active" id="now"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Controles del carrusel -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#gameCarousel"
-                            data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#gameCarousel"
-                            data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                    </button>
                 </div>
             </div>
         </div>
         <div class="row gx-4 mb-3">
-            <div class="col-lg-6 col-12 border-2 border-gray-200 rounded cryptos">
+            <!-- CRYPTOS TABLE (Vista resumida) -->
+            <div class="col-lg-6 col-12 border-2 border-gray-200 rounded cryptos mb-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <div class="d-flex align-items-center gap-1 mb-3">
-                            <h4 class="m-0 text fw-bold">Your Cryptos</h4>
+                        <div class="d-flex align-items-center gap-1 mb-3 p-2">
+                            <h4 class="m-0 text">Your Cryptos</h4>
                         </div>
-                        <!-- Contenedor donde se inyectarán las cards desde JS -->
-                        <div id="cryptosContainer" class="d-flex align-items-center gap-4 p-2 mb-1"></div>
+                        <div id="cryptosContainerWrapper" class="overflow-hidden position-relative" style="min-height: 200px;">
+                            <div id="loadingMessageYourCryptos" class="d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                                <span>Loading your cryptos...</span>
+                            </div>
+                            <!-- Contenedor de criptomonedas -->
+                            <div id="cryptosContainer" class="d-flex align-items-center gap-3 p-2 mb-1 overflow-auto"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- TRANSACTIONS TABLE (Vista resumida) -->
-            <div class="col-6 border-2 border-gray-200 rounded highlightsMenu">
+            <div class="col-lg-6 col-12 border-2 border-gray-200 rounded highlightsMenu">
                 <div class="card shadow-sm">
                     <div class="card-body pb-1">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1 p-2">
                             <div class="d-flex align-items-center gap-1">
-                                <h4 class="m-0 fw-bold">Transactions</h4>
+                                <h4 class="m-0 ">Transactions</h4>
                             </div>
                             <div class="d-flex align-items-center">
                                 <a href="#" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#transactionsModal">View more</a>
                                 <i class="fa-solid fa-angle-right fa-xs"></i>
                             </div>
                         </div>
-                        <!-- Tabla resumida con efecto stripe y hover -->
-                        <table class="table table-striped table-hover">
-                            <thead class="fw-bold text-muted border-bottom pb-2 extra-small-text">
-                            <tr>
-                                <th class="col-4">Coin</th>
-                                <th class="col-2 text-center">Type</th>
-                                <th class="col-2 text-end">Amount</th>
-                                <th class="col-3 text-end">Price</th>
-                            </tr>
-                            </thead>
-                            <tbody id="transactionTableBody">
-                            </tbody>
-                        </table>
+                        <div id="loadingMessageTransactions" class="d-flex gap-2 mt-5">
+                            <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            <span>Loading transactions...</span>
+                        </div>
+                        <div class="p-3" style="min-height: 200px;">
+                            <table class="table table-hover">
+                                <thead class="fw-semibold text-muted border-bottom pb-2 extra-small-text">
+                                <tr>
+                                    <th class="col-4">Coin</th>
+                                    <th class="col-2 text-center">Type</th>
+                                    <th class="col-2 text-end">Amount</th>
+                                    <th class="col-3 text-end">Price</th>
+                                </tr>
+                                </thead>
+                                <tbody id="transactionTableBody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
+<!-- MODAL CONFIGURATION -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <i class="fa-solid fa-language"></i>
+                    <label for="languageSelect" class="form-label">Language</label>
+                    <select class="form-select" id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
 
-<!-- Modal para ver todas las transacciones -->
+                <div class="mb-3">
+                    <i class="fa-solid fa-money-bill"></i>
+                    <label for="currencySelect" class="form-label">Currency</label>
+                    <select class="form-select" id="currencySelect">
+                        <option value="usd">USD</option>
+                        <option value="eur">EUR</option>
+                        <option value="gbp">GBP</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 d-flex align-items-center">
+                    <i class="fa-solid fa-moon"></i>
+                    <label for="darkModeSwitch">Dark Mode</label>
+                    <div class="form-check form-switch ms-auto">
+                        <input class="form-check-input dark-mode-toggle" type="checkbox"
+                               id="darkModeSwitch">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL TRANSACTIONS FULL VIEW -->
 <div class="modal fade" id="transactionsModal" tabindex="-1" aria-labelledby="transactionsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -359,17 +329,19 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table table-striped table-hover">
-                    <thead class="fw-bold text-muted border-bottom pb-2 extra-small-text">
-                    <tr>
-                        <th class="col-4">Coin</th>
-                        <th class="col-2 text-center">Type</th>
-                        <th class="col-2 text-end">Amount</th>
-                        <th class="col-3 text-end">Price</th>
-                    </tr>
-                    </thead>
-                    <tbody id="transactionTableBodyFull"></tbody>
-                </table>
+                <div class="p-3">
+                    <table class="table table-hover">
+                        <thead class="fw-bold text-muted border-bottom pb-2 extra-small-text">
+                        <tr>
+                            <th class="col-4">Coin</th>
+                            <th class="col-2 text-center">Type</th>
+                            <th class="col-2 text-end">Amount</th>
+                            <th class="col-3 text-end">Price</th>
+                        </tr>
+                        </thead>
+                        <tbody id="transactionTableBodyFull"></tbody>
+                    </table>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-transaction-modal" data-bs-dismiss="modal">Close</button>
