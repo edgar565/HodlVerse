@@ -34,9 +34,10 @@ async function getValueFinal() {
 // Definir getTotalValue() para obtener los valores totales de las criptos
 async function getTotalValue() {
     try {
+        let wallet = await Wallet.getWalletByUserId(user.userId);
         let promises = currencies.map(async (currency) => {
             const response = await $.ajax({
-                url: `/balances/total/${user.wallet.walletId}/${currency.currencyId}`,
+                url: `/balances/total/${wallet.walletId}/${currency.currencyId}`,
                 type: 'GET'
             });
             return response; // Retorna el valor de la solicitud

@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Usamos Promise.all() para esperar todas las promesas antes de continuar
             const data = await Promise.all(
                 dateArray.map(async (date) => {
+                    console.log(userId, date)
                     return await Wallet.getUserBalanceOnSpecificDate(userId, date);
                 })
             );
@@ -449,7 +450,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             const userId = await User.getUserId(); // Obtener ID del usuario
             user = await User.getUserById(userId);
-            let currencies = await Wallet.getWalletsCurrenciesById(user.wallet.walletId);
+            let wallet = await Wallet.getWalletByUserId(userId);
+            console.log(wallet)
+            let currencies = await Wallet.getWalletsCurrenciesById(userId);
             console.log(currencies);
             return currencies || []; // Retorna un array vacío si es null/undefined
 
@@ -464,9 +467,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function getTotalValue() {
         try {
+            const userId = await User.getUserId(); // Obtener ID del usuario
+            let wallet = await Wallet.getWalletByUserId(user.userId);
             let promises = cryptos.map(async (currency) => {
                 const response = await $.ajax({
-                    url: `/balances/total/${user.wallet.walletId}/${currency.currencyId}`,
+                    url: `/balances/total/${wallet.walletId}/${currency.currencyId}`,
                     type: 'GET'
                 });
                 return response; // Retorna el valor de la solicitud
