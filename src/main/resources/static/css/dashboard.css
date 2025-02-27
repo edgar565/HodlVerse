@@ -194,6 +194,11 @@
     }
 
 }
+@media (max-width: 768px) {
+    #calendar {
+        align-content: center;
+    }
+}
 
 /* -------------------- TRANSACTIONS SECTION -------------------- */
 

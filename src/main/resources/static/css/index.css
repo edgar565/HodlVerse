@@ -126,6 +126,27 @@ video:focus {
     outline: none;  /* Elimina el borde de enfoque predeterminado */
 }
 
+/*------ MEDIA QUERIES ------*/
+/* Media Query para pantallas pequeñas */
+@media (max-width: 1200px) {
+    .title-arc {
+        font-size: 100px;
+    }
+
+    .title-arc img {
+        display: none;
+    }
+}
+@media (max-width: 768px) {
+    .title-arc {
+        font-size: 60px;
+    }
+
+    .title-arc img {
+        display: none;
+    }
+}
+
 /* ------ ANIMATION BACKGROUND ------ */
 @keyframes move {
     100% {

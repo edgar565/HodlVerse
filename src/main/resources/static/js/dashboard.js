@@ -600,47 +600,37 @@ document.addEventListener("DOMContentLoaded", async () => {
         return num.toFixed(2);
     }
     const loadingMessageYourCryptos = document.getElementById('loadingMessageYourCryptos');
-    const emptyMessageYourCryptos = document.getElementById('emptyMessageYourCryptos');
-    const cryptosContainer = document.getElementById('cryptosContainer');
 
-// Mostrar "loading" al inicio
-    loadingMessageYourCryptos.style.display = "flex";
-    emptyMessageYourCryptos.style.color = "transparent";
-    cryptosContainer.innerHTML = ""; // Asegurar que no haya datos previos
+// Mostrar el mensaje de carga
+    loadingMessageYourCryptos.style.display = "flex";  // Mostrar el mensaje de carga
 
-// Simulación de carga de datos (esto lo debes reemplazar por tu código real)
-        if (!cryptos || cryptos.length === 0) {
-            // No hay datos
-            loadingMessageYourCryptos.color = "transparent";
-            emptyMessageYourCryptos.style.display = "flex";
-        } else {
-            // Sí hay datos
+// Asumimos que 'cryptos', 'totalValue', 'valueFinal', 'contador' y 'formatNumber' ya están definidos previamente
+    cryptos.forEach(crypto => {
+        const card = document.createElement("div");
+        card.classList.add("card", "crypto", "shadow-sm", "mb-2");
 
+        let amount = totalValue[contador];
+        let final = valueFinal[contador];
 
-            cryptos.forEach((crypto, index) => {
-                const card = document.createElement("div");
-                card.classList.add("card", "crypto", "shadow-sm", "mb-2");
-
-                let amount = totalValue[index];
-                let final = valueFinal[index];
-
-                card.innerHTML = `
-            <div class="card-body d-flex align-items-center justify-content-between">
-                <div>
-                    <h5 class="card-title fw-bold">${crypto.name}</h5>
-                    <h5 class="card-title text-dark">${formatNumber(final)}</h5>
-                    <div class="d-flex align-items-center gap-2">
-                        <h6 class="text-muted fs-6">${crypto.ticker}</h6>
-                        <h6 class="text-muted fs-6">${formatNumber(amount)}</h6>
-                    </div>
+        card.innerHTML = `
+        <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+                <h5 class="card-title fw-bold">${crypto.name}</h5>
+                <h5 class="card-title text-dark">${formatNumber(final)}</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <h6 class="text-muted fs-6">${crypto.ticker}</h6>
+                    <h6 class="text-muted fs-6">${formatNumber(amount)}</h6>
                 </div>
-                <img src="${crypto.image}" alt="${crypto.name}" height="55" class="ms-3">
             </div>
-        `;
+            <img src="${crypto.image}" alt="${crypto.name}" height="55" class="ms-3">
+        </div>
+    `;
 
-                cryptosContainer.appendChild(card);
-            });
-        }
-    loadingMessageYourCryptos.style.color = "transparent";
+        container.appendChild(card);
+        contador++;
+    });
+
+// Usar setTimeout para asegurar que el mensaje de carga desaparezca después de que se terminen de agregar los datos
+    loadingMessageYourCryptos.style.color = "transparent";  // Ocultar el mensaje de carga
 
 });

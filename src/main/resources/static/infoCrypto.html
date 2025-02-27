@@ -80,10 +80,13 @@
                            data-bs-toggle="dropdown"
                            aria-expanded="false"><i class="fa-solid fa-chart-line"></i>Highlights</a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending Coins</a></li>
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=trendingCoins">Trending
+                                Coins</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=topWinners">Top Winners</a>
+                            </li>
                             <li><a class="dropdown-item" href="rankings.html?nameRanking=topLosers">Top Losers</a></li>
-                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest Volume</a></li>
+                            <li><a class="dropdown-item" href="rankings.html?nameRanking=highestVolume">Highest
+                                Volume</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -135,10 +138,14 @@
                             </button>
                             <div class="collapse" id="dashboard-collapse">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i class="fa-solid fa-fire"></i> Trending Coins</a></li>
-                                    <li><a href="rankings.html?nameRanking=topWinners"><i class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
-                                    <li><a href="rankings.html?nameRanking=topLosers"><i class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
-                                    <li><a href="rankings.html?nameRanking=highestVolume"><i class="fa-solid fa-star"></i> Highest Volume</a></li>
+                                    <li><a href="rankings.html?nameRanking=trendingCoins"><i
+                                            class="fa-solid fa-fire"></i> Trending Coins</a></li>
+                                    <li><a href="rankings.html?nameRanking=topWinners"><i
+                                            class="fa-solid fa-arrow-up"></i> Top Winners</a></li>
+                                    <li><a href="rankings.html?nameRanking=topLosers"><i
+                                            class="fa-solid fa-arrow-down"></i> Top Losers</a></li>
+                                    <li><a href="rankings.html?nameRanking=highestVolume"><i
+                                            class="fa-solid fa-star"></i> Highest Volume</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -199,61 +206,69 @@
                             <span class="fw-bold" id="price-change"></span>
                         </div>
                     </div>
-                    <p class="h3 crypto-price crypto-price" ></p>
+                    <p class="h3 crypto-price crypto-price"></p>
                     <div class="crypto-stats p-3 mt-5 rounded bg-white">
 
                         <div class="d-flex justify-content-between mb-2">
-                            <span > Market Cap Rank
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                            <span> Market Cap Rank
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The total value of all circulating shares multiplied by the current price."></i>:
                             </span>
                             <span class="text-muted" id="market-cap-rank"></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span > Market Cap
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                            <span> Market Cap
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The total value of all circulating shares multiplied by the current price."></i>:
                             </span>
                             <span class="text-muted" id="market-cap"></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>24h Volume:
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The total trading volume in the last 24 hours."></i>:
                             </span>
                             <span class="text-muted" id="volume"></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Total Supply:
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The total number of coins currently available, including those not yet in circulation."></i>:
                             </span>
                             <span class="text-muted" id="total-supply"></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Change (24h):
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The percentage change in the price of the cryptocurrency over the past 24 hours."></i>:
                             </span>
                             <span class="text-muted" id="change-24h"></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Change (24h) %:
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The percentage change in the price of the cryptocurrency over the past 24 hours."></i>:
                             </span>
                             <span class="text-muted" id="change-24h-percentage"></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>High 24h:
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The highest price ever reached by the cryptocurrency since its creation."></i>:
                             </span>
                             <span class="text-muted" id="high-24"></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Low 24h:
-                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <i class="bi bi-info-circle ms-1 small-info-icon" data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="The lowest price ever recorded for the cryptocurrency since its inception."></i>:
                             </span>
                             <span class="text-muted" id="low-24"></span>
@@ -266,20 +281,36 @@
                 </div>
             </div>
             <!-- CHARTS SECTION (Price & Volume evolution)-->
-            <div class="col-lg-8 col-md-12 ">
+            <div class="col-lg-8 col-md-12">
                 <div class="graph-section p-4 rounded-3 shadow-lg bg-white">
                     <h4 class="text-center mb-2">Market Trends</h4>
                     <ul class="nav nav-tabs mb-3" id="chartTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="price-tab" data-bs-toggle="tab"
-                                    data-bs-target="#price-chart" type="button" role="tab" aria-controls="price-chart"
-                                    aria-selected="true">Price Evolution
+                                    data-bs-target="#price-chart" type="button" role="tab"
+                                    aria-controls="price-chart" aria-selected="true">
+                                24h Price Evolution
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="volume-tab" data-bs-toggle="tab" data-bs-target="#volume-chart"
-                                    type="button" role="tab" aria-controls="volume-chart" aria-selected="false">Volume
-                                Evolution
+                            <button class="nav-link" id="volume-tab" data-bs-toggle="tab"
+                                    data-bs-target="#volume-chart" type="button" role="tab"
+                                    aria-controls="volume-chart" aria-selected="false">
+                                24h Volume Evolution
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="daily-price-tab" data-bs-toggle="tab"
+                                    data-bs-target="#daily-price-chart" type="button" role="tab"
+                                    aria-controls="daily-price-chart" aria-selected="false">
+                                Daily Price
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="daily-volume-tab" data-bs-toggle="tab"
+                                    data-bs-target="#daily-volume-chart" type="button" role="tab"
+                                    aria-controls="daily-volume-chart" aria-selected="false">
+                                Daily Volume
                             </button>
                         </li>
                     </ul>
@@ -295,22 +326,29 @@
                                 <div id="volume-chart-value" style="width: 900px; height: 400px"></div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="daily-price-chart" role="tabpanel"
+                             aria-labelledby="daily-price-tab">
+                            <div class="chart-wrapper">
+                                <div id="dailyPriceChart" style="width: 900px; height: 400px"></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="daily-volume-chart" role="tabpanel"
+                             aria-labelledby="daily-volume-tab">
+                            <div class="chart-wrapper">
+                                <div id="dailyChartVolume" style="width: 900px; height: 400px"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12" id="dailyPriceChart" style="width: 100%; height: 400px"></div>
-        </div>
-        <div class="row">
-            <div class="col-12" id="dailyChartVolume" style="width: 100%; height: 400px"></div>
-        </div>
 
-        <!-- MORE CRYPTO SECTION -->
-        <div class="more-crypto-section mb-5">
-            <h4 class="fw-bold mb-4 text-center">More Crypto</h4>
-            <div class="row row-cols-1 row-cols-md-3 g-4" id="cryptoContainer">
-                <!-- insert cards JS -->
+
+            <!-- MORE CRYPTO SECTION -->
+            <div class="more-crypto-section mb-5 mt-4">
+                <h4 class="fw-bold mb-4 text-center">More Crypto</h4>
+                <div class="row row-cols-1 row-cols-md-3 g-4" id="cryptoContainer">
+                    <!-- insert cards JS -->
+                </div>
             </div>
         </div>
     </div>
@@ -392,7 +430,8 @@
                 <form id="buy-form">
                     <div class="mb-3">
                         <label for="buy-amount" class="form-label">Amount to Buy</label>
-                        <input type="number" class="form-control" id="buy-amount" min="0.01" step="0.01" placeholder="Enter amount">
+                        <input type="number" class="form-control" id="buy-amount" min="0.01" step="0.01"
+                               placeholder="Enter amount">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Current Price per Unit (USD)</label>
@@ -424,7 +463,8 @@
                 <form id="sell-form">
                     <div class="mb-3">
                         <label for="sell-amount" class="form-label">Amount to Sell</label>
-                        <input type="number" class="form-control" id="sell-amount" min="0.01" step="0.01" placeholder="Enter amount">
+                        <input type="number" class="form-control" id="sell-amount" min="0.01" step="0.01"
+                               placeholder="Enter amount">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Current Price per Unit (USD)</label>
