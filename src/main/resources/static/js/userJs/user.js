@@ -1,12 +1,12 @@
 class User {
-    constructor(userId, name, email, password, registrationDate, picture, wallet, token) {
+    constructor(userId, name, email, password, registrationDate, picture, wallets, token) {
         this.userId = Number(userId);
         this.name = name;
         this.email = email;
         this.password = password;
         this.registrationDate = new Date(registrationDate);
         this.picture = picture;
-        this.wallet = wallet;
+        this.wallets = wallets;
         this.token = token;
     }
 
@@ -31,8 +31,8 @@ class User {
             throw new Error('picture debe ser una URL válida.');
         }
 
-        if (!userData.wallet) {
-            throw new Error('wallet debe ser una instancia válida de Wallet o null.');
+        if (!userData.wallets) {
+            throw new Error('wallets debe ser una instancia válida de Wallet o null.');
         }
 
         // Validar token
@@ -106,7 +106,7 @@ class User {
     }
 
     // ➕ Crear un nuevo usuario en la API
-    static async createUser(name, email, password, wallet) {
+    static async createUser(name, email, password, wallets) {
         try {
             // Crear el objeto del nuevo usuario
             let newUser = {
@@ -115,7 +115,7 @@ class User {
                 password,
                 registrationDate: new Date().toISOString(),
                 picture: " ",
-                wallet: wallet,
+                wallets: wallets,
                 token: 2
             };
 
@@ -144,7 +144,7 @@ class User {
         }
 
         try {
-            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate.toISOString(), picture: user.picture, wallet: user.wallet, token: user.token};
+            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate, picture: user.picture, wallets: user.wallets, token: user.token};
 
             // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
             const data = await $.ajax({

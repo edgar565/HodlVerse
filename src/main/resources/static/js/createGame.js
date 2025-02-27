@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     const startGameButton = document.getElementById("start-game");
 
-    startGameButton.addEventListener("click", function () {
+    startGameButton.addEventListener("click", async function () {
         const activeButton = document.querySelector(".btn-play-now.active");
 
         if (!activeButton) {
@@ -65,7 +65,20 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Active button:", activeButton.outerHTML); // Para verificar si tiene la clase active
         const difficulty = activeButton.getAttribute("data-difficulty");
         console.log("Difficulty:", difficulty);
+        const userLogged = await getUser();
+        console.log("userLogged", userLogged);
+        const game = new Game(difficulty.toUpperCase(), userLogged);
+        game.startGame();
     });
 
 });
-
+async function getUser() {
+    try {
+        const userId = await User.getUserId();
+        user = await User.getUserById(userId);
+        return user
+    } catch (error) {
+        console.error('❌ Error al obtener el usuario:', error);
+        return null; // Devuelve un array vacío en caso de error
+    }
+}

@@ -35,8 +35,9 @@ public class User {
     @Column(nullable = false)
     private int token;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Wallet wallet;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Wallet> wallets;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -97,12 +98,12 @@ public class User {
         this.picture = picture;
     }
 
-    public Wallet getWallet() {
-        return wallet;
+    public List<Wallet> getWallets() {
+        return wallets;
     }
 
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
+    public void setWallets(List<Wallet> wallets) {
+        this.wallets = wallets;
     }
 
     public List<Transaction> getTransactions() {

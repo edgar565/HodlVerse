@@ -1,18 +1,19 @@
 class Game {
-    constructor(difficulty, duration = 30, startDate = new Date()) {
+    constructor(difficulty, user) {
         this.difficulty = difficulty;
-        this.duration = duration;
-        this.startDate = startDate;
+        this.duration = 30;
+        this.startDate = new Date();
         this.endDate = this.calculateEndDate();
         this.initialCredit = 100000;
         this.currentCredit = this.initialCredit;
         this.objective = this.calculateObjective();
         this.gameId = null;
+        this.user = user;
     }
 
     // Validar difficulty
     validateDifficulty(difficulty) {
-        const validDifficulties = ['beginner', 'experienced', 'personalized'];
+        const validDifficulties = ['BEGINNER', 'EXPERIENCED', 'PERSONALIZED'];
         if (!validDifficulties.includes(difficulty)) {
             throw new Error('Dificultad no válida. Las opciones válidas son: beginner, experienced, personalized.');
         }
@@ -22,15 +23,16 @@ class Game {
     calculateEndDate() {
         let endDate = new Date(this.startDate);
         endDate.setDate(this.startDate.getDate() + this.duration);
+        console.log("endDate", endDate);
         return endDate;
     }
 
     // Calcular el objetivo basado en la dificultad
     calculateObjective() {
         const objectiveMultipliers = {
-            beginner: 0.1,
-            experienced: 0.3,
-            personalized: 0 // Permitirá valores personalizados después
+            BEGINNER: 0.1,
+            EXPERIENCED: 0.3,
+            PERSONALIZED: 0 // Permitirá valores personalizados después
         };
 
         if (!(this.difficulty in objectiveMultipliers)) {
@@ -41,19 +43,24 @@ class Game {
     }
 
     // Comenzar un juego enviando datos al backend
-    startGame() {
+    async startGame() {
         if (this.gameId) {
             console.warn('El juego ya ha comenzado.');
             return;
         }
-
+        console.log("userId:", this.user.userId);
         let gameData = {
             difficulty: this.difficulty,
             initial_credit: this.initialCredit,
             objective: this.objective,
             duration: this.duration,
             start_date: this.startDate.toISOString(),
+            end_date: this.endDate.toISOString(),
+            user: {
+                userId: this.user.userId // ID of the origin currency
+            },
         };
+        console.log("gameData", gameData);
 
         $.ajax({
             url: '/games',
@@ -65,9 +72,58 @@ class Game {
                 console.log('Juego comenzado:', data);
             },
             error: (jqXHR) => {
-                console.error('Error al comenzar el juego:', jqXHR.responseText);
+                let errorMessage = 'Error desconocido';
+
+                if (jqXHR.responseText) {
+                    try {
+                        let errorData = JSON.parse(jqXHR.responseText);
+                        errorMessage = errorData.error || errorData.message || 'Error en la respuesta del servidor';
+                    } catch (e) {
+                        errorMessage = 'Error al procesar la respuesta del servidor';
+                    }
+                } else {
+                    errorMessage = `Error HTTP ${jqXHR.status || 'desconocido'}`;
+                }
+
+                console.error('Error al comenzar el juego:', errorMessage);
             }
         });
+        let wallet = new Wallet(null, "defaultWallet", new Date());
+        let currency = await Currency.getCurrencyByTicker("usdt");
+        console.log("wallet", wallet);
+        console.log("currency", currency);
+        let balance = new Balance(null, 100000, wallet, currency);
+        console.log("balance", balance)
+        let wallets = [];
+        wallets.push(wallet);
+        console.log("wallets", wallets)
+        let updatedUser = {
+            userId: this.user.userId,
+            name: this.user.name,
+            email: this.user.email,
+            password: this.user.password,
+            registrationDate: this.user.registrationDate,
+            picture: this.user.picture,
+            wallets: [
+                {
+                    walletId: wallet.walletId,
+                    walletName: wallet.walletName,
+                    creationDate: wallet.creationDate,
+                }
+            ],
+            token: this.user.token - 1
+        };
+
+
+        console.log("updatedUser", updatedUser);
+
+        await User.updateUser(updatedUser);
+        let balanceData = {
+            walletAmount: balance.walletAmount, // Se resta porque es un gasto
+            wallet: balance.wallet, // Se envía el ID de la wallet
+            currency: balance.currency // Se envía el ID de la moneda
+        };
+        Balance.createBalance(balanceData);
     }
 
     // Obtener el estado del juego desde el backend
@@ -218,7 +274,7 @@ class Game {
 }
 
 // *** Implementación en la página web ***
-$(document).ready(function () {
+/*$(document).ready(function () {
     const game = new Game('experienced');
 
     $('#startGame').click(() => game.startGame());
@@ -244,4 +300,4 @@ $(document).ready(function () {
 
     $('#checkObjective').click(() => game.checkObjective());
 });
-window.Game = Game;
+window.Game = Game;*/

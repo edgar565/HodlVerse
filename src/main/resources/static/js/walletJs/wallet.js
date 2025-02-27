@@ -34,7 +34,6 @@ class Wallet {
                         Wallet.validateData(w);
                         Wallet.wallets.push(new Wallet(
                             w.walletId, w.walletName, new Date(w.creationDate),
-                            new User(w.user), w.balances.map(b => new Balance(b))
                         ));
                     } catch (error) {
                         console.warn(`Billetera omitida debido a datos inválidos:`, w, error.message);
@@ -63,7 +62,6 @@ class Wallet {
                     Wallet.validateData(data);
                     if (callback) callback(new Wallet(
                         data.walletId, data.walletName, new Date(data.creationDate),
-                        new User(data.user), data.balances.map(b => new Balance(b))
                     ));
                 } catch (error) {
                     console.error(`Error al validar la billetera con ID ${id}:`, error.message);
@@ -127,7 +125,6 @@ class Wallet {
                 walletId: id,
                 walletName: updatedData.walletName,
                 creationDate: new Date(updatedData.creationDate),
-                user: updatedData.user,
                 balances: updatedData.balances || []
             });
             $.ajax({

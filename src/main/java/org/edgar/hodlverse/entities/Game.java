@@ -1,5 +1,6 @@
 package org.edgar.hodlverse.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class Game {
     private Difficulty difficulty;
 
     @Column(nullable = false)
+    @JsonProperty("initial_credit")
     private BigDecimal initialCredit;
 
     @Column(nullable = false)
@@ -31,9 +33,11 @@ public class Game {
     private int duration;
 
     @Column(nullable = false)
+    @JsonProperty("start_date")
     private LocalDateTime startDate;
 
     @Column(nullable = false)
+    @JsonProperty("end_date")
     private LocalDateTime endDate; // Calculado automáticamente
 
     @ManyToOne

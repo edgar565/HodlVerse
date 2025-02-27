@@ -24,7 +24,7 @@ public class Wallet {
     private LocalDate creationDate;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

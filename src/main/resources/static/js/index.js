@@ -111,15 +111,17 @@ async function registerUser(event) {
 
     try {
         let wallet = new Wallet(null, "defaultWallet", new Date());
-        let currency = await Currency.getCurrencyById(3);
+        let currency = await Currency.getCurrencyByTicker("usdt");
         console.log(wallet);
         console.log(currency);
         let balance = new Balance( null, 100000 ,wallet, currency);
         console.log(balance)
+        let wallets = [];
+        wallets.push(wallet);
         // Llamada a la función para crear el usuario si todo está correcto
-        await User.createUser(name, email, password, wallet);
+        await User.createUser(name, email, password, wallets);
         console.log("Usuario registrado correctamente.");
-        window.document.location.href = "createGame.html";
+        //window.document.location.href = "createGame.html";
     } catch (error) {
         console.error("Error al registrar el usuario:", error);
     }
@@ -145,7 +147,7 @@ async function loginUser(event) {
 
         if (user) {
             console.log("✅ Usuario autenticado correctamente.");
-            //window.location.href = "dashboard.html"; // Redirigir al dashboard
+            window.location.href = "dashboard.html"; // Redirigir al dashboard
         } else {
             document.getElementById("errorMessageLogin").innerHTML = "❌ Correo o contraseña incorrectos.";
         }
