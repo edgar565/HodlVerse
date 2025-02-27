@@ -5,15 +5,15 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.1</version>
+		<version>3.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>org.edgar</groupId>
-	<artifactId>HodlVerse</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging> <!-- Asegúrate de que el empaquetado esté configurado como war -->
-	<name>HodlVerse</name>
-	<description>HodlVerse</description>
+	<packaging>war</packaging>
+	<name>demo</name>
+	<description>demo</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -28,7 +28,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -114,6 +114,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>
