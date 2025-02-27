@@ -23,7 +23,6 @@ public class Wallet {
     @Column(nullable = false)
     private LocalDate creationDate;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

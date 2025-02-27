@@ -88,42 +88,20 @@ class Game {
                 console.error('Error al comenzar el juego:', errorMessage);
             }
         });
-        let wallet = new Wallet(null, "defaultWallet", new Date());
         let currency = await Currency.getCurrencyByTicker("usdt");
-        console.log("wallet", wallet);
         console.log("currency", currency);
+        let wallet = await Wallet.createWallet(this.user);
+        console.log("wallet", wallet);
         let balance = new Balance(null, 100000, wallet, currency);
         console.log("balance", balance)
-        let wallets = [];
-        wallets.push(wallet);
-        console.log("wallets", wallets)
-        let updatedUser = {
-            userId: this.user.userId,
-            name: this.user.name,
-            email: this.user.email,
-            password: this.user.password,
-            registrationDate: this.user.registrationDate,
-            picture: this.user.picture,
-            wallets: [
-                {
-                    walletId: wallet.walletId,
-                    walletName: wallet.walletName,
-                    creationDate: wallet.creationDate,
-                }
-            ],
-            token: this.user.token - 1
-        };
-
-
-        console.log("updatedUser", updatedUser);
-
-        await User.updateUser(updatedUser);
         let balanceData = {
-            walletAmount: balance.walletAmount, // Se resta porque es un gasto
-            wallet: balance.wallet, // Se envía el ID de la wallet
-            currency: balance.currency // Se envía el ID de la moneda
+            walletAmount: balance.walletAmount,
+            wallet: balance.wallet.walletId,
+            currency: balance.currency.currencyId
         };
+        console.log("balanceData", balanceData);
         Balance.createBalance(balanceData);
+        window.location.href = "dashboard.html";
     }
 
     // Obtener el estado del juego desde el backend

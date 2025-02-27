@@ -35,8 +35,8 @@ public class User {
     @Column(nullable = false)
     private int token;
 
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Wallet> wallets;
 
     @JsonIgnore

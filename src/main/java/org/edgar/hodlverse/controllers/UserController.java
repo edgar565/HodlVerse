@@ -68,7 +68,6 @@ public class UserController {
                     user.setRegistrationDate(newUser.getRegistrationDate());
                     user.setPicture(newUser.getPicture());
                     user.setToken(newUser.getToken());
-                    user.setWallets(newUser.getWallets());
                     return userService.save(user);
                 })
                 .orElseGet(() -> {

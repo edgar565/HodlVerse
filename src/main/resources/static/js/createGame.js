@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const userLogged = await getUser();
         console.log("userLogged", userLogged);
         const game = new Game(difficulty.toUpperCase(), userLogged);
-        game.startGame();
+        await game.startGame();
     });
 
 });

@@ -1,12 +1,11 @@
 class User {
-    constructor(userId, name, email, password, registrationDate, picture, wallets, token) {
+    constructor(userId, name, email, password, registrationDate, picture, token) {
         this.userId = Number(userId);
         this.name = name;
         this.email = email;
         this.password = password;
         this.registrationDate = new Date(registrationDate);
         this.picture = picture;
-        this.wallets = wallets;
         this.token = token;
     }
 
@@ -29,10 +28,6 @@ class User {
 
         if (typeof userData.picture !== 'string' || !User.isValidUrl(userData.picture)) {
             throw new Error('picture debe ser una URL válida.');
-        }
-
-        if (!userData.wallets) {
-            throw new Error('wallets debe ser una instancia válida de Wallet o null.');
         }
 
         // Validar token
@@ -106,7 +101,7 @@ class User {
     }
 
     // ➕ Crear un nuevo usuario en la API
-    static async createUser(name, email, password, wallets) {
+    static async createUser(name, email, password) {
         try {
             // Crear el objeto del nuevo usuario
             let newUser = {
@@ -115,7 +110,6 @@ class User {
                 password,
                 registrationDate: new Date().toISOString(),
                 picture: " ",
-                wallets: wallets,
                 token: 2
             };
 
@@ -144,7 +138,7 @@ class User {
         }
 
         try {
-            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate, picture: user.picture, wallets: user.wallets, token: user.token};
+            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate, picture: user.picture, token: user.token};
 
             // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
             const data = await $.ajax({

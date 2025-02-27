@@ -30,21 +30,24 @@ class Transaction {
             userOriginBalancePrice = userOriginBalancePrice.currentPrice;
             let userOriginBalancePriceTotal = userOriginBalanceAmount * userOriginBalancePrice;
             console.log(`💰 Saldo en la moneda origen : ${userOriginBalancePriceTotal}`);
-
+            console.log("origin price", transactionData.originUnitPrice, transactionData.originTransactionAmount, "destination price", transactionData.destinationUnitPrice, transactionData.destinationTransactionAmount);
             // Calcular el precio de la transacción en USD
-            const originPrice = transactionData.originTransactionAmount * transactionData.originUnitPrice;
-            const destinationPrice = transactionData.destinationTransactionAmount * transactionData.destinationUnitPrice;
+            const originPrice = (transactionData.originTransactionAmount * transactionData.originUnitPrice).toFixed(2);
+            const destinationPrice = (transactionData.destinationTransactionAmount * transactionData.destinationUnitPrice).toFixed(2);
 
             console.log(`🔹 Origin Price: ${originPrice} USD`);
             console.log(`🔹 Destination Price: ${destinationPrice} USD`);
 
             // Validar si se puede realizar la transacción
             if (transactionData.transactionType === "buy") {
+                console.log("userOriginBalancePriceTotal", userOriginBalancePriceTotal, "originPrice", originPrice, "destinationPrice", destinationPrice);
                 if (userOriginBalancePriceTotal < originPrice || originPrice < destinationPrice) {
+                    console.log("NO VAAAAAA");
                     throw new Error('❌ Fondos insuficientes o el precio de origen es menor al precio de destino.');
                 }
             } else if (transactionData.transactionType === "sell") {
                 if (userOriginBalanceAmount < transactionData.originTransactionAmount) {
+                    console.log("NO VAAAAAA");
                     throw new Error("❌ Monedas insuficientes en la cartera.");
                 }
             }
