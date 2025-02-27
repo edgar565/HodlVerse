@@ -103,7 +103,7 @@ class Wallet {
 
     /**
      * Obtener las monedas de una billetera por su ID.
-     * @param {number} id - El identificador de la billetera.
+     * @param {number} id - El identificador del usuario.
      * @returns {Promise<Object|null>} Una promesa que se resuelve con las monedas de la billetera o null en caso de error.
      */
     static async getWalletsCurrenciesById(id) {

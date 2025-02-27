@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         try {
             const userId = await User.getUserId(); // Obtener ID del usuario
             const game = await Game.getActiveGameByUserId(userId);
-            return new Date(game.startDate);
+            return new Date(game.start_date);
         } catch (error) {
             console.error('❌ Error al obtener el usuario:', error);
             return null;
@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     function generateDateArray(start) {
         let dates = [];
         let current = new Date(start);
+        console.log(endDate)
         while (current <= endDate) {
             dates.push(new Date(current)); // Guardamos la fecha como objeto Date
             current.setDate(current.getDate() + 1);
@@ -191,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         try {
             const userId = await User.getUserId();
             const game = await Game.getActiveGameByUserId(userId);
-            return new Date(game.endDate);
+            return new Date(game.end_date);
         } catch (error) {
             console.error('❌ Error al obtener el usuario:', error);
             return null;
@@ -202,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         try {
             const userId = await User.getUserId();
             const game = await Game.getActiveGameByUserId(userId);
-            return new Date(game.startDate);
+            return new Date(game.start_date);
         } catch (error) {
             console.error('❌ Error al obtener el usuario:', error);
             return null;
