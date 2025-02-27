@@ -36,33 +36,4 @@ public class UserService {
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
-/*
-    // Método para guardar un usuario autenticado vía OAuth2
-    public User saveOAuth2User(OAuth2User oauth2User) {
-        String email = oauth2User.getAttribute("email");
-        String name = oauth2User.getAttribute("name");
-        String picture = oauth2User.getAttribute("picture");
-        int token = 2;
-
-        // Verifica si el usuario ya existe en la base de datos
-        User user = userRepository.findByEmail(email);
-
-        if (user == null) {
-            // Si no existe, crea un nuevo usuario
-            user = new User();
-            user.setEmail(email);
-            user.setName(name);
-            user.setPicture(picture);
-            user.setRegistrationDate(LocalDate.now());
-            user.setPassword(""); // O usa un valor por defecto
-            user.setToken(token);
-
-            user = userRepository.save(user);
-        }
-
-        return user;
-    }
-
- */
-
 }

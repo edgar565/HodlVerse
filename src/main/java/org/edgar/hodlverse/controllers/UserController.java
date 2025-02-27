@@ -27,27 +27,6 @@ public class UserController {
     public User newUser(@RequestBody User newUser) {
         return userService.save(newUser);
     }
-/*
-    @GetMapping
-    public Map<String, Object> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
-        if (principal == null) {
-            throw new RuntimeException("Usuario no autenticado");
-        }
-
-        // Guarda el usuario autenticado vía OAuth2 en la base de datos
-        User user = userService.saveOAuth2User(principal);
-
-        // Devuelve la información del usuario
-        return Map.of(
-                "id", user.getUserId(),
-                "name", user.getName(),
-                "email", user.getEmail(),
-                "picture", user.getPicture(),
-                "token", user.getToken()
-        );
-    }
-
- */
 
     // Obtener un usuario específico por su ID
     @GetMapping("/{id}")
