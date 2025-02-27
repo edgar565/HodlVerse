@@ -89,12 +89,8 @@ async function updateUser(user) {
 async function changeName(event){
     event.preventDefault();
     let user = await getUser();
-    let transactions = await Transaction.getTransactionsByUserId(user.userId);
-    console.log(transactions)
-    let games = await Game.getGames(user.userId);
-    console.log(games)
     let newName = document.getElementById("newDisplayName").value;
-    let newUser = new User(user.userId, newName, user.email, user.password, user.registrationDate, user.picture, user.wallet, user.token);
+    let newUser = new User(user.userId, newName, user.email, user.password, user.registrationDate, user.picture, user.token);
     console.log(newUser)
     let updatedUser = await updateUser(newUser);
     console.log(updatedUser)
@@ -104,10 +100,8 @@ async function changeName(event){
 async function changeEmail(event){
     event.preventDefault();
     let user = await getUser();
-    let transactions = await getTransactions(user.userId);
-    let games = await Game.getGames(user.userId);
     let newEmail = document.getElementById("newDisplayName").value;
-    let newUser = new User(user.userId, user.name, newEmail, user.password, user.registrationDate, user.picture, user.wallet, transactions, games, user.token);
+    let newUser = new User(user.userId, user.name, newEmail, user.password, user.registrationDate, user.picture, user.token);
     let updatedEmail = await updateUser(newUser);
     console.log(updatedEmail)
     closeModal("editEmailModal");
@@ -116,10 +110,8 @@ async function changeEmail(event){
 async function changePassword(event){
     event.preventDefault();
     let user = await getUser();
-    let transactions = await getTransactions(user.userId);
-    let games = await Game.getGames(user.userId);
     let newPassword = document.getElementById("newDisplayName").value;
-    let newUser = new User(user.userId, user.name, user.email, newPassword, user.registrationDate, user.picture, user.wallet, transactions, games, user.token);
+    let newUser = new User(user.userId, user.name, user.email, newPassword, user.registrationDate, user.picture, user.token);
     let updatedPassword = await updateUser(newUser);
     console.log(updatedPassword)
     closeModal("editPasswordModal");
@@ -132,6 +124,7 @@ function closeModal(idModal){
     const editDisplayModal = bootstrap.Modal.getInstance(editDisplayModalEl) || new bootstrap.Modal(editDisplayModalEl);
 // Cerrar el modal
     editDisplayModal.hide();
+    window.location.reload();
 }
 // Genera y añade una card para cada crypto
 function formatNumber(num) {
@@ -139,4 +132,14 @@ function formatNumber(num) {
     if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
     if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
     return num.toFixed(2);
+}
+
+async function buyTokens(event){
+    event.preventDefault();
+    let user = await getUser();
+    let amountToken = parseFloat(document.getElementById("tokenAmount").value) + user.token;
+    let newUser = new User(user.userId, user.name, user.email, user.password, user.registrationDate, user.picture, amountToken);
+    let updatedEmail = await updateUser(newUser);
+    console.log(updatedEmail)
+    closeModal("editEmailModal");
 }

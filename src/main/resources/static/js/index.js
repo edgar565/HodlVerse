@@ -163,7 +163,3 @@ async function loginUser(event) {
         document.getElementById("errorMessageLogin").innerHTML = "❌ Error al conectar con el servidor.";
     }
 }
-
-
-
-

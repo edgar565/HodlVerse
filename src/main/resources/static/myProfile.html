@@ -24,7 +24,6 @@
     <!-- Imports jQuery 3.6.0 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
     <!-- ===================== -->
     <!-- LINKS TO STYLESHEETS -->
     <!-- ===================== -->
@@ -241,7 +240,7 @@
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h1>Welcome, <span class="text-oro" id="displayName"></span></h1>
-                <button id="logout-btn" class="logout-button">Log Out <i class="fa-solid fa-arrow-right-from-bracket ms-2"></i></button>
+                <a id="logout-btn" class="btm logout-button" href="/logout">Log Out <i class="fa-solid fa-arrow-right-from-bracket ms-2"></i></a>
 
             </div>
             <p class="text-secondary" style="font-style: italic">Here is a quick overview of your account and
@@ -404,7 +403,7 @@
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="formTokens" onsubmit="buyTokens(event)">
                     <div class="mb-3">
                         <label for="tokenAmount" class="form-label">Enter amount to buy:</label>
                         <input type="number" class="form-control" id="tokenAmount" placeholder="e.g. 50">
