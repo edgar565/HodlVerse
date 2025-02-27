@@ -2,7 +2,6 @@ package org.edgar.hodlverse.services;
 
 import org.edgar.hodlverse.entities.User;
 import org.edgar.hodlverse.repositories.UserRepository;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,7 +36,7 @@ public class UserService {
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
-
+/*
     // Método para guardar un usuario autenticado vía OAuth2
     public User saveOAuth2User(OAuth2User oauth2User) {
         String email = oauth2User.getAttribute("email");
@@ -63,5 +62,7 @@ public class UserService {
 
         return user;
     }
+
+ */
 
 }
