@@ -239,7 +239,7 @@
             <!-- Trending Coins -->
             <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-4">
                 <div class="card shadow-sm">
-                    <div class="card-body">
+                    <div class="card-body" style="min-height: 320px;">
                         <div class="fw-bold mb-4 text-uppercase text-center">
                             <div class="d-flex align-items-center gap-1 justify-content-center">
                                 <img src="images/icons/fuego.png" alt="Icono de fuego" height="20" class="d-flex">
@@ -255,6 +255,9 @@
                         </div>
                         <ul id="top-trending-list" class="list-unstyled mt-2">
                             <!-- Datos insertados aquí -->
+                            <div id="loadingMessageTrending" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
                         </ul>
                         <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="trendingCoins">
                             View More
@@ -275,7 +278,11 @@
                             <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
-                        <ul id="top-losers-list" class="list-unstyled mt-2"></ul>
+                        <ul id="top-losers-list" class="list-unstyled mt-2">
+                            <div id="loadingMessageLosers" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
+                        </ul>
                         <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="topLosers">
                             View More
                         </button>
@@ -295,7 +302,11 @@
                             <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
-                        <ul id="top-winners-list" class="list-unstyled mt-2"></ul>
+                        <ul id="top-winners-list" class="list-unstyled mt-2">
+                            <div id="loadingMessageWinners" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
+                        </ul>
                         <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="topWinners">
                             View More
                         </button>
@@ -306,7 +317,7 @@
             <!-- Recommended -->
             <div class="col-lg-4 col-md-6 col-sm-12 border-2 border-gray-200 py-2 px-3 rounded mb-4">
                 <div class="card shadow-sm">
-                    <div class="card-body">
+                    <div class="card-body" style="min-height: 320px;">
                         <div class="fw-bold mb-4 text-uppercase text-center">
                             📌 Recommendations 📌
                         </div>
@@ -315,7 +326,11 @@
                             <div class="col-3 text-center">Price</div>
                             <div class="col-3 text-end">Gains</div>
                         </div>
-                        <ul class="list-unstyled mt-2" id="recommendations-list"></ul>
+                        <ul class="list-unstyled mt-2" id="recommendations-list">
+                            <div id="loadingMessageRecommended" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -333,6 +348,9 @@
                             <div class="col-3 text-end">Gains</div>
                         </div>
                         <ul class="list-unstyled mt-2" id="mostViewed-list">
+                            <div id="loadingMessageViewed" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -349,7 +367,11 @@
                             <div class="col-6">Coin</div>
                             <div class="col-6 text-end">Volume</div>
                         </div>
-                        <ul class="list-unstyled mt-2" id="highest-volume-list"></ul>
+                        <ul class="list-unstyled mt-2" id="highest-volume-list">
+                            <div id="loadingMessageVolume" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                            </div>
+                        </ul>
                         <button class="btn view-more-btn position-absolute bottom-0 start-50 translate-middle-x" id="highestVolume">
                             View More
                         </button>
@@ -357,8 +379,9 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-4 mb-2 px-3">
-            <div class="table-responsive">
+        <!-- General Table -->
+        <div class="row mt-4 mb-2 px-3" style="min-height: 100px;">
+            <div class="table-responsive" >
                 <table class="table table-hover text-center shadow-sm">
                     <thead>
                     <tr>
@@ -370,10 +393,14 @@
                         <th class="text-end col-3">Market Cap</th>
                     </tr>
                     </thead>
-                    <tbody id="cryptoTableBody"></tbody>
+                    <tbody id="cryptoTableBody">
+                    </tbody>
                 </table>
             </div>
-
+            <div id="loadingMessageGeneral" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                <span>Loading list...</span>
+            </div>
         </div>
     </div>
 </main>

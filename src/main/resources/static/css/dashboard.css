@@ -23,6 +23,10 @@
     position: relative;
 }
 /* ---- LOADING MESSAGES ---- */
+.fa-spin {
+    animation: fa-spin 2s infinite linear !important;
+}
+
 #loadingMessageYourCryptos {
     position: absolute;
     top: 50%;
