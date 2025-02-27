@@ -311,50 +311,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Datos de progreso iniciales
-    const partidas = [
-        {nombre: "2022", porcentaje: 40}, // Partida anterior
-        {nombre: "2023", porcentaje: 75}, // Partida actual
-    ];
-
-    // Elementos de progreso de partidas
-    const partidaAnteriorText = document.getElementById("partidaAnteriorText");
-    const partidaActualText = document.getElementById("partidaActualText");
-    const lineaAnterior = document.getElementById("past");
-    const lineaActual = document.getElementById("now");
-
-    // Elementos de la barra de progreso circular
-    const progressCircle = document.getElementById("progressCircle");
-    const progressText = document.getElementById("progressText");
-
-    // Función para actualizar las partidas (una sola vez)
-    function actualizarPartidas() {
-        if (!partidaAnteriorText || !partidaActualText || !lineaAnterior || !lineaActual) {
-            console.error("Uno o más elementos no fueron encontrados.");
-            return;
-        }
-
-        partidaAnteriorText.textContent = partidas[0].nombre;
-        partidaActualText.textContent = partidas[1].nombre;
-
-        // Ajustar la altura de las líneas según el porcentaje
-        lineaAnterior.style.height = `${partidas[0].porcentaje}px`;
-        lineaActual.style.height = `${partidas[1].porcentaje}px`;
-    }
-
-    // Función para animar la barra de progreso circular (una sola vez)
-    function animarProgresoCircular() {
-        const nuevoOffset = 314 - (partidas[1].porcentaje / 100) * 314;
-        progressCircle.style.transition = "stroke-dashoffset 1.5s ease-in-out";
-        progressCircle.style.strokeDashoffset = nuevoOffset;
-        progressText.textContent = `${partidas[1].porcentaje}%`;
-    }
-
-    // Llamar a la función una sola vez después de cargar
-    setTimeout(() => {
-        actualizarPartidas();
-        animarProgresoCircular();
-    }, 1000); // Retraso de 1 segundo para dar un efecto inicial
 
     async function fetchTransactionsById() {
         try {
