@@ -201,8 +201,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const history = await fechtCryptoHistory();
 
     async function updateCryptoTable() {
-        const loadingMessage = document.getElementById("loadingMessageGeneral");
-        loadingMessage.style.display = "flex";
+        document.querySelectorAll(".loading-message").forEach(el => el.style.display = "flex");
         try {
             let tableBody = document.getElementById("cryptoTableBody");
             tableBody.innerHTML = ""; // Limpiar la tabla antes de actualizarla
@@ -229,8 +228,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (error) {
             console.error("Error al obtener datos:", error);
         }
-        loadingMessage.style.display = "none"; // Oculta el mensaje de carga solo si hay datos
-
+        document.querySelector("#loadingMessageGeneral").style.opacity = "0";
+        document.querySelector("#loadingMessageGeneral").style.pointerEvents = "none";
     }
 
     updateCryptoTable();

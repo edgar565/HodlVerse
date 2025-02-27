@@ -132,6 +132,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 // Función para llenar la tabla con los datos obtenidos
 async function fillCryptoTable() {
+    const loadingMessage = document.getElementById("loadingMessageCryptos");
+    loadingMessage.style.display = "flex";
     try {
         let tableBody = document.getElementById("cryptoHoldingsTable");
 
@@ -175,6 +177,10 @@ async function fillCryptoTable() {
     } catch (error) {
         console.error("❌ Error al llenar la tabla:", error);
     }
+    loadingMessage.style.opacity = "0";
+    loadingMessage.style.pointerEvents = "none";// Oculta el mensaje de carga solo si hay datos
+
+
 }
 
 // ================================

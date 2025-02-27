@@ -206,7 +206,7 @@
 
             <!-- Columna derecha: Lista de criptomonedas -->
             <div class="col-12 col-md-6 d-flex align-items-center">
-                <div class="card more-info-card w-100 p-3">
+                <div class="card more-info-card w-100 p-3" style="min-height: 300px">
                     <div class="gap-1 mb-1 d-flex justify-content-between p-2">
                         <h4 class="m-0">More Info</h4>
                     </div>
@@ -219,7 +219,12 @@
                                 <th class="text-end">Current Price</th>
                             </tr>
                             </thead>
-                            <tbody id="cryptoHoldingsTable"></tbody>
+                            <tbody id="cryptoHoldingsTable">
+                            </tbody>
+                            <div id="loadingMessageCryptos" class="loading-message d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin fs-3"></i>
+                                <span>Loading cryptos...</span>
+                            </div>
                         </table>
                     </div>
                 </div>

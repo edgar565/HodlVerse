@@ -49,6 +49,21 @@ table {
     font-size: 1rem;
 }
 
+/* ---- LOADING MESSAGES ---- */
+.fa-spin {
+    animation: fa-spin 2s infinite linear !important;
+}
+
+
+#loadingMessageCryptos {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #666;
+    display: none;
+}
 
 
 

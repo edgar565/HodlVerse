@@ -591,12 +591,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
         return num.toFixed(2);
     }
+
     const loadingMessageYourCryptos = document.getElementById('loadingMessageYourCryptos');
+    const emptyMessageYourCryptos = document.getElementById('emptyMessageYourCryptos');
+    if (cryptos.length === 0) {
+        emptyMessageYourCryptos.style.display = "flex";
+        loadingMessageYourCryptos.style.color = "transparent";
+    }
+    loadingMessageYourCryptos.style.display = "flex";
 
-// Mostrar el mensaje de carga
-    loadingMessageYourCryptos.style.display = "flex";  // Mostrar el mensaje de carga
 
-// Asumimos que 'cryptos', 'totalValue', 'valueFinal', 'contador' y 'formatNumber' ya están definidos previamente
     cryptos.forEach(crypto => {
         const card = document.createElement("div");
         card.classList.add("card", "crypto", "shadow-sm", "mb-2");
@@ -622,7 +626,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         contador++;
     });
 
-// Usar setTimeout para asegurar que el mensaje de carga desaparezca después de que se terminen de agregar los datos
-        loadingMessageYourCryptos.style.color = "transparent";  // Ocultar el mensaje de carga
+    loadingMessageYourCryptos.style.color = "transparent";
 
 });

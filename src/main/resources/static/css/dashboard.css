@@ -64,6 +64,16 @@
     display: none; /* Empezamos con el mensaje oculto */
 }
 
+/* ------ EMPTY MESSAGES ------- */
+.empty-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #666;
+    display: none; /* Empezamos con el mensaje oculto */
+}
 
 
 /* -------------------- CALENDARIO -------------------- */
