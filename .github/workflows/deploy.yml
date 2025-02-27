@@ -1,0 +1,89 @@
+name: Deploy Spring Boot to EC2 (Ubuntu)  # Nombre del workflow
+
+on:
+  push:                                   # Workflow se activa cuando se hace push.
+    branches:
+      - master                              # Solo se ejecuta si el push es en la rama main.
+
+
+jobs:
+  build-and-deploy:                       # Define el trabajo llamado build-and-deploy.
+    runs-on: ubuntu-latest                # El trabajo se ejecuta en Ubuntu.
+
+    steps:
+      # 1⃣ Descargar el código fuente del repositorio.
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      # 2⃣ Configurar JDK 21 (Java Development Kit).
+      - name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          java-version: 21
+          distribution: temurin
+
+
+      # 3⃣ Construir la aplicación usando Maven.
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: List target directory
+        run: ls -la target/
+
+      # 4⃣ Copiar el archivo .war a la instancia EC2.
+      - name: Copy .war to EC2
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: target/HodlVerse-0.0.1-SNAPSHOT.war
+          target: /home/ubuntu/
+          strip_components: 1
+
+
+      # 5️⃣ Configurar variables de entorno y desplegar la aplicación en Tomcat.
+      - name: Configure environment variables and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # 1️⃣ Configurar variables de entorno en el archivo /etc/environment para persistencia.
+            echo "export DB_ENDPOINT=${{ secrets.DB_ENDPOINT }}" | sudo tee -a /etc/environment
+            echo "export DB_USERNAME=${{ secrets.DB_USERNAME }}" | sudo tee -a /etc/environment
+            echo "export DB_PASSWORD=${{ secrets.DB_PASSWORD }}" | sudo tee -a /etc/environment
+
+            # 2️⃣ Recargar las variables de entorno en la sesión actual.
+            source /etc/environment
+
+            # 3️⃣ Mover el archivo .war a la carpeta de despliegue de Tomcat.
+            sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
+
+            # 4️⃣ Cambiar el propietario y permisos del archivo para que Tomcat pueda acceder.
+            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
+            sudo chmod 755 /var/lib/tomcat10/webapps/ROOT.war
+
+            # 5️⃣ Reiniciar el servicio Tomcat para cargar el nuevo archivo .war.
+            sudo systemctl restart tomcat10
+
+      # 5⃣ Configurar variables de entorno y desplegar la aplicación en Tomcat.
+      - name: Configure environment variables and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # 3⃣ Mover el archivo .war a la carpeta de despliegue de Tomcat.
+            sudo mv /home/ubuntu/HodlVerse-0.0.1-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
+
+
+            # 4⃣ Cambiar el propietario y permisos del archivo para que Tomcat pueda acceder.
+            sudo chown tomcat:tomcat /var/lib/tomcat10/webapps/ROOT.war
+            sudo chmod 755 /var/lib/tomcat10/webapps/ROOT.war
+
+
+            # 5⃣ Reiniciar el servicio Tomcat para cargar el nuevo archivo .war.
+            sudo systemctl restart tomcat10

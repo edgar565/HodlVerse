@@ -154,6 +154,4 @@ public class HistoryController {
     public List<History> getAllHistoryByCurrencyId(@PathVariable Long currencyId) {
         return historyService.getAllHistoryByCurrencyId(currencyId);
     }
-
-
 }

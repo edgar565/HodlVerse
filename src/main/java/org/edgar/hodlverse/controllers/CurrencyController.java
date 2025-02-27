@@ -87,6 +87,13 @@ public class CurrencyController {
 
      */
 
+    @GetMapping("/ticker/{ticker}")
+    public ResponseEntity<Currency> getByTicker(@PathVariable String ticker) {
+        Currency currency = currencyService.findByTicker(ticker)
+                .orElseThrow(() -> new NotFoundException("Moneda con ticker " + ticker + " no encontrada."));
+        return ResponseEntity.ok(currency);
+    }
+
     @GetMapping("/random")
     public List<Currency> getAllCurrenciesRandom(HttpServletResponse response,
                                                  @CookieValue(value = "currencyIds", required = false) String currencyIdsCookie) throws UnsupportedEncodingException {

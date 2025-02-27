@@ -353,6 +353,7 @@ class History {
     }
     // 🔄 Obtener la última entrada de historial por currencyId
     static async getLatestHistoryByCurrencyId(currencyId) {
+        console.log("currencyId", currencyId);
         if (typeof currencyId !== 'number' || isNaN(currencyId)) {
             console.error('El ID de la moneda debe ser un número válido.');
             return;
@@ -360,6 +361,22 @@ class History {
         try {
             const response = await $.ajax({
                 url: `/history/latest/${currencyId}`, // Endpoint para obtener la última entrada de History por currencyId
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
+    }
+    static async getLatestHistoryByCurrency(currencyId) {
+        if (typeof currencyId !== 'number' || isNaN(currencyId)) {
+            console.error('El ID de la moneda debe ser un número válido.');
+            return;
+        }
+        try {
+            const response = await $.ajax({
+                url: `/history/currency/${currencyId}/all`, // Endpoint para obtener la última entrada de History por currencyId
                 type: 'GET'
             });
             return response;

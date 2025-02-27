@@ -1,10 +1,8 @@
 class Wallet {
-    constructor(walletId, walletName, creationDate, user, balances) {
+    constructor(walletId, walletName, creationDate) {
         this.walletId = walletId;
         this.walletName = walletName;
         this.creationDate = creationDate;
-        this.user = user;  // Should be an instance of User
-        this.balances = balances;  // Should be an array of Balance objects
     }
 
      static validateData(walletData) {
@@ -14,10 +12,6 @@ class Wallet {
 
         if (!(walletData.creationDate instanceof Date)) {
             throw new Error('creationDate debe ser una instancia de Date.');
-        }
-
-        if (!(walletData.user instanceof User)) {
-            throw new Error('user debe ser una instancia de la clase User.');
         }
 
         if (!Array.isArray(walletData.balances) || !walletData.balances.every(b => b instanceof Balance)) {
@@ -93,44 +87,31 @@ class Wallet {
     }
 
     // Crear una nueva billetera
-    static async createWallet(walletData) {
+    static async createWallet() {
         try {
-            // Validación de los datos de la billetera
-            this.validateData({
+            // Crear el objeto del nuevo usuario
+            let wallet = {
                 walletId: null,
-                walletName: walletData.walletName,
-                creationDate: new Date(),
-                user: walletData.user,
-                balances: []
+                walletName: "Mi billetera",
+                creationDate: new Date().toISOString(),
+            };
+
+            // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
+            const data = await $.ajax({
+                url: '/wallets',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(wallet)
             });
 
-            // Realizar la solicitud AJAX usando $.ajax para crear la billetera
-            const walletResponse = await $.ajax({
-                    url: '/wallets',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        walletName: walletData.walletName,
-                        creationDate: new Date().toISOString(),
-                        user: walletData.user
-                    }),
-                    success: (response) => resolve(response),  // Resolvemos la promesa con la respuesta exitosa
-                    error: (error) => reject(new Error('Error al crear la billetera: ' + error.statusText))  // Rechazamos la promesa en caso de error
-            });
-
-            // Procesar la respuesta de la creación de la billetera
-            console.log('Billetera creada:', walletResponse);
-
-            // Si se requiere alguna lógica adicional después de crear la billetera (como cargar o actualizar información de billeteras)
             Wallet.loadWallets(); // Recargar la lista de billeteras si es necesario
 
-            return walletResponse;  // Retornar la respuesta de la creación de la billetera
-
+            return data; // Retornar la respuesta del servidor
         } catch (error) {
-            console.error('Error al crear la billetera:', error.message);
+            console.error('Error al crear el usuario:', error.message);
+            return null; // Retorna null en caso de error
         }
     }
-
 
     // Actualizar una billetera existente
     static updateWallet(id, updatedData, callback) {
@@ -186,22 +167,20 @@ class Wallet {
     }
 
     // Obtener el saldo total de una billetera de un usuario
-    static getWalletTotalBalance(userId, callback) {
+    static async getWalletTotalBalance(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
             console.error('El ID del usuario debe ser un número válido.');
             return;
         }
-        $.ajax({
-            url: `/wallets/totalBalance/${userId}`,
-            type: 'GET',
-            success: (data) => {
-                console.log(`Saldo total para el usuario con ID ${userId}:`, data);
-                if (callback) callback(data);
-            },
-            error: (error) => {
-                console.error('Error al obtener el saldo total:', error);
-            }
-        });
+        try {
+            return await $.ajax({
+                url: `/wallets/totalBalance/${userId}`,
+                type: 'GET'
+            });
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            return null; // Retorna null en caso de error
+        }
     }
 
     // *** NUEVA FUNCIÓN PARA OBTENER EL BALANCE HISTÓRICO DE UN USUARIO EN UN DÍA ESPECÍFICO ***

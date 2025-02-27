@@ -1,6 +1,6 @@
 class Balance {
     constructor(balanceId, walletAmount, wallet, currency) {
-        this.balanceId = balanceId;
+        this.balanceId = balanceId || null;
         this.walletAmount = walletAmount;
         this.wallet = wallet;
         this.currency = currency;

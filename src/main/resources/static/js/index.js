@@ -88,16 +88,16 @@ function checkPassword(password) {
     return errorMessages.join("<br>");
 }
 
-async function loadUsers() {
-    try {
-        const users = await User.loadUsers();
-        console.log("Usuarios cargados:", users);
+async function createWallet(){
+    try{
+        let wallet = await Wallet.createWallet();
+        return wallet;
     } catch (error) {
-        console.error("Error al cargar los usuarios:", error);
+        console.error("Error al registrar el usuario:", error);
     }
 }
 
-function registerUser(event) {
+async function registerUser(event) {
     event.preventDefault(); // Evita que se recargue la página
 
     const name = document.getElementById("floatingNameSignup").value;
@@ -119,8 +119,14 @@ function registerUser(event) {
     }
 
     try {
+        let wallet = await createWallet();
+        let currency = await Currency.getCurrencyById(3);
+        console.log(wallet);
+        console.log(currency);
+        let balance = new Balance( null, 100000 ,wallet, currency);
+        console.log(balance)
         // Llamada a la función para crear el usuario si todo está correcto
-        User.createUser(name, email, password);
+        User.createUser(name, email, password, wallet);
         console.log("Usuario registrado correctamente.");
         window.document.location.href = "createGame.html";
     } catch (error) {
@@ -157,7 +163,3 @@ async function loginUser(event) {
         document.getElementById("errorMessageLogin").innerHTML = "❌ Error al conectar con el servidor.";
     }
 }
-
-
-
-

@@ -98,11 +98,15 @@
             </button>
         </div>
     </div>
+
     <!-- Video Container -->
     <div class="video-container mb-5">
         <video id="video" controls>
-            <source src="videos/invideo-ai-1080%20Crypto%20Craze_%20Charts,%20Tickers%20&%20Transact%202025-02-24.mp4" type="video/mp4">
-            <track kind="subtitles" src="videos/subtitulos/invideo-ai-1080%20Crypto%20Craze_%20Charts,%20Tickers%20&%20Transact%202025-02-24-VEED.mp4.vtt" srclang="en" label="English">
+            <source src="videos/invideo-ai-1080%20Crypto%20Craze_%20Charts,%20Tickers%20&%20Transact%202025-02-24.mp4"
+                    type="video/mp4">
+            <track kind="subtitles"
+                   src="videos/subtitulos/invideo-ai-1080%20Crypto%20Craze_%20Charts,%20Tickers%20&%20Transact%202025-02-24-VEED.mp4.vtt"
+                   srclang="en" label="English">
         </video>
     </div>
 </main>
@@ -144,10 +148,12 @@
                             <i class="fa-brands fa-google"></i> Sign up with Google
                         </button>
                     </a>
-                    <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="submit">
-                        <i class="fa-brands fa-apple"></i>
-                        Sign up with Apple
-                    </button>
+                    <a href="/oauth2/authorization/github">
+                        <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="button">
+                            <i class="fa-brands fa-github"></i>
+                            Sign up with GitHub
+                        </button>
+                    </a>
                     <div class="d-flex justify-content-center gap-2 mt-4">
                         <p class="d-flex justify-content-center" href="#">Already have an account?</p>
                         <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalLogin">Log
@@ -191,10 +197,12 @@
                             <i class="fa-brands fa-google"></i> Log in with Google
                         </button>
                     </a>
-                    <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="submit">
-                        <i class="fa-brands fa-apple"></i>
-                        Log in with Apple
-                    </button>
+                    <a href="/oauth2/authorization/github">
+                        <button class="w-100 py-2 mb-2 btn btn-sign rounded-3" type="button">
+                            <i class="fa-brands fa-github"></i>
+                            Log in with Git Hub
+                        </button>
+                    </a>
                     <div class="d-flex justify-content-center gap-2 mt-4">
                         <p class="d-flex justify-content-center" href="#">Don't have an account?</p>
                         <a class="btn-changeLogin" data-bs-toggle="modal" data-bs-target="#modalSignin">Sign
@@ -205,10 +213,11 @@
         </div>
     </div>
 </div>
-</div>
 <!-- ===================== -->
 <!-- LINKS TO SCRIPTS -->
 <!-- ===================== -->
+<script src="/js/currencyJs/currency.js"></script>
+<script src="/js/balanceJs/balance.js"></script>
 <script src="/js/walletJs/wallet.js"></script>
 <script src="/js/userJs/user.js"></script>
 <script src="/js/index.js"></script>
