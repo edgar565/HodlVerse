@@ -435,11 +435,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("✅ Tabla actualizada con transacciones.");
     }
-
+    /* ----- VIEW MORE TRANSACTIONS TABLE ----- */
     function populateTransactionTableAll(transactions) {
         const tableBody = document.getElementById("transactionTableBodyFull");
         tableBody.innerHTML = ""; // Limpiar la tabla antes de agregar datos
+
         const loadingMessageTransactions = document.getElementById('loadingMessageTransactions');
+        const emptyMessageTransactions = document.getElementById('emptyMessageTransactions');
+
+        if (transactions.length === null) {
+            emptyMessageTransactions.style.display = "flex";
+            loadingMessageTransactions.style.color = "transparent";
+        }
+        loadingMessageTransactions.style.display = "flex";
+
 
 
         transactions.forEach(transaction => {
@@ -477,12 +486,11 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
 
             tableBody.appendChild(row);
+
         });
-
-        loadingMessageTransactions.style.color = "transparent";
-
         console.log("✅ Tabla actualizada con transacciones.");
     }
+
 
 
 });
@@ -591,41 +599,48 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
         return num.toFixed(2);
     }
-
     const loadingMessageYourCryptos = document.getElementById('loadingMessageYourCryptos');
     const emptyMessageYourCryptos = document.getElementById('emptyMessageYourCryptos');
-    if (cryptos.length === 0) {
-        emptyMessageYourCryptos.style.display = "flex";
-        loadingMessageYourCryptos.style.color = "transparent";
-    }
+    const cryptosContainer = document.getElementById('cryptosContainer');
+
+// Mostrar "loading" al inicio
     loadingMessageYourCryptos.style.display = "flex";
+    emptyMessageYourCryptos.style.color = "transparent";
+    cryptosContainer.innerHTML = ""; // Asegurar que no haya datos previos
+
+// Simulación de carga de datos (esto lo debes reemplazar por tu código real)
+        if (!cryptos || cryptos.length === 0) {
+            // No hay datos
+            loadingMessageYourCryptos.color = "transparent";
+            emptyMessageYourCryptos.style.display = "flex";
+        } else {
+            // Sí hay datos
 
 
-    cryptos.forEach(crypto => {
-        const card = document.createElement("div");
-        card.classList.add("card", "crypto", "shadow-sm", "mb-2");
+            cryptos.forEach((crypto, index) => {
+                const card = document.createElement("div");
+                card.classList.add("card", "crypto", "shadow-sm", "mb-2");
 
-        let amount = totalValue[contador];
-        let final = valueFinal[contador];
+                let amount = totalValue[index];
+                let final = valueFinal[index];
 
-        card.innerHTML = `
-        <div class="card-body d-flex align-items-center justify-content-between">
-            <div>
-                <h5 class="card-title fw-bold">${crypto.name}</h5>
-                <h5 class="card-title text-dark">${formatNumber(final)}</h5>
-                <div class="d-flex align-items-center gap-2">
-                    <h6 class="text-muted fs-6">${crypto.ticker}</h6>
-                    <h6 class="text-muted fs-6">${formatNumber(amount)}</h6>
+                card.innerHTML = `
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="card-title fw-bold">${crypto.name}</h5>
+                    <h5 class="card-title text-dark">${formatNumber(final)}</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <h6 class="text-muted fs-6">${crypto.ticker}</h6>
+                        <h6 class="text-muted fs-6">${formatNumber(amount)}</h6>
+                    </div>
                 </div>
+                <img src="${crypto.image}" alt="${crypto.name}" height="55" class="ms-3">
             </div>
-            <img src="${crypto.image}" alt="${crypto.name}" height="55" class="ms-3">
-        </div>
-    `;
+        `;
 
-        container.appendChild(card);
-        contador++;
-    });
-
+                cryptosContainer.appendChild(card);
+            });
+        }
     loadingMessageYourCryptos.style.color = "transparent";
 
 });

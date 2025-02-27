@@ -26,52 +26,26 @@
 .fa-spin {
     animation: fa-spin 2s infinite linear !important;
 }
+.loading-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #666;
+    display: none; /* Empezamos con el mensaje oculto */
+}
 
-#loadingMessageYourCryptos {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.2rem;
-    color: #666;
-    display: none; /* Empezamos con el mensaje oculto */
-}
-#loadingMessageTransactions {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.2rem;
-    color: #666;
-    display: none; /* Empezamos con el mensaje oculto */
-}
-#loadingMessageChart {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.2rem;
-    color: #666;
-    display: none; /* Empezamos con el mensaje oculto */
-}
-#loadingMessageCalendar {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.2rem;
-    color: #666;
-    display: none; /* Empezamos con el mensaje oculto */
-}
+
 
 /* ------ EMPTY MESSAGES ------- */
-.empty-message {
+#emptyMessageYourCryptos {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 1.2rem;
-    color: #666;
+    font-size: 20px;
+    color: black;
     display: none; /* Empezamos con el mensaje oculto */
 }
 
