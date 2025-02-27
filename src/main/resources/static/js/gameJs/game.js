@@ -197,6 +197,24 @@ class Game {
         return hasReachedGoal;
     }
 
+    // Verificar si el juego ha terminado
+    checkGameOver() {
+        const now = new Date();
+
+        if (this.currentCredit <= 0) {
+            console.log("Has perdido la partida. Te has quedado sin crédito.");
+            return { lost: true, reason: "bankruptcy" };
+        }
+
+        if (now >= this.endDate) {
+            console.log("Has perdido la partida. Se acabó el tiempo.");
+            return { lost: true, reason: "outOfTime" };
+        }
+
+        console.log("El juego sigue en curso.");
+        return { lost: false, reason: null };
+    }
+
     // Obtener el juego activo de un usuario por su ID
     static async getActiveGameByUserId(userId) {
         if (typeof userId !== 'number' || isNaN(userId)) {
