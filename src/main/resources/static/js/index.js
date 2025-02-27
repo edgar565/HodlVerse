@@ -88,15 +88,6 @@ function checkPassword(password) {
     return errorMessages.join("<br>");
 }
 
-async function createWallet(){
-    try{
-        let wallet = await Wallet.createWallet();
-        return wallet;
-    } catch (error) {
-        console.error("Error al registrar el usuario:", error);
-    }
-}
-
 async function registerUser(event) {
     event.preventDefault(); // Evita que se recargue la página
 
@@ -119,16 +110,18 @@ async function registerUser(event) {
     }
 
     try {
-        let wallet = await createWallet();
-        let currency = await Currency.getCurrencyById(3);
+        let wallet = new Wallet(null, "defaultWallet", new Date());
+        let currency = await Currency.getCurrencyByTicker("usdt");
         console.log(wallet);
         console.log(currency);
         let balance = new Balance( null, 100000 ,wallet, currency);
         console.log(balance)
+        let wallets = [];
+        wallets.push(wallet);
         // Llamada a la función para crear el usuario si todo está correcto
-        User.createUser(name, email, password, wallet);
+        await User.createUser(name, email, password, wallets);
         console.log("Usuario registrado correctamente.");
-        window.document.location.href = "createGame.html";
+        //window.document.location.href = "createGame.html";
     } catch (error) {
         console.error("Error al registrar el usuario:", error);
     }

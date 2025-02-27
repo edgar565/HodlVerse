@@ -1,5 +1,5 @@
 class User {
-    constructor(userId, name, email, password, registrationDate, picture,  token) {
+    constructor(userId, name, email, password, registrationDate, picture, token) {
         this.userId = Number(userId);
         this.name = name;
         this.email = email;
@@ -138,7 +138,7 @@ class User {
         }
 
         try {
-            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate.toISOString(), picture: user.picture, token: user.token};
+            let updatedUser = { name: user.name,email: user.email, password: user.password, registrationDate: user.registrationDate, picture: user.picture, token: user.token};
 
             // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
             const data = await $.ajax({

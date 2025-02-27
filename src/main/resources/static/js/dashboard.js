@@ -578,7 +578,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         contador++;
     });
 
+    await checkGame();
+
 // Usar setTimeout para asegurar que el mensaje de carga desaparezca después de que se terminen de agregar los datos
         loadingMessageYourCryptos.style.color = "transparent";  // Ocultar el mensaje de carga
 
 });
+async function checkGame() {
+    const loadingMessage = document.getElementById("loadingMessageGame");
+    loadingMessage.style.display = "flex"; // Mostrar pantalla de carga
+
+    const userId = await User.getUserId();
+    const game = await Game.getActiveGameByUserId(userId);
+
+    if (game == null) {
+        window.location.href = "createGame.html";
+    } else {
+        console.log("Hay un game activo.");
+        loadingMessage.style.opacity = "0"; // Ocultar pantalla de carga
+        loadingMessage.style.pointerEvents = "none";// Oculta el mensaje de carga solo si hay datos
+    }
+
+
+}

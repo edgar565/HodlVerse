@@ -484,8 +484,8 @@ async function confirmBuy() {
         console.log("crypto current price", crypto.currentPrice, "sell-amount", parseFloat(document.getElementById("sell-amount").value));
         const transactionData = {
             transactionType: actionType, // Can be "buy", "sell" or "exchange"
-            originTransactionAmount: parseFloat(document.getElementById("sell-amount").value) || 0 , // Use string to avoid precision issues in BigDecimal
-            destinationTransactionAmount: crypto.currentPrice * parseFloat(document.getElementById("sell-amount").value) || 0,
+            originTransactionAmount: document.getElementById("sell-amount").value || 0 , // Use string to avoid precision issues in BigDecimal
+            destinationTransactionAmount: crypto.currentPrice * document.getElementById("sell-amount").value || 0,
             originUnitPrice: crypto.currentPrice,
             destinationUnitPrice: usdHistory.currentPrice,
             transactionDate: new Date().toISOString().split('T')[0], // Format "YYYY-MM-DD"

@@ -1,8 +1,9 @@
 class Wallet {
-    constructor(walletId, walletName, creationDate) {
+    constructor(walletId, walletName, creationDate, user) {
         this.walletId = walletId;
         this.walletName = walletName;
         this.creationDate = creationDate;
+        this.user = user;
     }
 
      static validateData(walletData) {
@@ -27,23 +28,30 @@ class Wallet {
             url: '/wallets',
             type: 'GET',
             success: (data) => {
+                console.log("Respuesta del servidor:", data);
+
+                if (!Array.isArray(data)) {
+                    console.error("❌ La respuesta del servidor no es un array:", data);
+                    return;
+                }
+
                 Wallet.wallets.length = 0; // Limpiar la lista antes de llenarla
                 data.forEach(w => {
                     try {
                         Wallet.validateData(w);
                         Wallet.wallets.push(new Wallet(
-                            w.walletId, w.walletName, new Date(w.creationDate),
-                            new User(w.user), w.balances.map(b => new Balance(b))
+                            w.walletId, w.walletName, new Date(w.creationDate), w.user
                         ));
                     } catch (error) {
-                        console.warn(`Billetera omitida debido a datos inválidos:`, w, error.message);
+                        console.warn(`⚠️ Billetera omitida por datos inválidos:`, w, error.message);
                     }
                 });
-                console.log('Billeteras actualizadas:', Wallet.wallets);
+
+                console.log('✅ Billeteras actualizadas:', Wallet.wallets);
                 if (callback) callback(Wallet.wallets);
             },
             error: (error) => {
-                console.error('Error al obtener billeteras:', error);
+                console.error('❌ Error al obtener billeteras:', error);
             }
         });
     }
@@ -61,8 +69,7 @@ class Wallet {
                 try {
                     Wallet.validateData(data);
                     if (callback) callback(new Wallet(
-                        data.walletId, data.walletName, new Date(data.creationDate),
-                        new User(data.user), data.balances.map(b => new Balance(b))
+                        data.walletId, data.walletName, new Date(data.creationDate), data.walletId
                     ));
                 } catch (error) {
                     console.error(`Error al validar la billetera con ID ${id}:`, error.message);
@@ -87,13 +94,15 @@ class Wallet {
     }
 
     // Crear una nueva billetera
-    static async createWallet() {
+    static async createWallet(user) {
+        console.log("userId", user);
         try {
             // Crear el objeto del nuevo usuario
             let wallet = {
                 walletId: null,
                 walletName: "Mi billetera",
                 creationDate: new Date().toISOString(),
+                user: user
             };
 
             // Realizar la solicitud AJAX usando $.ajax sin Promesa manual
@@ -104,7 +113,8 @@ class Wallet {
                 data: JSON.stringify(wallet)
             });
 
-            Wallet.loadWallets(); // Recargar la lista de billeteras si es necesario
+            console.log("Billetera creada con éxito:", data);
+
 
             return data; // Retornar la respuesta del servidor
         } catch (error) {
@@ -124,7 +134,6 @@ class Wallet {
                 walletId: id,
                 walletName: updatedData.walletName,
                 creationDate: new Date(updatedData.creationDate),
-                user: updatedData.user,
                 balances: updatedData.balances || []
             });
             $.ajax({

@@ -59,14 +59,9 @@ class Balance {
         });
     }
 
-    static createBalance(balanceData, callback) {
+     static async createBalance(balanceData, callback) {
         try {
             console.log("📤 Enviando solicitud POST con datos:", balanceData);
-
-            // Validar datos antes de enviar
-            if (!balanceData || !balanceData.wallet || !balanceData.currency) {
-                throw new Error("❌ Datos de balance inválidos.");
-            }
 
             // Enviar solo los IDs de wallet y currency
             const requestBody = {
@@ -75,7 +70,7 @@ class Balance {
                 currency: { currencyId: balanceData.currency.currencyId || balanceData.currency } // Solo el ID
             };
 
-            $.ajax({
+            await $.ajax({
                 url: '/balances',
                 type: 'POST',
                 contentType: 'application/json',
@@ -85,8 +80,10 @@ class Balance {
                     if (callback) callback(data);
                     Balance.loadBalances();
                 },
-                error: (error) => {
-                    console.error("❌ Error al crear el balance:", error);
+                error: (xhr) => {
+                    // Imprime la respuesta completa del servidor
+                    console.error("❌ Error al crear el balance:", xhr);
+                    console.error("📩 Respuesta del servidor:", xhr.responseText);
                 }
             });
         } catch (error) {
