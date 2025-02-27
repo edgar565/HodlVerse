@@ -3,6 +3,8 @@ package org.edgar.hodlverse.controllers;
 import org.edgar.hodlverse.entities.User;
 import org.edgar.hodlverse.services.NotFoundException;
 import org.edgar.hodlverse.services.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,24 @@ public class UserController {
                 .orElseThrow(() -> new NotFoundException("Usuario con ID " + id + " no encontrado."));
     }
 
+    @GetMapping
+    public Map<String, Object> getUserInfo(@AuthenticationPrincipal OAuth2User principal) {
+        if (principal == null) {
+            throw new RuntimeException("Usuario no autenticado");
+        }
+
+        // Guarda el usuario autenticado vía OAuth2 en la base de datos
+        User user = userService.saveOAuth2User(principal);
+
+        // Devuelve la información del usuario
+        return Map.of(
+                "id", user.getUserId(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "picture", user.getPicture(),
+                "token", user.getToken()
+        );
+    }
 
     // Actualizar un usuario existente
     @PutMapping("/{id}")
