@@ -68,7 +68,7 @@ async function showCharts(histories) {
         },
         title: {
             left: 'center',
-            text: 'Crypto Price Chart (Last 24 Hours)'
+            text: ''
         },
         toolbox: {
             feature: {
@@ -157,7 +157,7 @@ async function showCharts(histories) {
         },
         title: {
             left: 'center',
-            text: 'Crypto Price Chart (Daily)'
+            text: ''
         },
         toolbox: {
             feature: {
