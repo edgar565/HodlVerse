@@ -146,3 +146,63 @@ document.addEventListener("DOMContentLoaded", function () {
     trendingCoins();
 
 });
+async function search(name){
+    try{
+        const data = await Currency.search(name);
+        return data;
+    } catch (error) {
+        console.error('❌ Error al obtener los valores:', error);
+        return []; // Devuelve un array vacío en caso de error
+    }
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector('.search input[type="search"]');
+    const searchResultsDropdown = document.getElementById('searchResultsDropdown');
+
+    searchInput.addEventListener('input', async function () {
+        const searchTerm = searchInput.value.trim();
+        if (searchTerm.length > 0) {
+            const results = await search(searchTerm);
+            displaySearchResults(results);
+        } else {
+            searchResultsDropdown.classList.remove('show');
+            searchResultsDropdown.innerHTML = ''; // Limpiar resultados si el input está vacío
+        }
+    });
+
+    searchInput.addEventListener('focus', function () {
+        if (searchInput.value.trim().length > 0) {
+            searchResultsDropdown.classList.add('show');
+        }
+    });
+
+    searchInput.addEventListener('blur', function () {
+        setTimeout(() => {
+            searchResultsDropdown.classList.remove('show');
+        }, 200);
+    });
+
+    function displaySearchResults(currencies) {
+        searchResultsDropdown.innerHTML = ''; // Limpiar resultados anteriores
+        if (currencies.length === 0) {
+            searchResultsDropdown.innerHTML = '<div class="dropdown-item">No results found.</div>';
+            return;
+        }
+
+        currencies.forEach(currency => {
+            const item = document.createElement('div');
+            item.classList.add('dropdown-item');
+            item.innerHTML = `
+                <img src="${currency.image}" alt="${currency.name}" height="20">
+                <span>${currency.name} (${currency.ticker})</span>
+            `;
+            item.addEventListener('click', function () {
+                // Redirigir a una página específica, por ejemplo, a una página de detalles de la criptomoneda
+                window.location.href = `infoCrypto.html?ticker=${currency.ticker}`; // Ajusta la URL según tu estructura
+            });
+            searchResultsDropdown.appendChild(item);
+        });
+
+        searchResultsDropdown.classList.add('show');
+    }
+});

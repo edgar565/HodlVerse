@@ -242,6 +242,19 @@ class Currency {
             return null; // Retorna null en caso de error
         }
     }
+
+    static async search(name) {
+        try {
+            const response = await $.ajax({
+                url: `/currencies/search/${name}` ,
+                type: 'GET'
+            });
+            return response;
+        } catch (error) {
+            console.error('Error al obtener las monedas más vistas:', error);
+            return null; // Retorna null en caso de error
+        }
+    }
 }
 
 window.Currency = Currency;

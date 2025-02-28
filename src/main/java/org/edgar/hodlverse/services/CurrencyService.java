@@ -120,8 +120,8 @@ public class CurrencyService {
     }
 
     // Buscar una moneda por su nombre (insensible a mayúsculas/minúsculas)
-    public Optional<Currency> findByName(String name) {
-        return currencyRepository.findByNameIgnoreCase(name.trim());
+    public List<Currency> findByNameContaining(String name) {
+        return currencyRepository.findByNameContainingIgnoreCase(name.trim());
     }
 
     // Eliminar una moneda por su ID

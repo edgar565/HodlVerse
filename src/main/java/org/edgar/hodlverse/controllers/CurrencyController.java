@@ -15,10 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -144,4 +141,14 @@ public class CurrencyController {
             throw new RuntimeException("Error converting JSON to object", e);
         }
     }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity<List<Currency>> findCurrenciesByName(@PathVariable String name) {
+        List<Currency> currencies = currencyService.findByNameContaining(name);
+        if (currencies.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(currencies);
+    }
+
 }

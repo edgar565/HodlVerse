@@ -13,7 +13,7 @@ public interface CurrencyRepository extends JpaRepository<Currency, Long> {
     // Métodos personalizados (si los necesitas)
     Optional<Currency> findByTicker(String ticker); // Buscar divisa por su ticker (ej: "BTC")
 
-    Optional<Currency> findByNameIgnoreCase(String name);
+    List<Currency> findByNameContainingIgnoreCase(String name);
 
     @Query("SELECT c FROM Currency c ORDER BY FUNCTION('RANDOM')")
     List<Currency> findAllRandom();

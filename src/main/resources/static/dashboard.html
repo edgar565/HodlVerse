@@ -97,7 +97,8 @@
                 </div>
                 <!-- Search Bar -->
                 <form class="d-flex search me-3" role="search">
-                    <input class="form-control " type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                    <div class="dropdown-menu" id="searchResultsDropdown"></div>
                 </form>
                 <!-- Configuration Modal Button -->
                 <div class="d-flex align-items-center justify-content-end config">
@@ -229,7 +230,7 @@
             <div class="col-lg-6 col-12 border-2 border-gray-200 rounded cryptos mb-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <div class="d-flex align-items-center gap-1 mb-1 p-2">
+                        <div class="d-flex align-items-center gap-1 mb-3 p-2">
                             <h4 class="m-0 text">Your Cryptos</h4>
                         </div>
                         <div id="cryptosContainerWrapper" class="overflow-hidden position-relative" style="min-height: 200px;">
@@ -314,10 +315,10 @@
 
                 <div class="mb-3 d-flex align-items-center">
                     <i class="fa-solid fa-moon"></i>
-                    <label for="darkModeSwitch">Dark Mode</label>
+                    <label for="toggleDarkMode">Dark Mode</label>
                     <div class="form-check form-switch ms-auto">
                         <input class="form-check-input dark-mode-toggle" type="checkbox"
-                               id="darkModeSwitch">
+                               id="toggleDarkMode">
                     </div>
                 </div>
             </div>
@@ -393,6 +394,7 @@
     </div>
 </footer>
 
+<script src="/js/currencyJs/currency.js"></script>
 <script src="/js/userJs/user.js"></script>
 <script src="/js/transactionJs/transaction.js"></script>
 <script src="/js/gameJs/game.js"></script>
