@@ -103,7 +103,7 @@ class Transaction {
                         let updatedOriginBalance = {
                             balanceId: originBalance.balanceId,
                             walletAmount: updatedOriginAmount,
-                            wallet: originBalance.wallet.walletId || originBalance.wallet, // Solo el ID
+                            wallet: 29, // Solo el ID
                             currency: originBalance.currency.currencyId || originBalance.currency // Solo el ID
                         };
 
@@ -153,7 +153,7 @@ class Transaction {
                         let updatedDestinationBalance = {
                             balanceId: destinationBalance.balanceId,
                             walletAmount: updatedDestinationAmount,
-                            wallet: destinationBalance.wallet.walletId || destinationBalance.wallet, // Ajuste para asegurar que se envía el ID correcto
+                            wallet: 29, // Ajuste para asegurar que se envía el ID correcto
                             currency: destinationBalance.currency.currencyId || destinationBalance.currency // Ajuste para asegurar que se envía el ID correcto
                         };
 
